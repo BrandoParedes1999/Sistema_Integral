@@ -55,7 +55,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Credencial - <?php echo htmlspecialchars($alumno['nombre_completo']); ?></title>
-    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
     <style>
         :root {
             --unacar-blue: #002855;
