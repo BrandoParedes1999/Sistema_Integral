@@ -41,6 +41,17 @@ body {
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(29,78,216,.45);
 }
+.sb-brand-logo-wrap {
+  width: 46px; height: 46px;
+  background: #fff;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  padding: 4px;
+}
+.sb-brand-logo { width: 100%; height: 100%; object-fit: contain; }
+.tb-logo { height: 26px; width: auto; background: #fff; border-radius: 6px; padding: 2px 4px; }
 .sb-brand-text .b-name { color: #fff; font-size: 13px; font-weight: 700; line-height: 1.3; }
 .sb-brand-text .b-sub  { color: rgba(255,255,255,.4); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .9px; }
 
