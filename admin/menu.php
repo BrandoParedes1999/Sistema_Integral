@@ -60,6 +60,22 @@ $r = $conn->query("
 ");
 if ($r) { while ($row = $r->fetch_assoc()) { $ultimas[] = $row; } }
 
+// ── Alumnos con DASS severo o extremadamente severo ──
+$dassCriticos = [];
+$r = $conn->query("
+    SELECT a.matricula_alum, a.nombres_alum, a.ape_paterno_alum,
+           d.total_depresion, d.total_ansiedad, d.total_estres
+    FROM dass d
+    INNER JOIN alumnos a ON d.matricula_alum = a.matricula_alum
+    WHERE d.id_cuestionario IN (
+        SELECT MAX(id_cuestionario) FROM dass GROUP BY matricula_alum
+    )
+    AND (d.total_depresion > 10 OR d.total_ansiedad > 7 OR d.total_estres > 12)
+    ORDER BY (d.total_depresion + d.total_ansiedad + d.total_estres) DESC
+    LIMIT 8
+");
+if ($r) { while ($row = $r->fetch_assoc()) { $dassCriticos[] = $row; } }
+
 // ── Nuevos alumnos registrados ──
 $nuevosAlumnos = [];
 $r = $conn->query("
@@ -616,6 +632,63 @@ $chartPendientes = json_encode([
         </div>
       </div>
     </div>
+
+    <!-- FILA 5: Alumnos con DASS crítico -->
+    <?php if (!empty($dassCriticos)): ?>
+    <div class="row g-3 mt-1">
+      <div class="col-12">
+        <div class="panel" style="border-left:4px solid #dc2626;">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title" style="color:#dc2626;">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                Alumnos con DASS-21 Severo / Extremadamente Severo
+              </div>
+              <div class="panel-sub">Requieren atención prioritaria — niveles críticos en su último cuestionario</div>
+            </div>
+            <span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">
+              <?= count($dassCriticos) ?> alumno<?= count($dassCriticos) > 1 ? 's' : '' ?>
+            </span>
+          </div>
+          <div class="panel-body" style="padding-top:8px;">
+            <table class="data-table">
+              <thead>
+                <tr><th>Alumno</th><th>Matrícula</th><th>Depresión</th><th>Ansiedad</th><th>Estrés</th></tr>
+              </thead>
+              <tbody>
+                <?php
+                function sevBadge($v, $tipo) {
+                    if ($tipo==='dep') { $s=($v>13?'Ext. Severo':($v>10?'Severo':($v>6?'Moderado':'—'))); }
+                    elseif($tipo==='ans'){ $s=($v>9?'Ext. Severo':($v>7?'Severo':($v>4?'Moderado':'—'))); }
+                    else { $s=($v>16?'Ext. Severo':($v>12?'Severo':($v>9?'Moderado':'—'))); }
+                    $cl = strpos($s,'Ext')!==false?'#dc2626':(strpos($s,'Sev')!==false?'#ef4444':'#f59e0b');
+                    return "<span style='background:{$cl}22;color:{$cl};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;'>{$v} · {$s}</span>";
+                }
+                foreach($dassCriticos as $i => $dc):
+                    $col = $avColors[$i % count($avColors)];
+                    $nombre = htmlspecialchars($dc['nombres_alum'].' '.$dc['ape_paterno_alum']);
+                    $ini = strtoupper(substr($dc['nombres_alum'],0,1).substr($dc['ape_paterno_alum'],0,1));
+                ?>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="t-av" style="<?= $col[0] ?>;<?= $col[1] ?>"><?= $ini ?></div>
+                      <span style="font-weight:500;"><?= $nombre ?></span>
+                    </div>
+                  </td>
+                  <td style="color:#64748b;font-size:12px;"><?= htmlspecialchars($dc['matricula_alum']) ?></td>
+                  <td><?= sevBadge($dc['total_depresion'],'dep') ?></td>
+                  <td><?= sevBadge($dc['total_ansiedad'], 'ans') ?></td>
+                  <td><?= sevBadge($dc['total_estres'],   'est') ?></td>
+                </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php endif; ?>
 
   </main>
 </div><!-- #main-wrapper -->

@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Inicio de Sesión</title>
+    <title>UniSalud – Administración</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -154,9 +154,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <div class="header-bar">
-            <h4> Sistema Integral De Salud</h4>
+            <h4>UniSalud &ndash; Administración</h4>
         </div>
-        <img src="images/delfines.png" alt="Logo" class="delfin-logo">
+        <img src="alumnos/imagenes/unisalud-sf.png" alt="UniSalud" class="delfin-logo" style="object-fit:contain;">
         <form method="post" action="login.php">
             <div class="input-container">
                 <label>Ingrese Usuario:</label>
