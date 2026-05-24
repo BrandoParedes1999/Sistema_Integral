@@ -1,543 +1,854 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Propuesta C – Glassmorphism | UNACAR</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Integral de Salud – UNACAR | Dashboard C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1e40af 100%);
-      color: #e2e8f0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+      background-attachment: fixed;
       display: flex;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.5); opacity: .6; }
+    }
+
+    .anim-up   { animation: fadeInUp  .5s ease both; }
+    .anim-left { animation: fadeInLeft .4s ease both; }
+    .anim-fade { animation: fadeIn     .6s ease both; }
+
+    .delay-1 { animation-delay: .05s; }
+    .delay-2 { animation-delay: .10s; }
+    .delay-3 { animation-delay: .15s; }
+    .delay-4 { animation-delay: .20s; }
+    .delay-5 { animation-delay: .25s; }
+    .delay-6 { animation-delay: .30s; }
+
+    /* ── GLASS MIXIN ── */
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+    }
+    .glass-sm {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
     }
 
     /* ── SIDEBAR ── */
-    .sidebar {
-      width: 260px;
-      min-height: 100vh;
-      background: rgba(255,255,255,.07);
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: rgba(255,255,255,0.06);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border-right: 1px solid rgba(255,255,255,.12);
+      border-right: 1px solid rgba(255,255,255,0.1);
       display: flex;
       flex-direction: column;
-      padding: 0 0 24px;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      z-index: 100;
+      z-index: 1000;
+      overflow-y: auto;
     }
+    #sidebar::-webkit-scrollbar { width: 3px; }
+    #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 
-    .sidebar-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 28px 24px 24px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
+    .sb-brand {
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .sidebar-logo img { height: 44px; filter: brightness(0) invert(1); }
-    .sidebar-logo span { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.3; }
-
-    .sidebar-profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 20px 24px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
+    .sb-logo {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 1.1rem; color: #fff; flex-shrink: 0;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 16px rgba(56,189,248,0.3);
     }
-    .profile-info .name { font-size: .85rem; font-weight: 600; color: #f1f5f9; }
-    .profile-info .role { font-size: .72rem; color: #94a3b8; }
+    .sb-brand-name {
+      color: #fff;
+      font-size: 12.5px; font-weight: 700; line-height: 1.3;
+    }
+    .sb-brand-sub {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;
+    }
 
-    .nav-section-label {
-      font-size: .65rem; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: #64748b;
-      padding: 20px 24px 8px;
+    .sb-nav { padding: 14px 10px; flex: 1; }
+    .sb-section {
+      font-size: 9.5px; font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase; letter-spacing: 1.3px;
+      padding: 12px 10px 5px;
     }
 
-    .nav-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 11px 24px;
-      color: #94a3b8;
-      border-radius: 10px;
-      margin: 2px 12px;
-      cursor: pointer;
-      transition: background .2s, color .2s;
-      font-size: .875rem;
-      text-decoration: none;
-    }
-    .nav-item:hover { background: rgba(255,255,255,.10); color: #e2e8f0; }
-    .nav-item.active {
-      background: rgba(99,179,237,.18);
-      color: #93c5fd;
-      border-left: 3px solid #3b82f6;
-    }
-    .nav-item i { font-size: 1.05rem; width: 20px; text-align: center; }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px 24px 0;
-      border-top: 1px solid rgba(255,255,255,.10);
-    }
-    .btn-logout {
+    .sb-link {
       display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 10px 16px; border-radius: 10px;
-      background: rgba(239,68,68,.18); color: #fca5a5;
-      border: 1px solid rgba(239,68,68,.3);
-      cursor: pointer; font-size: .875rem; transition: background .2s;
+      padding: 8.5px 10px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      transition: all .2s ease;
+      position: relative;
     }
-    .btn-logout:hover { background: rgba(239,68,68,.30); }
-
-    /* ── MAIN CONTENT ── */
-    .main {
-      margin-left: 260px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    .sb-link:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
     }
-
-    /* ── TOPBAR ── */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 32px;
-      background: rgba(255,255,255,.05);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      position: sticky; top: 0; z-index: 50;
+    .sb-link.active {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      border-left: 3px solid rgba(255,255,255,0.8);
+      padding-left: 7px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
     }
-    .topbar h2 { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
-    .topbar-date { font-size: .78rem; color: #94a3b8; }
-
-    .search-box {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.15);
-      border-radius: 30px; padding: 8px 16px; color: #94a3b8; font-size: .82rem;
-    }
-    .search-box input {
-      background: transparent; border: none; outline: none;
-      color: #e2e8f0; font-size: .82rem; width: 160px;
-    }
-    .search-box input::placeholder { color: #64748b; }
-
-    .notif-btn {
-      position: relative; background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.15); border-radius: 10px;
-      width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-      color: #94a3b8; cursor: pointer; transition: background .2s;
-    }
-    .notif-btn:hover { background: rgba(255,255,255,.18); }
-    .notif-badge {
-      position: absolute; top: -4px; right: -4px;
-      background: #ef4444; color: #fff; font-size: .6rem; border-radius: 50%;
-      width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
+    .sb-link i { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+    .sb-badge {
+      margin-left: auto;
+      background: rgba(56,189,248,0.2);
+      color: #38bdf8;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 10px;
     }
 
-    /* ── PAGE BODY ── */
-    .content { padding: 28px 32px; }
+    .sb-sub { padding-left: 28px; }
+    .sb-sub-link {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 10px; border-radius: 8px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none; font-size: 12px;
+      transition: all .15s;
+    }
+    .sb-sub-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+    .sb-sub-link::before {
+      content: ''; width: 4px; height: 4px;
+      border-radius: 50%; background: rgba(255,255,255,0.25); flex-shrink: 0;
+    }
 
-    /* ── KPI CARDS ── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 24px;
+    .sb-footer {
+      padding: 14px 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
-    .kpi-card {
-      background: rgba(255,255,255,.07);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      padding: 20px;
-      transition: transform .2s, background .2s;
+    .sb-user {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .kpi-card:hover { transform: translateY(-3px); background: rgba(255,255,255,.11); }
-    .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-    .kpi-icon {
-      width: 46px; height: 46px; border-radius: 12px;
+    .sb-avatar {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg,#38bdf8,#0284c7);
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem;
+      color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(56,189,248,0.4);
     }
-    .kpi-icon.blue  { background: rgba(59,130,246,.25); color: #60a5fa; }
-    .kpi-icon.green { background: rgba(16,185,129,.25); color: #34d399; }
-    .kpi-icon.amber { background: rgba(245,158,11,.25); color: #fbbf24; }
-    .kpi-icon.red   { background: rgba(239,68,68,.25);  color: #f87171; }
-
-    .kpi-trend { display: flex; align-items: center; gap: 4px; font-size: .7rem; }
-    .kpi-trend.up { color: #34d399; }
-    .kpi-trend.down { color: #f87171; }
-
-    .kpi-value { font-size: 1.9rem; font-weight: 800; color: #f1f5f9; line-height: 1; margin-bottom: 4px; }
-    .kpi-label { font-size: .75rem; color: #94a3b8; }
-
-    /* ── CHARTS ROW ── */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 18px;
-      margin-bottom: 24px;
+    .sb-uname { color: #fff; font-size: 12px; font-weight: 600; }
+    .sb-urole { color: rgba(255,255,255,0.4); font-size: 10.5px; }
+    .sb-online {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4ade80;
+      margin-left: auto; flex-shrink: 0;
+      animation: pulse-dot 2s infinite;
     }
-    .glass-panel {
-      background: rgba(255,255,255,.06);
+
+    /* ── MAIN ── */
+    #main-wrapper {
+      margin-left: 240px;
+      flex: 1; display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* ── HEADER GLASS ── */
+    #topbar {
+      padding: 0 28px;
+      height: 62px;
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: sticky; top: 0; z-index: 900;
+    }
+    .tb-title {
+      color: #fff;
+      font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tb-title i { color: #38bdf8; }
+    .tb-breadcrumb {
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .tb-breadcrumb .active { color: rgba(255,255,255,0.8); font-weight: 500; }
+    .tb-spacer { flex: 1; }
+    .tb-btn {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all .15s; font-size: 14px; position: relative;
+    }
+    .tb-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .tb-notif { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #38bdf8; border-radius: 50%; border: 2px solid #0f172a; }
+    .tb-user {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 5px 12px 5px 8px;
+      cursor: pointer; transition: all .15s;
+    }
+    .tb-user:hover { background: rgba(255,255,255,0.14); }
+    .tb-av {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg,#38bdf8,#0284c7);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 10px; font-weight: 700;
+    }
+    .tb-uname { color: rgba(255,255,255,0.9); font-size: 12.5px; font-weight: 600; }
+    .tb-urole { color: rgba(255,255,255,0.4); font-size: 10.5px; }
+
+    /* ── CONTENT ── */
+    #content { padding: 24px 28px; flex: 1; }
+
+    /* ── KPI GLASS CARDS ── */
+    .kpi-g {
+      background: rgba(255,255,255,0.08);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 16px;
-      padding: 24px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease;
     }
-    .panel-title {
-      font-size: .875rem; font-weight: 700; color: #e2e8f0;
-      margin-bottom: 20px;
+    .kpi-g:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .kpi-g::before {
+      content: '';
+      position: absolute; top: -30px; right: -30px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      opacity: .12;
+    }
+    .kpi-g.c-cyan::before { background: #38bdf8; }
+    .kpi-g.c-green::before { background: #4ade80; }
+    .kpi-g.c-amber::before { background: #fbbf24; }
+    .kpi-g.c-rose::before { background: #f87171; }
+
+    .kpi-g-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 14px;
+    }
+    .kpi-g-icon.cyan { background: rgba(56,189,248,0.2); color: #38bdf8; }
+    .kpi-g-icon.green { background: rgba(74,222,128,0.2); color: #4ade80; }
+    .kpi-g-icon.amber { background: rgba(251,191,36,0.2); color: #fbbf24; }
+    .kpi-g-icon.rose { background: rgba(248,113,113,0.2); color: #f87171; }
+
+    .kpi-g-num {
+      font-size: 32px; font-weight: 800;
+      color: #fff; line-height: 1; margin-bottom: 4px;
+    }
+    .kpi-g-lbl {
+      font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 500; margin-bottom: 14px;
+    }
+    .kpi-g-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .kpi-g-badge.up { background: rgba(74,222,128,0.18); color: #4ade80; }
+    .kpi-g-badge.down { background: rgba(248,113,113,0.18); color: #f87171; }
+    .kpi-g-badge.neutral { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+
+    /* ── CHART CARDS GLASS ── */
+    .gc {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .gc-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .panel-title span { color: #64748b; font-size: .72rem; font-weight: 400; }
-    .chart-wrap { position: relative; height: 220px; }
+    .gc-title { color: #fff; font-size: 15px; font-weight: 700; }
+    .gc-sub { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 2px; }
+    .gc-body { padding: 18px 22px 22px; }
 
-    /* ── BOTTOM ROW ── */
-    .bottom-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    /* ── PROGRESS LIST ── */
-    .prog-item { margin-bottom: 16px; }
-    .prog-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .prog-name { font-size: .8rem; color: #cbd5e1; }
-    .prog-pct  { font-size: .8rem; font-weight: 700; color: #93c5fd; }
-    .prog-bar-bg {
-      height: 8px; background: rgba(255,255,255,.10); border-radius: 100px; overflow: hidden;
-    }
-    .prog-bar-fill {
-      height: 100%; border-radius: 100px;
-      background: linear-gradient(90deg, #3b82f6, #818cf8);
-      transition: width .6s ease;
+    .gc-pill {
+      font-size: 11px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
+      background: rgba(56,189,248,0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56,189,248,0.25);
     }
 
-    /* ── ALERT LIST ── */
-    .alert-item {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,.07);
+    /* TOP FACULTADES */
+    .fac-item {
+      margin-bottom: 16px;
     }
-    .alert-item:last-child { border-bottom: none; }
-    .alert-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+    .fac-item:last-child { margin-bottom: 0; }
+    .fac-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
     }
-    .alert-dot.warn  { background: #fbbf24; }
-    .alert-dot.info  { background: #60a5fa; }
-    .alert-dot.error { background: #f87171; }
-    .alert-dot.ok    { background: #34d399; }
-    .alert-text { font-size: .78rem; color: #cbd5e1; line-height: 1.5; }
-    .alert-time { font-size: .68rem; color: #64748b; margin-top: 2px; }
+    .fac-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8); }
+    .fac-count { font-size: 13px; font-weight: 700; }
+    .fac-bar-bg {
+      height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;
+    }
+    .fac-bar-fill {
+      height: 100%; border-radius: 10px;
+      transition: width .5s ease .2s;
+    }
 
-    /* ── QUICK ACCESS ── */
-    .quick-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
-      margin-bottom: 24px;
+    /* DONUT CENTER TEXT */
+    .donut-wrap-c {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
-    .quick-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 8px; padding: 16px 8px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 14px; cursor: pointer;
-      color: #94a3b8; font-size: .75rem; text-align: center;
-      transition: background .2s, color .2s, transform .15s;
+    .donut-center-c {
+      position: absolute;
+      text-align: center; pointer-events: none;
     }
-    .quick-btn i { font-size: 1.4rem; }
-    .quick-btn:hover { background: rgba(59,130,246,.18); color: #93c5fd; transform: translateY(-2px); }
+    .donut-center-c .cn { font-size: 26px; font-weight: 800; color: #fff; }
+    .donut-center-c .cl { font-size: 10.5px; color: rgba(255,255,255,0.45); font-weight: 500; }
 
-    /* ── DEMO NOTE ── */
-    .demo-note {
-      text-align: center; font-size: .7rem; color: #475569;
-      padding: 24px 0 8px; letter-spacing: .05em;
+    /* LEGEND */
+    .legend-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
     }
+    .legend-row:last-child { margin-bottom: 0; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-label { font-size: 12.5px; color: rgba(255,255,255,0.65); flex: 1; }
+    .legend-val { font-size: 13px; font-weight: 700; color: #fff; }
+    .legend-pct { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: 6px; }
   </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════ SIDEBAR ════════════════════════════════ -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <img src="../images/logo_unacar (1).png" alt="UNACAR">
-    <span>Sistema Integral<br>de Salud</span>
+<!-- SIDEBAR -->
+<nav id="sidebar" class="anim-left">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <i class="bi bi-heart-pulse-fill text-white fs-5"></i>
+    </div>
+    <div class="sb-brand-name">Sistema Integral de Salud</div>
+    <div class="sb-brand-sub">UNACAR &middot; Administración</div>
   </div>
 
-  <div class="sidebar-profile">
-    <div class="avatar">AP</div>
-    <div class="profile-info">
-      <div class="name">Admin Principal</div>
-      <div class="role">Administrador · 09:42</div>
+  <div class="sb-nav">
+    <div class="sb-section">Principal</div>
+
+    <a href="#" class="sb-link active">
+      <i class="bi bi-grid-1x2-fill"></i>
+      Dashboard
+    </a>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-folder2-open"></i>
+      Historial Clínico
+      <span class="sb-badge">743</span>
+    </a>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-activity"></i>
+      Datos Físicos
+    </a>
+
+    <div class="sb-section">Alumnos</div>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-people-fill"></i>
+      Alumnos
+    </a>
+    <div class="sb-sub">
+      <a href="#" class="sb-sub-link">Listado</a>
+      <a href="#" class="sb-sub-link">Expediente</a>
+    </div>
+
+    <div class="sb-section">Evaluaciones</div>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-clipboard2-pulse-fill"></i>
+      Cuestionarios
+      <span class="sb-badge">245</span>
+    </a>
+    <div class="sb-sub">
+      <a href="#" class="sb-sub-link">DASS-21</a>
+      <a href="#" class="sb-sub-link">PEPS-1</a>
+    </div>
+
+    <div class="sb-section">Reportes</div>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-bar-chart-fill"></i>
+      Estadísticas
+    </a>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-graph-up-arrow"></i>
+      Resultados
+    </a>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-person-badge-fill"></i>
+      Credenciales
+    </a>
+
+    <div class="sb-section">Sistema</div>
+
+    <a href="#" class="sb-link">
+      <i class="bi bi-shield-lock-fill"></i>
+      Control del Sistema
+    </a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">MA</div>
+      <div>
+        <div class="sb-uname">María Alvarado</div>
+        <div class="sb-urole">Administrador</div>
+      </div>
+      <span class="sb-online" title="En línea"></span>
     </div>
   </div>
+</nav>
 
-  <div class="nav-section-label">Principal</div>
-  <a class="nav-item active" href="#">
-    <i class="bi bi-grid-1x2-fill"></i> Dashboard
-  </a>
-  <a class="nav-item" href="#">
-    <i class="bi bi-file-earmark-medical"></i> Historial Clínico
-  </a>
-  <a class="nav-item" href="#">
-    <i class="bi bi-activity"></i> Datos Físicos
-  </a>
+<!-- MAIN -->
+<div id="main-wrapper">
 
-  <div class="nav-section-label">Módulos</div>
-  <a class="nav-item" href="#">
-    <i class="bi bi-search"></i> Búsqueda
-  </a>
-  <a class="nav-item" href="#">
-    <i class="bi bi-graph-up"></i> Estadísticas
-  </a>
-  <a class="nav-item" href="#">
-    <i class="bi bi-clipboard2-check"></i> Resultados
-  </a>
-  <a class="nav-item" href="#">
-    <i class="bi bi-credit-card-2-front-fill"></i> Credenciales
-  </a>
-
-  <div class="nav-section-label">Sistema</div>
-  <a class="nav-item" href="#">
-    <i class="bi bi-people"></i> Control del Sistema
-  </a>
-
-  <div class="sidebar-footer">
-    <button class="btn-logout">
-      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+  <!-- HEADER -->
+  <header id="topbar" class="anim-fade">
+    <div>
+      <div class="tb-title">
+        <i class="bi bi-heart-pulse-fill"></i>
+        SIS UNACAR
+      </div>
+      <div class="tb-breadcrumb">
+        <i class="bi bi-house-fill"></i>
+        <span>/</span>
+        <span class="active">Dashboard</span>
+      </div>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-btn">
+      <i class="bi bi-search"></i>
+    </div>
+    <div class="tb-btn">
+      <i class="bi bi-bell"></i>
+      <span class="tb-notif"></span>
+    </div>
+    <div class="tb-btn">
+      <i class="bi bi-moon"></i>
+    </div>
+    <div class="tb-user">
+      <div class="tb-av">MA</div>
+      <div>
+        <div class="tb-uname">María Alvarado</div>
+        <div class="tb-urole">Administrador</div>
+      </div>
+      <i class="bi bi-chevron-down" style="color:rgba(255,255,255,0.3);font-size:10px;margin-left:4px;"></i>
+    </div>
+    <button style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.25);border-radius:8px;padding:7px 13px;color:#f87171;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Inter,sans-serif;transition:all .15s;">
+      <i class="bi bi-box-arrow-right"></i>
+      Cerrar sesión
     </button>
-  </div>
-</aside>
-
-<!-- ════════════════════════════════ MAIN ════════════════════════════════════ -->
-<div class="main">
-
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <h2><i class="bi bi-grid-1x2-fill me-2" style="color:#60a5fa"></i>Dashboard General</h2>
-    <div class="topbar-right">
-      <div class="search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Buscar alumno…">
-      </div>
-      <div class="notif-btn">
-        <i class="bi bi-bell"></i>
-        <span class="notif-badge">3</span>
-      </div>
-      <div class="topbar-date">Sábado, 24 May 2025</div>
-    </div>
   </header>
 
-  <div class="content">
+  <!-- CONTENT -->
+  <main id="content">
 
     <!-- KPI CARDS -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <div class="kpi-icon blue"><i class="bi bi-mortarboard-fill"></i></div>
-          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+4.2%</div>
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-g c-cyan anim-up delay-1">
+          <div class="kpi-g-icon cyan"><i class="bi bi-people-fill"></i></div>
+          <div class="kpi-g-num">1,247</div>
+          <div class="kpi-g-lbl">Alumnos Registrados</div>
+          <span class="kpi-g-badge up"><i class="bi bi-arrow-up-short"></i> +48 este mes</span>
         </div>
-        <div class="kpi-value">1,284</div>
-        <div class="kpi-label">Alumnos Registrados</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <div class="kpi-icon green"><i class="bi bi-patch-check-fill"></i></div>
-          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+8.1%</div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-g c-green anim-up delay-2">
+          <div class="kpi-g-icon green"><i class="bi bi-folder-check"></i></div>
+          <div class="kpi-g-num">892</div>
+          <div class="kpi-g-lbl">Expedientes Completos</div>
+          <span class="kpi-g-badge up"><i class="bi bi-arrow-up-short"></i> 71% completitud</span>
         </div>
-        <div class="kpi-value">873</div>
-        <div class="kpi-label">Expedientes Completos</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <div class="kpi-icon amber"><i class="bi bi-clipboard2-pulse-fill"></i></div>
-          <div class="kpi-trend down"><i class="bi bi-arrow-down-short"></i>−2.3%</div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-g c-amber anim-up delay-3">
+          <div class="kpi-g-icon amber"><i class="bi bi-clipboard2-check-fill"></i></div>
+          <div class="kpi-g-num">34</div>
+          <div class="kpi-g-lbl">Capturas Físicas Hoy</div>
+          <span class="kpi-g-badge neutral"><i class="bi bi-dash"></i> Promedio diario</span>
         </div>
-        <div class="kpi-value">411</div>
-        <div class="kpi-label">DASS-21 Pendientes</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <div class="kpi-icon red"><i class="bi bi-exclamation-triangle-fill"></i></div>
-          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+1</div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-g c-rose anim-up delay-4">
+          <div class="kpi-g-icon rose"><i class="bi bi-clipboard2-x-fill"></i></div>
+          <div class="kpi-g-num">89</div>
+          <div class="kpi-g-lbl">DASS-21 Pendientes</div>
+          <span class="kpi-g-badge down"><i class="bi bi-arrow-down-short"></i> Requiere atención</span>
         </div>
-        <div class="kpi-value">18</div>
-        <div class="kpi-label">Casos de Atención</div>
       </div>
     </div>
 
-    <!-- ACCESOS RÁPIDOS -->
-    <div class="quick-grid">
-      <button class="quick-btn"><i class="bi bi-file-earmark-plus"></i>Nuevo Historial</button>
-      <button class="quick-btn"><i class="bi bi-person-plus-fill"></i>Registrar Alumno</button>
-      <button class="quick-btn"><i class="bi bi-upload"></i>Importar Datos</button>
-      <button class="quick-btn"><i class="bi bi-file-earmark-pdf-fill"></i>Exportar PDF</button>
-      <button class="quick-btn"><i class="bi bi-bar-chart-fill"></i>Ver Reporte</button>
-      <button class="quick-btn"><i class="bi bi-gear-fill"></i>Configuración</button>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="charts-row">
-      <div class="glass-panel">
-        <div class="panel-title">
-          Capturas Semanales
-          <span>Últimas 8 semanas</span>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="lineChart"></canvas>
-        </div>
-      </div>
-      <div class="glass-panel">
-        <div class="panel-title">
-          Cuestionarios Completos
-          <span>Por módulo</span>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="donutChart"></canvas>
+    <!-- LINE CHART - Capturas por semana -->
+    <div class="row g-3 mb-4">
+      <div class="col-12">
+        <div class="gc anim-up delay-2">
+          <div class="gc-header">
+            <div>
+              <div class="gc-title">Capturas por Semana</div>
+              <div class="gc-sub">Registros de datos físicos – últimas 8 semanas</div>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+              <span class="gc-pill"><i class="bi bi-circle-fill me-1" style="font-size:7px;color:#38bdf8;"></i> Datos Físicos</span>
+              <span class="gc-pill" style="background:rgba(74,222,128,0.12);color:#4ade80;border-color:rgba(74,222,128,0.2);"><i class="bi bi-circle-fill me-1" style="font-size:7px;color:#4ade80;"></i> Cuestionarios</span>
+              <span class="gc-pill" style="background:rgba(251,191,36,0.12);color:#fbbf24;border-color:rgba(251,191,36,0.2);"><i class="bi bi-circle-fill me-1" style="font-size:7px;color:#fbbf24;"></i> Expedientes</span>
+            </div>
+          </div>
+          <div class="gc-body">
+            <canvas id="lineChart" height="110"></canvas>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- BOTTOM ROW -->
-    <div class="bottom-row">
-      <!-- Progreso por facultad -->
-      <div class="glass-panel">
-        <div class="panel-title">Completitud por Facultad</div>
-        <div class="prog-item">
-          <div class="prog-meta"><span class="prog-name">Ciencias de la Salud</span><span class="prog-pct">87%</span></div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:87%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-meta"><span class="prog-name">Ingeniería</span><span class="prog-pct">71%</span></div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:71%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-meta"><span class="prog-name">Contaduría y Adm.</span><span class="prog-pct">63%</span></div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:63%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-meta"><span class="prog-name">Ciencias Educativas</span><span class="prog-pct">55%</span></div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:55%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-meta"><span class="prog-name">Derecho</span><span class="prog-pct">44%</span></div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:44%"></div></div>
+    <div class="row g-3">
+
+      <!-- DONUT - Cuestionarios -->
+      <div class="col-xl-5">
+        <div class="gc anim-up delay-3 h-100">
+          <div class="gc-header">
+            <div>
+              <div class="gc-title">Cuestionarios Completados</div>
+              <div class="gc-sub">DASS-21 y PEPS-1 combinados</div>
+            </div>
+          </div>
+          <div class="gc-body">
+            <div class="row align-items-center">
+              <div class="col-7">
+                <div class="donut-wrap-c">
+                  <canvas id="donutC" width="230" height="230"></canvas>
+                  <div class="donut-center-c">
+                    <div class="cn">83%</div>
+                    <div class="cl">completado</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="legend-row">
+                  <span class="legend-dot" style="background:#38bdf8;"></span>
+                  <span class="legend-label">DASS-21</span>
+                  <span class="legend-val">1,158</span>
+                  <span class="legend-pct">93%</span>
+                </div>
+                <div class="legend-row">
+                  <span class="legend-dot" style="background:#4ade80;"></span>
+                  <span class="legend-label">PEPS-1</span>
+                  <span class="legend-val">1,091</span>
+                  <span class="legend-pct">87%</span>
+                </div>
+                <div class="legend-row">
+                  <span class="legend-dot" style="background:rgba(255,255,255,0.2);"></span>
+                  <span class="legend-label">Pendientes</span>
+                  <span class="legend-val" style="color:rgba(255,255,255,0.45);">245</span>
+                  <span class="legend-pct">17%</span>
+                </div>
+
+                <div style="margin-top:20px;padding:12px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:10px;">
+                  <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Total evaluados</div>
+                  <div style="font-size:20px;font-weight:800;color:#38bdf8;">2,249</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.4);">de 2,494 posibles</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Alertas -->
-      <div class="glass-panel">
-        <div class="panel-title">Notificaciones Recientes</div>
-        <div class="alert-item">
-          <div class="alert-dot error"></div>
-          <div>
-            <div class="alert-text">3 alumnos con índice de estrés severo detectados</div>
-            <div class="alert-time">Hace 15 min</div>
+      <!-- TOP FACULTADES -->
+      <div class="col-xl-4">
+        <div class="gc anim-up delay-4 h-100">
+          <div class="gc-header">
+            <div>
+              <div class="gc-title">Top Facultades</div>
+              <div class="gc-sub">Alumnos registrados por división</div>
+            </div>
+            <span class="gc-pill" style="font-size:10px;">Ciclo 2025-B</span>
           </div>
-        </div>
-        <div class="alert-item">
-          <div class="alert-dot warn"></div>
-          <div>
-            <div class="alert-text">Importación de datos físicos del grupo AM-301 pendiente de revisión</div>
-            <div class="alert-time">Hace 1 hora</div>
-          </div>
-        </div>
-        <div class="alert-item">
-          <div class="alert-dot info"></div>
-          <div>
-            <div class="alert-text">Reporte mensual de salud listo para descargar</div>
-            <div class="alert-time">Hace 3 horas</div>
-          </div>
-        </div>
-        <div class="alert-item">
-          <div class="alert-dot ok"></div>
-          <div>
-            <div class="alert-text">Carga masiva de matriculados completada: 127 registros</div>
-            <div class="alert-time">Ayer 18:30</div>
-          </div>
-        </div>
-        <div class="alert-item">
-          <div class="alert-dot warn"></div>
-          <div>
-            <div class="alert-text">Credencial de 5 alumnos próxima a vencer este mes</div>
-            <div class="alert-time">Ayer 10:00</div>
+          <div class="gc-body">
+            <div class="fac-item">
+              <div class="fac-row">
+                <span class="fac-name">Medicina</span>
+                <span class="fac-count" style="color:#38bdf8;">312</span>
+              </div>
+              <div class="fac-bar-bg">
+                <div class="fac-bar-fill" style="width:75%;background:linear-gradient(90deg,#38bdf8,#0284c7);"></div>
+              </div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row">
+                <span class="fac-name">Contaduría y Admon.</span>
+                <span class="fac-count" style="color:#4ade80;">264</span>
+              </div>
+              <div class="fac-bar-bg">
+                <div class="fac-bar-fill" style="width:63%;background:linear-gradient(90deg,#4ade80,#16a34a);"></div>
+              </div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row">
+                <span class="fac-name">Ingeniería</span>
+                <span class="fac-count" style="color:#a78bfa;">248</span>
+              </div>
+              <div class="fac-bar-bg">
+                <div class="fac-bar-fill" style="width:60%;background:linear-gradient(90deg,#a78bfa,#7c3aed);"></div>
+              </div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row">
+                <span class="fac-name">Psicología</span>
+                <span class="fac-count" style="color:#fbbf24;">225</span>
+              </div>
+              <div class="fac-bar-bg">
+                <div class="fac-bar-fill" style="width:54%;background:linear-gradient(90deg,#fbbf24,#d97706);"></div>
+              </div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row">
+                <span class="fac-name">Derecho</span>
+                <span class="fac-count" style="color:#f87171;">198</span>
+              </div>
+              <div class="fac-bar-bg">
+                <div class="fac-bar-fill" style="width:47%;background:linear-gradient(90deg,#f87171,#dc2626);"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- MÉTRICAS RÁPIDAS -->
+      <div class="col-xl-3">
+        <div class="gc anim-up delay-5 h-100">
+          <div class="gc-header">
+            <div>
+              <div class="gc-title">Métricas Clave</div>
+              <div class="gc-sub">Estado global del sistema</div>
+            </div>
+          </div>
+          <div class="gc-body" style="display:flex;flex-direction:column;gap:14px;">
+
+            <div class="glass-sm" style="padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;">PEPS-1 Pendientes</span>
+                <span style="font-size:12px;font-weight:700;color:#fbbf24;">156</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:10px;">
+                <div style="height:100%;width:87%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:10px;"></div>
+              </div>
+              <div style="font-size:10.5px;color:rgba(255,255,255,0.3);margin-top:5px;">87% completados</div>
+            </div>
+
+            <div class="glass-sm" style="padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;">Historial Clínico</span>
+                <span style="font-size:12px;font-weight:700;color:#38bdf8;">743</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:10px;">
+                <div style="height:100%;width:60%;background:linear-gradient(90deg,#38bdf8,#0284c7);border-radius:10px;"></div>
+              </div>
+              <div style="font-size:10.5px;color:rgba(255,255,255,0.3);margin-top:5px;">60% del total</div>
+            </div>
+
+            <div class="glass-sm" style="padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;">Datos Físicos</span>
+                <span style="font-size:12px;font-weight:700;color:#4ade80;">892</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:10px;">
+                <div style="height:100%;width:71%;background:linear-gradient(90deg,#4ade80,#16a34a);border-radius:10px;"></div>
+              </div>
+              <div style="font-size:10.5px;color:rgba(255,255,255,0.3);margin-top:5px;">71% completados</div>
+            </div>
+
+            <div style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Completitud General</div>
+              <div style="font-size:36px;font-weight:800;color:#4ade80;line-height:1;">71%</div>
+              <div style="font-size:11px;color:rgba(74,222,128,0.6);">892 de 1,247 alumnos</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <div class="demo-note">PROPUESTA C — Glassmorphism · Solo prototipo visual</div>
-  </div>
+  </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ── Line Chart ──
-const lineCtx = document.getElementById('lineChart').getContext('2d');
-new Chart(lineCtx, {
-  type: 'line',
-  data: {
-    labels: ['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8'],
-    datasets: [{
-      label: 'Datos Físicos',
-      data: [42, 68, 91, 77, 105, 98, 123, 141],
-      borderColor: '#60a5fa',
-      backgroundColor: 'rgba(96,165,250,.15)',
-      borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#60a5fa', fill: true, tension: .4
-    },{
-      label: 'DASS-21',
-      data: [28, 51, 73, 60, 88, 80, 107, 118],
-      borderColor: '#818cf8',
-      backgroundColor: 'rgba(129,140,248,.10)',
-      borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#818cf8', fill: true, tension: .4
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 } }
-    },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#64748b', font: { size: 10 } } },
-      y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#64748b', font: { size: 10 } } }
-    }
-  }
-});
+  // Shared Chart.js defaults for dark theme
+  Chart.defaults.color = 'rgba(255,255,255,0.45)';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+  Chart.defaults.font.family = 'Inter';
 
-// ── Donut Chart ──
-const donutCtx = document.getElementById('donutChart').getContext('2d');
-new Chart(donutCtx, {
-  type: 'doughnut',
-  data: {
-    labels: ['Datos Físicos','DASS-21','Estilo de Vida','Historial Clínico'],
-    datasets: [{
-      data: [873, 762, 641, 509],
-      backgroundColor: ['#60a5fa','#818cf8','#34d399','#fbbf24'],
-      borderWidth: 0, hoverOffset: 8
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '68%',
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { color: '#94a3b8', font: { size: 10 }, padding: 12, boxWidth: 10 }
+  // LINE CHART
+  const weeks = ['31 Mar', '7 Abr', '14 Abr', '21 Abr', '28 Abr', '5 May', '12 May', '19 May'];
+  new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        {
+          label: 'Datos Físicos',
+          data: [18, 24, 31, 22, 38, 29, 41, 34],
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56,189,248,0.08)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#38bdf8',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: 'Cuestionarios',
+          data: [45, 62, 58, 71, 80, 76, 88, 72],
+          borderColor: '#4ade80',
+          backgroundColor: 'rgba(74,222,128,0.05)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#4ade80',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: 'Expedientes',
+          data: [30, 42, 38, 50, 55, 60, 68, 58],
+          borderColor: '#fbbf24',
+          backgroundColor: 'rgba(251,191,36,0.05)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#fbbf24',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.9)',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: 'rgba(255,255,255,0.8)',
+          bodyColor: 'rgba(255,255,255,0.6)',
+          padding: 12,
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { font: { size: 11 }, color: 'rgba(255,255,255,0.35)' }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { font: { size: 11 }, color: 'rgba(255,255,255,0.35)' },
+          min: 0, max: 100
+        }
       }
     }
-  }
-});
+  });
+
+  // DONUT C
+  new Chart(document.getElementById('donutC'), {
+    type: 'doughnut',
+    data: {
+      labels: ['DASS-21', 'PEPS-1', 'Pendientes'],
+      datasets: [{
+        data: [1158, 1091, 245],
+        backgroundColor: ['#38bdf8', '#4ade80', 'rgba(255,255,255,0.1)'],
+        borderColor: ['rgba(56,189,248,0.4)', 'rgba(74,222,128,0.4)', 'rgba(255,255,255,0.05)'],
+        borderWidth: 2,
+        hoverOffset: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.9)',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: 'rgba(255,255,255,0.8)',
+          bodyColor: 'rgba(255,255,255,0.6)',
+          callbacks: {
+            label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString()
+          }
+        }
+      }
+    }
+  });
 </script>
 </body>
 </html>
