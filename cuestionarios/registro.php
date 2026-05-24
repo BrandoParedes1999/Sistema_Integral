@@ -89,9 +89,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'generacion' => $generacion
         ];
 
-        $_SESSION['bienvenida'] = true;
+        $_SESSION['loggedin']     = true;
+        $_SESSION['tipo_usuario'] = 'alumno';
+        $_SESSION['bienvenida']   = true;
 
-        
         echo json_encode([
             'success' => true,
             'redirect' => 'menuAlum.php'

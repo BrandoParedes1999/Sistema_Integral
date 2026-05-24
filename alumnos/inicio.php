@@ -2,7 +2,7 @@
 require_once '../config/config.php';
 session_start();
 
-if (!isset($_SESSION['alumno']) || !isset($_SESSION['loggedin'])) {
+if (!isset($_SESSION['alumno'])) {
     header('Location: login-alumno.html');
     exit;
 }
