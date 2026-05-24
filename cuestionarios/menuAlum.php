@@ -52,130 +52,181 @@ $stmt->fetch();
 $stmt->close();
 
 $conn->close();
+
+// Iniciales del alumno (2 letras)
+$iniciales = strtoupper(
+    substr($alumno['nombre'], 0, 1) .
+    substr($alumno['apepa'], 0, 1)
+);
+
+// Progreso
+$completados = ($yaRespondioEstilo ? 1 : 0) + ($yaRespondioDASS ? 1 : 0);
+$pct = ($completados / 2) * 100;
 ?>
 
 <!doctype html>
 <html lang="es">
 
 <head>
-    <title>Menú Cuestionarios</title>
+    <title>Panel del Estudiante · UNACAR</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/menualum.css">
     <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
 </head>
 
 <body>
-    
-    <div class="main-container">
-        
-        <header class="dashboard-header">
-            <div>
-                <h2>Sistema Integral de Salud</h2>
-                <div class="subtext">Panel del Estudiante</div>
-            </div>
-            <button class="btn-logout-header" data-bs-toggle="modal" data-bs-target="#modalLogout">
-                Cerrar Sesión <span>&#10162;</span>
-            </button>
-        </header>
 
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-avatar">
-                    <?php echo strtoupper(substr($alumno['nombre'], 0, 1)); ?>
-                </div>
-                <div class="profile-title">
-                    <h3><?php echo $nombreCompleto; ?></h3>
-                </div>
+    <!-- ── Topbar ──────────────────────────────────────── -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <div class="topbar-icon">
+                <i class="bi bi-heart-pulse-fill"></i>
             </div>
+            <div>
+                <div class="topbar-name">Sistema Integral de Salud</div>
+                <div class="topbar-sub">UNACAR &middot; Panel del Estudiante</div>
+            </div>
+        </div>
+        <button class="btn-logout" data-bs-toggle="modal" data-bs-target="#modalLogout">
+            <i class="bi bi-box-arrow-right"></i> Salir
+        </button>
+    </header>
+
+    <div class="page">
+
+        <!-- ── Perfil ───────────────────────────────────── -->
+        <div class="profile-card">
+            <div class="profile-banner"></div>
             <div class="profile-body">
+                <div class="profile-avatar"><?php echo $iniciales; ?></div>
+                <div class="profile-name"><?php echo $nombreCompleto; ?></div>
+                <div class="profile-mat">
+                    <i class="bi bi-person-badge"></i>
+                    <?php echo htmlspecialchars($alumno['matricula']); ?>
+                </div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <label>Matrícula</label>
-                        <span><?php echo htmlspecialchars($alumno['matricula']); ?></span>
+                        <div class="info-label"><i class="bi bi-envelope"></i> Correo</div>
+                        <div class="info-value"><?php echo htmlspecialchars($alumno['correo']); ?></div>
                     </div>
                     <div class="info-item">
-                        <label>Correo Institucional</label>
-                        <span><?php echo htmlspecialchars($alumno['correo']); ?></span>
+                        <div class="info-label"><i class="bi bi-building"></i> Facultad</div>
+                        <div class="info-value"><?php echo htmlspecialchars($nombreFacultad); ?></div>
                     </div>
                     <div class="info-item">
-                        <label>Facultad</label>
-                        <span><?php echo htmlspecialchars($nombreFacultad); ?></span>
-                    </div>
-                    <div class="info-item">
-                        <label>Carrera</label>
-                        <span><?php echo htmlspecialchars($nombreCarrera); ?></span>
+                        <div class="info-label"><i class="bi bi-mortarboard"></i> Carrera</div>
+                        <div class="info-value"><?php echo htmlspecialchars($nombreCarrera); ?></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="actions-title">
-            <span>📋</span> Mis Actividades
+        <!-- ── Progreso ─────────────────────────────────── -->
+        <div class="progress-section">
+            <div class="progress-label">
+                Progreso: <span class="<?php echo $completados == 2 ? 'done-clr' : ''; ?>"><?php echo $completados; ?> de 2</span> actividades completadas
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill <?php echo $completados == 2 ? 'all-done' : ''; ?>"
+                     style="width: <?php echo $pct; ?>%"></div>
+            </div>
+            <div class="progress-pct"><?php echo (int)$pct; ?>%</div>
         </div>
 
-        <div class="actions-grid">
-            
-            <div class="action-card <?php echo $yaRespondioEstilo ? 'completed' : ''; ?>">
-                <div>
-                    <h4>Cuestionario Estilo de Vida</h4>
-                    <p>
+        <!-- ── Actividades ──────────────────────────────── -->
+        <div class="section-hd">Mis actividades</div>
+
+        <div class="cards-grid">
+
+            <!-- Estilo de Vida -->
+            <div class="act-card <?php echo $yaRespondioEstilo ? 'completed' : ''; ?>">
+                <div class="act-body">
+                    <div class="act-icon <?php echo $yaRespondioEstilo ? 'green' : 'blue'; ?>">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
+                    <div class="act-title">Cuestionario Estilo de Vida</div>
+                    <div class="act-desc">
                         <?php if ($yaRespondioEstilo): ?>
-                            Gracias por completar tu información de hábitos y salud.
+                            Tu información de hábitos y salud fue registrada correctamente.
                         <?php else: ?>
-                            Ayúdanos a conocer tus hábitos para mejorar los servicios de salud universitaria.
+                            Responde preguntas sobre tus hábitos diarios para ayudarnos a mejorar los servicios de salud universitaria.
                         <?php endif; ?>
-                    </p>
+                    </div>
+                    <div class="act-meta">
+                        <i class="bi bi-clock"></i>
+                        <?php echo $yaRespondioEstilo ? 'Completado' : 'Aprox. 10 min · 48 preguntas'; ?>
+                    </div>
                 </div>
-                
-                <?php if ($yaRespondioEstilo): ?>
-                    <div class="status-badge">Completado</div>
-                <?php else: ?>
-                    <form action="PEPS-1.php">
-                        <button type="submit" class="btn-action">Iniciar Cuestionario</button>
-                    </form>
-                <?php endif; ?>
+                <div class="act-footer">
+                    <?php if ($yaRespondioEstilo): ?>
+                        <div class="badge-done">
+                            <i class="bi bi-check-circle-fill"></i> Completado
+                        </div>
+                    <?php else: ?>
+                        <form action="PEPS-1.php">
+                            <button type="submit" class="btn-start">
+                                <i class="bi bi-play-fill"></i> Iniciar Cuestionario
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </div>
             </div>
 
-            <div class="action-card <?php echo $yaRespondioDASS ? 'completed' : ''; ?>">
-                <div>
-                    <h4>Evaluación Emocional (DASS-21)</h4>
-                    <p>
+            <!-- DASS-21 -->
+            <div class="act-card <?php echo $yaRespondioDASS ? 'completed' : ''; ?>">
+                <div class="act-body">
+                    <div class="act-icon <?php echo $yaRespondioDASS ? 'green' : 'blue'; ?>">
+                        <i class="bi bi-clipboard-pulse-fill"></i>
+                    </div>
+                    <div class="act-title">Evaluación Emocional (DASS-21)</div>
+                    <div class="act-desc">
                         <?php if ($yaRespondioDASS): ?>
-                            Registro de estado emocional guardado correctamente.
+                            Tu estado emocional fue registrado correctamente de forma confidencial.
                         <?php else: ?>
-                            Breve cuestionario confidencial sobre tu estado emocional actual.
+                            Cuestionario breve y confidencial sobre tu estado emocional actual (depresión, ansiedad y estrés).
                         <?php endif; ?>
-                    </p>
+                    </div>
+                    <div class="act-meta">
+                        <i class="bi bi-clock"></i>
+                        <?php echo $yaRespondioDASS ? 'Completado' : 'Aprox. 5 min · 21 preguntas'; ?>
+                    </div>
                 </div>
-
-                <?php if ($yaRespondioDASS): ?>
-                    <div class="status-badge">Completado</div>
-                <?php else: ?>
-                    <a href="DASS-21.php" class="btn-action">Iniciar Evaluación</a>
-                <?php endif; ?>
+                <div class="act-footer">
+                    <?php if ($yaRespondioDASS): ?>
+                        <div class="badge-done">
+                            <i class="bi bi-check-circle-fill"></i> Completado
+                        </div>
+                    <?php else: ?>
+                        <a href="DASS-21.php" class="btn-start">
+                            <i class="bi bi-play-fill"></i> Iniciar Evaluación
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
 
-    </div> <?php if (isset($_SESSION['bienvenida']) && $_SESSION['bienvenida']) : ?>
+        </div>
+    </div><!-- /page -->
+
+    <?php if (isset($_SESSION['bienvenida']) && $_SESSION['bienvenida']) : ?>
     <div class="modal fade" id="modalBienvenida" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">¡Bienvenido al Sistema!</h5>
+                <div class="modal-header border-0 pb-0">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <p class="mb-1">Hola,</p>
-                    <h4 class="text-primary mb-3"><?php echo $nombreCompleto; ?></h4>
-                    <p class="text-muted">Es un gusto tenerte aquí. Por favor completa tus pendientes.</p>
+                <div class="modal-body text-center px-4 pb-2">
+                    <div style="font-size:2.5rem;margin-bottom:.5rem;">👋</div>
+                    <h5 class="fw-bold mb-1">¡Bienvenido al Sistema!</h5>
+                    <p class="text-primary fw-semibold mb-2"><?php echo $nombreCompleto; ?></p>
+                    <p class="text-muted small">Tu registro fue exitoso. Completa las actividades para continuar.</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">¡Listo, empecemos!</button>
                 </div>
             </div>
         </div>
@@ -192,16 +243,16 @@ $conn->close();
     <div class="modal fade" id="modalCompletado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-success text-white" style="border-radius: 12px 12px 0 0;">
-                    <h5 class="modal-title">🎉 ¡Excelente Trabajo!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <p>Has completado todos los requisitos iniciales.</p>
-                    <p class="small text-muted">Tus respuestas nos ayudan a crear una mejor universidad para ti.</p>
+                <div class="modal-body text-center px-4 pb-2">
+                    <div style="font-size:2.8rem;margin-bottom:.5rem;">🎉</div>
+                    <h5 class="fw-bold mb-1 text-success">¡Todo completado!</h5>
+                    <p class="text-muted small">Terminaste todas las actividades requeridas. Tus respuestas nos ayudan a construir una mejor universidad.</p>
                 </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-success px-4" data-bs-dismiss="modal">Finalizar</button>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <button type="button" class="btn btn-success px-4" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -214,18 +265,18 @@ $conn->close();
     <?php endif; ?>
 
     <div class="modal fade" id="modalLogout" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cerrar Sesión</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-body text-center px-4 py-4">
+                    <div style="font-size:2rem;margin-bottom:.6rem;color:#ef4444;">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">¿Cerrar sesión?</h6>
+                    <p class="text-muted small mb-0">Podrás volver a ingresar cuando quieras.</p>
                 </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas salir de tu cuenta?</p>
-                </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0 pt-0 justify-content-center gap-2">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="../auth/logoutAlumno.php" class="btn btn-danger">Sí, Salir</a>
+                    <a href="../auth/logoutAlumno.php" class="btn btn-danger">Sí, salir</a>
                 </div>
             </div>
         </div>
