@@ -1,35 +1,32 @@
 <?php
-// config.php
+// ============================================================
+// CONFIGURACIÓN DE BASE DE DATOS
+// Cambia solo estos valores para migrar a otra BD
+// ============================================================
+define('DB_HOST', 'pdb1042.awardspace.net');
+define('DB_USER', '4528622_pisi');
+define('DB_PASS', 'sklike5522');
+define('DB_NAME', '4528622_pisi');
+
 class Database {
-    private $host = "localhost";
-    private $user = "root";
-    private $password = "";
-    private $database = "4528622_pisi";
     private $conn;
-    
-    public function __construct() {
-        // Constructor vacío o puedes inicializar aquí si quieres
-    }
-    
+
     public function connect() {
-        $this->conn = new mysqli($this->host, $this->user, $this->password, $this->database);
-        
+        $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if ($this->conn->connect_error) {
             die("Error de conexión: " . $this->conn->connect_error);
         }
-        
-        $this->conn->set_charset("utf8");
-        
+        $this->conn->set_charset("utf8mb4");
         return $this->conn;
     }
-    
+
     public function getConnection() {
         if (!$this->conn || !$this->conn->ping()) {
             return $this->connect();
         }
         return $this->conn;
     }
-    
+
     public function disconnect() {
         if ($this->conn) {
             $this->conn->close();
@@ -37,7 +34,6 @@ class Database {
     }
 }
 
-// Crear una instancia global si lo prefieres
 function getDBConnection() {
     static $db = null;
     if ($db === null) {
@@ -45,4 +41,3 @@ function getDBConnection() {
     }
     return $db->connect();
 }
-?>

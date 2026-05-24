@@ -1,5 +1,6 @@
 <?php
 
+require_once '../config/config.php';
 date_default_timezone_set('America/Mexico_City');
 session_start();
 
@@ -11,7 +12,7 @@ if (isset($_SESSION['ultimo_acceso'])) {
     // Si pasó más tiempo del límite, cerrar sesión en BD y sacar al usuario
     if ($tiempo_transcurrido > $tiempo_limite) {
         // Conectar solo para cerrar la sesión en BD
-        $conn_timeout = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn_timeout = getDBConnection();
         if (!$conn_timeout->connect_errno && isset($_SESSION['usuario'])) {
             $usr = $_SESSION['usuario'];
             $sql = "UPDATE registro_ingresos SET fecha_salida = NOW() WHERE usuario = ? AND fecha_salida IS NULL";
@@ -37,7 +38,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'Administrador') {
 }
 
 // Conexión a base de datos
-$conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
 if ($conn->connect_errno) {
     die("Error de conexión: " . $conn->connect_error);

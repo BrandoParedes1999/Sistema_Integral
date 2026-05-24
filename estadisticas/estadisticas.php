@@ -1,6 +1,7 @@
 <?php
+require_once '../config/config.php';
 header('Content-Type: application/json');
- $conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
 // Verifica la conexión
 if ($conn->connect_error) {

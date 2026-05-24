@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 header("Content-Type: application/json");
 
 // Obtener parámetros de la URL
@@ -11,7 +12,7 @@ if (!$matricula || !$fecha) {
 }
 
 // Conectar a la base de datos
- $conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));

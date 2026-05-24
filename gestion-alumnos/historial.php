@@ -1,5 +1,6 @@
 <?php
- $conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+require_once '../config/config.php';
+$conn = getDBConnection();
 
 if (isset($_GET['matricula_alum'])) {
     $matricula = $_GET['matricula_alum'];

@@ -1,4 +1,5 @@
 <?php
+require_once '../../config/config.php';
 // dass.php - API para el Dashboard DASS-21
 
 header('Content-Type: application/json; charset=utf-8');
@@ -7,13 +8,9 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // Configuración de la base de datos
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
 // Conexión a la base de datos
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
 
 if ($conn->connect_error) {
     http_response_code(500);

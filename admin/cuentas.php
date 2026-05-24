@@ -1,11 +1,8 @@
 <?php
+require_once '../config/config.php';
 // Configuración de la base de datos
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 // Crear conexión
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
 
 // Verificar conexión
 if ($conn->connect_error) {

@@ -1,5 +1,6 @@
 <?php
 
+require_once '../config/config.php';
 header("Content-Type: application/json");
 
 $matricula = isset($_GET['matricula_alum']) ? $_GET['matricula_alum'] : "";
@@ -11,7 +12,7 @@ if (!$matricula) {
 }
 
 // Conexión a la base de datos (tus datos de conexión)
-$conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
 if ($conn->connect_error) {
     http_response_code(500);

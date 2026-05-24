@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -12,12 +13,8 @@ if (!isset($_SESSION['alumno']) || !isset($_SESSION['alumno']['matricula'])) {
 $alumno = $_SESSION['alumno'];
 $matricula = $alumno['matricula'];
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }

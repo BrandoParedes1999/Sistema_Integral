@@ -1,15 +1,11 @@
 <?php
+require_once '../config/config.php';
+
 // 1. AUMENTAR EL TIEMPO DE EJECUCIÓN
 // Permitir que el script corra por 300 segundos (5 minutos) en lugar de 30.
 set_time_limit(300);
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$servername;dbname=$database;charset=$charset";
+$dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -17,7 +13,7 @@ $options = [
 ];
 
 try {
-    $pdo = new PDO($dsn, $username, $password, $options);
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     
     echo "Conexión exitosa. Reanudando actualización...<br>";
 

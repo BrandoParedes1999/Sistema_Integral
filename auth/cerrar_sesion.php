@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 session_start();
 date_default_timezone_set('America/Mexico_City');
 // Registrar hora de salida si hay ingreso
@@ -6,7 +7,7 @@ require_once '../includes/session_security.php';
 if (isset($_SESSION['registro_ingreso'])) {
     $registroId = $_SESSION['registro_ingreso'];
 
-    $conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
     if (!$conn->connect_errno) {
         $fechaSalida = date('Y-m-d H:i:s');

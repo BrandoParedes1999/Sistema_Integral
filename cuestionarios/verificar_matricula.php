@@ -1,13 +1,10 @@
 <?php
+require_once '../config/config.php';
 session_start();
 header('Content-Type: application/json');
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
 
 if ($conn->connect_error) {
     echo json_encode(['error' => "Error de conexión: " . $conn->connect_error]);

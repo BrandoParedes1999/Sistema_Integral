@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 // Configuración de errores y output buffering
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -73,10 +74,6 @@ if (empty($_POST['correo1'])) {
     enviarJSON(['error' => 'Falta el correo del destinatario'], 400);
 }
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
 // =================================================================
 // FUNCIÓN DE LAYOUT: addGridRow Para las tablas.
@@ -111,7 +108,7 @@ try {
         error_log("=== INICIO GUARDADO - Matrícula: " . $_POST['matricula'] . " ===");
     }
 
-    $conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
     if ($conn->connect_error) {
         throw new Exception('Conexión fallida: ' . $conn->connect_error);
     }

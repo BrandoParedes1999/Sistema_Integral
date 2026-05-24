@@ -1,7 +1,8 @@
 <?php
+require_once '../config/config.php';
 header("Content-Type: application/json");
 
-$conn = new mysqli("localhost", "root", "", "pisi");
+$conn = getDBConnection();
 
 if ($conn->connect_error) {
     die(json_encode(["error" => "Error de conexión a la base de datos"]));

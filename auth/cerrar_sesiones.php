@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 session_start();
 
 // Verificar que sea administrador
@@ -9,7 +10,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'Administrador') {
 }
 
 // Conexión a base de datos
-$conn = new mysqli("pdb1042.awardspace.net", "4528622_pisi", "sklike5522", "4528622_pisi");
+$conn = getDBConnection();
 
 if ($conn->connect_errno) {
     http_response_code(500);

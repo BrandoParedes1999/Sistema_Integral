@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 // Configuración de errores
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -34,15 +35,11 @@ if (empty($_POST['matricula'])) {
 $matricula = $_POST['matricula'];
 $correo_destino = $_POST['correo1'] ?? '';
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
 try {
     error_log("=== INICIO GENERACIÓN DE REPORTE - Matrícula: $matricula ===");
 
-    $conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
     if ($conn->connect_error) {
         throw new Exception('Conexión fallida: ' . $conn->connect_error);
     }
