@@ -60,6 +60,19 @@ $r = $conn->query("
 ");
 if ($r) { while ($row = $r->fetch_assoc()) { $ultimas[] = $row; } }
 
+// ── Nuevos alumnos registrados ──
+$nuevosAlumnos = [];
+$r = $conn->query("
+    SELECT a.matricula_alum, a.nombres_alum, a.ape_paterno_alum, a.ape_materno_alum,
+           a.fecha_ingreso, a.sexo, f.nombre_facultad, c.nombre_carrera
+    FROM alumnos a
+    LEFT JOIN facultad f ON a.id_facultad = f.id_facultad
+    LEFT JOIN carrera c ON a.id_carrera = c.id_carrera
+    ORDER BY a.fecha_ingreso DESC
+    LIMIT 8
+");
+if ($r) { while ($row = $r->fetch_assoc()) { $nuevosAlumnos[] = $row; } }
+
 // ── Distribución por facultad (top 5) ──
 $facultades = [];
 $r = $conn->query("
@@ -517,41 +530,55 @@ $chartPendientes = json_encode([
       </div>
     </div>
 
-    <!-- FILA 4: Tabla + Facultades -->
+    <!-- FILA 4: Nuevos alumnos + Facultades -->
     <div class="row g-3">
       <div class="col-xl-8">
         <div class="panel">
           <div class="panel-header">
             <div>
-              <div class="panel-title">Últimas Capturas de Datos Físicos</div>
-              <div class="panel-sub">Los 5 registros más recientes</div>
+              <div class="panel-title">Nuevos Alumnos Registrados</div>
+              <div class="panel-sub">Los 8 registros más recientes</div>
             </div>
-            <a href="../datos-fisicos/datos_fisicos.html" class="btn btn-sm" style="font-size:12px;border:1px solid #e2e8f0;color:#64748b;border-radius:8px;">Ver todo</a>
+            <a href="../gestion-alumnos/ListadoAlumnos.html" class="btn btn-sm" style="font-size:12px;border:1px solid #e2e8f0;color:#64748b;border-radius:8px;">Ver todos</a>
           </div>
           <div class="panel-body" style="padding-top:8px;">
             <table class="data-table">
               <thead>
-                <tr><th>Alumno</th><th>Matrícula</th><th>Fecha</th><th>Estado</th></tr>
+                <tr><th>Alumno</th><th>Matrícula</th><th>Facultad / Carrera</th><th>Registro</th></tr>
               </thead>
               <tbody>
-                <?php if (empty($ultimas)): ?>
+                <?php if (empty($nuevosAlumnos)): ?>
                 <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">Sin registros</td></tr>
-                <?php else: foreach ($ultimas as $i => $u):
+                <?php else:
+                  $hoy = new DateTime();
+                  foreach ($nuevosAlumnos as $i => $a):
                     $col    = $avColors[$i % count($avColors)];
-                    $nombre = htmlspecialchars($u['nombres_alum'] . ' ' . $u['ape_paterno_alum']);
-                    $ini    = strtoupper(substr($u['nombres_alum'],0,1) . substr($u['ape_paterno_alum'],0,1));
-                    $fecha  = $u['fecha'] ? date('d/m/Y H:i', strtotime($u['fecha'])) : '—';
+                    $nombre = htmlspecialchars($a['nombres_alum'] . ' ' . $a['ape_paterno_alum']);
+                    $ini    = strtoupper(substr($a['nombres_alum'],0,1) . substr($a['ape_paterno_alum'],0,1));
+                    $fechaReg = $a['fecha_ingreso'] ? date('d/m/Y', strtotime($a['fecha_ingreso'])) : '—';
+                    $esNuevo  = $a['fecha_ingreso'] && (new DateTime($a['fecha_ingreso']))->diff($hoy)->days <= 7;
                 ?>
                 <tr>
                   <td>
                     <div class="d-flex align-items-center gap-2">
                       <div class="t-av" style="<?= $col[0] ?>;<?= $col[1] ?>"><?= $ini ?></div>
-                      <span style="font-weight:500;"><?= $nombre ?></span>
+                      <div>
+                        <div style="font-weight:500;line-height:1.3;"><?= $nombre ?></div>
+                        <div style="font-size:11px;color:#94a3b8;"><?= $a['sexo'] === 'M' ? 'Hombre' : 'Mujer' ?></div>
+                      </div>
                     </div>
                   </td>
-                  <td style="color:#94a3b8;font-size:12px;"><?= htmlspecialchars($u['matricula_alum']) ?></td>
-                  <td style="color:#94a3b8;font-size:12px;"><?= $fecha ?></td>
-                  <td><span class="badge-s ok"><i class="bi bi-check-circle-fill" style="font-size:9px;"></i> Registrado</span></td>
+                  <td style="color:#64748b;font-size:12px;font-weight:500;"><?= htmlspecialchars($a['matricula_alum']) ?></td>
+                  <td style="font-size:12px;">
+                    <div style="color:#374151;font-weight:500;"><?= htmlspecialchars($a['nombre_facultad'] ?? '—') ?></div>
+                    <div style="color:#94a3b8;margin-top:1px;"><?= htmlspecialchars($a['nombre_carrera'] ?? '') ?></div>
+                  </td>
+                  <td>
+                    <div style="font-size:12px;color:#64748b;"><?= $fechaReg ?></div>
+                    <?php if ($esNuevo): ?>
+                    <span style="display:inline-block;margin-top:3px;background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;">Nuevo</span>
+                    <?php endif; ?>
+                  </td>
                 </tr>
                 <?php endforeach; endif; ?>
               </tbody>
