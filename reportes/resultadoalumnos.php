@@ -1,64 +1,61 @@
 <?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    http_response_code(401);
+    echo "<tr><td colspan='8' class='text-center'>No autorizado</td></tr>";
+    exit();
+}
+
 require_once '../config/config.php';
-// Conexión a la base de datos
 $conn = getDBConnection();
+$conn->set_charset("utf8mb4");
 
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+$filtroFacultad = isset($_GET['facultad']) ? (int)$_GET['facultad']    : 0;
+$filtroSexo     = isset($_GET['sexo'])     ? trim($_GET['sexo'])        : '';
+$filtroTexto    = isset($_GET['busqueda']) ? trim($_GET['busqueda'])    : '';
+$pagina         = isset($_GET['pagina'])   ? max(1, (int)$_GET['pagina']) : 1;
+$limite         = 20;
+$offset         = ($pagina - 1) * $limite;
+
+$sql    = "SELECT a.matricula_alum, a.nombres_alum, a.ape_paterno_alum, a.ape_materno_alum,
+                  a.sexo, f.nombre_facultad,
+                  (SELECT COUNT(*) FROM dass WHERE dass.matricula_alum = a.matricula_alum) AS tiene_dass,
+                  (SELECT COUNT(*) FROM estilo_de_vida WHERE estilo_de_vida.matricula_alum = a.matricula_alum) AS tiene_estilo_vida,
+                  (SELECT COUNT(*) FROM datos_fisicos_alumnos WHERE datos_fisicos_alumnos.matricula_alum = a.matricula_alum) AS tiene_datos_fisicos
+           FROM alumnos a
+           JOIN facultad f ON a.id_facultad = f.id_facultad
+           WHERE 1=1";
+$params = [];
+$types  = '';
+
+if ($filtroFacultad > 0) {
+    $sql    .= " AND a.id_facultad = ?";
+    $params[] = $filtroFacultad;
+    $types   .= 'i';
+}
+if ($filtroSexo !== '') {
+    $sql    .= " AND a.sexo = ?";
+    $params[] = $filtroSexo;
+    $types   .= 's';
+}
+if ($filtroTexto !== '') {
+    $like     = '%' . $filtroTexto . '%';
+    $sql     .= " AND (a.matricula_alum LIKE ? OR a.nombres_alum LIKE ? OR a.ape_paterno_alum LIKE ? OR a.ape_materno_alum LIKE ?)";
+    $params[] = $like; $params[] = $like; $params[] = $like; $params[] = $like;
+    $types   .= 'ssss';
 }
 
-// Establecer charset
-$conn->set_charset("utf8");
+$sql .= " ORDER BY a.matricula_alum ASC LIMIT ? OFFSET ?";
+$params[] = $limite;
+$params[] = $offset;
+$types   .= 'ii';
 
-// Obtener filtros desde JavaScript
-$filtroFacultad = isset($_GET['facultad']) ? (int)$_GET['facultad'] : "";
-$filtroSexo = isset($_GET['sexo']) ? $_GET['sexo'] : "";
-$filtroTexto = isset($_GET['busqueda']) ? $_GET['busqueda'] : "";
-$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$limite = 20; // Número de alumnos por página
-$offset = ($pagina - 1) * $limite;
-
-// Construir la consulta con JOINs para obtener la facultad y validar formularios
-$sql = "SELECT a.matricula_alum, a.nombres_alum, a.ape_paterno_alum, a.ape_materno_alum, 
-        a.sexo, f.nombre_facultad,
-        (SELECT COUNT(*) FROM dass WHERE dass.matricula_alum = a.matricula_alum) as tiene_dass,
-        (SELECT COUNT(*) FROM estilo_de_vida WHERE estilo_de_vida.matricula_alum = a.matricula_alum) as tiene_estilo_vida,
-        (SELECT COUNT(*) FROM datos_fisicos_alumnos WHERE datos_fisicos_alumnos.matricula_alum = a.matricula_alum) as tiene_datos_fisicos
-        FROM alumnos a 
-        JOIN facultad f ON a.id_facultad = f.id_facultad 
-        WHERE 1=1";
-
-// Aplicar filtros dinámicamente
-$filtros = "";
-
-if (!empty($filtroFacultad)) {
-    $filtros .= " AND a.id_facultad = " . intval($filtroFacultad);
+$stmt = $conn->prepare($sql);
+if ($params) {
+    $stmt->bind_param($types, ...$params);
 }
-
-if (!empty($filtroSexo)) {
-    $filtroSexo = $conn->real_escape_string($filtroSexo);
-    $filtros .= " AND a.sexo = '$filtroSexo'";
-}
-
-if (!empty($filtroTexto)) {
-    $filtroTexto = $conn->real_escape_string($filtroTexto);
-    $filtros .= " AND (a.matricula_alum LIKE '%$filtroTexto%' 
-                  OR a.nombres_alum LIKE '%$filtroTexto%' 
-                  OR a.ape_paterno_alum LIKE '%$filtroTexto%' 
-                  OR a.ape_materno_alum LIKE '%$filtroTexto%')";
-}
-
-$sql .= $filtros;
-
-// Ordenar por matrícula
-$sql .= " ORDER BY a.matricula_alum ASC";
-
-// Paginación
-$sql .= " LIMIT $limite OFFSET $offset";
-
-// Ejecutar la consulta
-$result = $conn->query($sql);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Generar filas de la tabla
 if ($result && $result->num_rows > 0) { 
@@ -153,6 +150,6 @@ if ($result && $result->num_rows > 0) {
           </tr>";
 }
 
-// Cerrar conexión
+$stmt->close();
 $conn->close();
 ?>

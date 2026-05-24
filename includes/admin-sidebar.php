@@ -15,11 +15,11 @@ $iniciales = strtoupper(
 ?>
 <nav id="sidebar">
   <div class="sb-brand">
-    <div class="sb-brand-icon">
-      <i class="bi bi-heart-pulse-fill text-white fs-5"></i>
+    <div class="sb-brand-logo-wrap">
+      <img src="../alumnos/imagenes/unisalud-sf.png" alt="UniSalud" class="sb-brand-logo">
     </div>
     <div class="sb-brand-text">
-      <div class="b-name">Sistema Integral de Salud</div>
+      <div class="b-name">UniSalud</div>
       <div class="b-sub">UNACAR &middot; Administración</div>
     </div>
   </div>
