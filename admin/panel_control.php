@@ -95,10 +95,14 @@ $result = $conn->query($sql);
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../css/panel_control.css">
+    <link rel="stylesheet" href="../css/menu.css" />
     <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
+<?php require_once '../includes/admin-sidebar.php'; ?>
+    <div id="main-wrapper">
     <div class="main-container">
         <!-- Header Section -->
         <div class="header-section">
@@ -418,6 +422,7 @@ $result = $conn->query($sql);
         console.log('📅 Última actualización:', now.toLocaleString('es-MX'));
         console.log('🔄 Auto-actualización: ' + (autoRefresh ? 'Activada (30s)' : 'Desactivada'));
     </script>
+    </div><!-- /#main-wrapper -->
 </body>
 
 </html>

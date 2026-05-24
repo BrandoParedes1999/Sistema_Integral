@@ -3,10 +3,10 @@
 // CONFIGURACIÓN DE BASE DE DATOS
 // Cambia solo estos valores para migrar a otra BD
 // ============================================================
-define('DB_HOST', 'pdb1042.awardspace.net');
-define('DB_USER', '4528622_pisi');
-define('DB_PASS', 'sklike5522');
-define('DB_NAME', '4528622_pisi');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'unisalud');
 
 class Database {
     private $conn;

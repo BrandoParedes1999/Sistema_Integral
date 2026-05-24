@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Integral de Salud – UNACAR | Dashboard AB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ══════════════════════════════
+       SIDEBAR  (de A: oscuro #0f172a)
+    ══════════════════════════════ */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 256px;
+      height: 100vh;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+    .sb-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sb-brand-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(29,78,216,0.45);
+    }
+    .sb-brand-text .b-name {
+      color: #fff; font-size: 13px; font-weight: 700; line-height: 1.3;
+    }
+    .sb-brand-text .b-sub {
+      color: rgba(255,255,255,0.4); font-size: 10px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .9px;
+    }
+
+    .sb-nav { padding: 14px 12px; flex: 1; }
+    .sb-section {
+      font-size: 10px; font-weight: 600;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase; letter-spacing: 1.1px;
+      padding: 14px 8px 5px;
+    }
+    .sb-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 13.5px; font-weight: 500;
+      transition: all .15s ease;
+    }
+    .sb-link:hover { background: rgba(255,255,255,0.09); color: #fff; }
+    .sb-link.active {
+      background: #1d4ed8;
+      color: #fff;
+      border-left: 3px solid #fff;
+      padding-left: 9px;
+    }
+    .sb-link i { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sb-count {
+      margin-left: auto;
+      background: rgba(255,255,255,0.14);
+      color: #fff; font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 10px;
+    }
+    .sb-link.active .sb-count { background: rgba(255,255,255,0.25); }
+
+    .sb-sub { padding-left: 30px; }
+    .sb-sub-link {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 10px; border-radius: 6px;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none; font-size: 12.5px;
+      transition: all .15s;
+    }
+    .sb-sub-link:hover { color: #fff; background: rgba(255,255,255,0.07); }
+    .sb-sub-link::before {
+      content: ''; width: 5px; height: 5px;
+      border-radius: 50%; background: rgba(255,255,255,0.25); flex-shrink: 0;
+    }
+
+    .sb-footer {
+      padding: 14px 12px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sb-user-card {
+      display: flex; align-items: center; gap: 10px; padding: 8px;
+    }
+    .sb-av {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg,#3b82f6,#1d4ed8);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .sb-u-name { color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sb-u-role { color: rgba(255,255,255,0.4); font-size: 10.5px; }
+
+    /* ══════════════════════════════
+       MAIN WRAPPER
+    ══════════════════════════════ */
+    #main-wrapper {
+      margin-left: 256px;
+      flex: 1; display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       TOPBAR  (de B: gradiente azul + buscador)
+    ══════════════════════════════ */
+    #topbar {
+      background: linear-gradient(90deg, #1e3a8a 0%, #1d4ed8 100%);
+      padding: 0 28px;
+      height: 64px;
+      display: flex; align-items: center; gap: 16px;
+      position: sticky; top: 0; z-index: 900;
+      box-shadow: 0 2px 12px rgba(29,78,216,0.35);
+    }
+    .tb-title {
+      color: #fff; font-size: 15px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .search-box {
+      flex: 1; max-width: 380px;
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 0 14px; height: 38px; gap: 10px;
+      margin: 0 auto;
+    }
+    .search-box i { color: rgba(255,255,255,0.55); font-size: 14px; }
+    .search-box input {
+      background: none; border: none; outline: none;
+      color: #fff; font-size: 13px; width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-box input::placeholder { color: rgba(255,255,255,0.45); }
+    .tb-right { display: flex; align-items: center; gap: 10px; }
+    .tb-btn {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.8); cursor: pointer; position: relative;
+      transition: all .15s; font-size: 15px;
+    }
+    .tb-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .tb-notif {
+      position: absolute; top: 5px; right: 5px;
+      width: 8px; height: 8px;
+      background: #f59e0b; border-radius: 50%;
+      border: 2px solid #1e3a8a;
+    }
+    .tb-user {
+      display: flex; align-items: center; gap: 9px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      padding: 6px 12px 6px 8px; cursor: pointer;
+      transition: all .15s;
+    }
+    .tb-user:hover { background: rgba(255,255,255,0.2); }
+    .tb-av {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,0.22);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 11px; font-weight: 700;
+    }
+    .tb-user .u-n { font-size: 13px; font-weight: 600; color: #fff; }
+    .tb-user .u-r { font-size: 10.5px; color: rgba(255,255,255,0.55); }
+    .btn-salir {
+      padding: 7px 13px; background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px; font-size: 12.5px; font-weight: 500; color: #fff;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all .15s;
+    }
+    .btn-salir:hover { background: rgba(239,68,68,0.3); border-color: rgba(239,68,68,0.5); }
+
+    /* ══════════════════════════════
+       CONTENT
+    ══════════════════════════════ */
+    #content { padding: 26px 28px; flex: 1; }
+
+    /* ══════════════════════════════
+       WELCOME BANNER  (de B)
+    ══════════════════════════════ */
+    .welcome-banner {
+      background: linear-gradient(120deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+      border-radius: 16px; padding: 26px 32px;
+      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: ''; position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.05); border-radius: 50%;
+    }
+    .welcome-banner::after {
+      content: ''; position: absolute; right: 60px; bottom: -60px;
+      width: 150px; height: 150px;
+      background: rgba(255,255,255,0.04); border-radius: 50%;
+    }
+    .wb-left h2 { color: #fff; font-size: 20px; font-weight: 700; margin: 0 0 5px; }
+    .wb-left p { color: rgba(255,255,255,0.7); font-size: 13px; margin: 0; }
+    .wb-stats { display: flex; gap: 16px; }
+    .wb-stat {
+      text-align: center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; padding: 10px 18px;
+    }
+    .wb-stat .ws-n { color: #fff; font-size: 22px; font-weight: 800; }
+    .wb-stat .ws-l { color: rgba(255,255,255,0.65); font-size: 11px; font-weight: 500; }
+
+    /* ══════════════════════════════
+       KPI CARDS  (A icon block + B border top + B thin progress)
+    ══════════════════════════════ */
+    .kpi-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 22px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+      border-top: 4px solid transparent;
+      position: relative; overflow: hidden;
+    }
+    .kpi-card.blue  { border-top-color: #1d4ed8; }
+    .kpi-card.green { border-top-color: #16a34a; }
+    .kpi-card.amber { border-top-color: #d97706; }
+    .kpi-card.red   { border-top-color: #dc2626; }
+
+    .kpi-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .kpi-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .kpi-icon.blue  { background: #eff6ff; color: #1d4ed8; }
+    .kpi-icon.green { background: #f0fdf4; color: #16a34a; }
+    .kpi-icon.amber { background: #fffbeb; color: #d97706; }
+    .kpi-icon.red   { background: #fef2f2; color: #dc2626; }
+
+    .kpi-trend {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+    }
+    .kpi-trend.up     { background: #f0fdf4; color: #16a34a; }
+    .kpi-trend.down   { background: #fef2f2; color: #dc2626; }
+    .kpi-trend.neutral { background: #f8fafc; color: #64748b; }
+
+    .kpi-num { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+    .kpi-lbl { font-size: 12.5px; color: #64748b; font-weight: 500; margin-bottom: 10px; }
+
+    .kpi-bar { height: 5px; border-radius: 10px; background: #f1f5f9; overflow: hidden; }
+    .kpi-bar-fill { height: 100%; border-radius: 10px; }
+    .kpi-foot { display: flex; justify-content: space-between; margin-top: 6px; }
+    .kpi-pct { font-size: 12px; font-weight: 700; }
+    .kpi-sub { font-size: 11px; color: #94a3b8; }
+
+    /* ══════════════════════════════
+       PANEL CARDS (shared)
+    ══════════════════════════════ */
+    .panel {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 18px 22px 0;
+      display: flex; align-items: flex-start; justify-content: space-between;
+    }
+    .panel-title { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .panel-sub   { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .panel-body  { padding: 16px 22px 22px; }
+
+    /* ══════════════════════════════
+       BAR CHART  (de A)
+    ══════════════════════════════ */
+
+    /* ══════════════════════════════
+       ACTIVITY FEED  (de A)
+    ══════════════════════════════ */
+    .act-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .act-item:last-child { border-bottom: none; }
+    .act-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .act-body { flex: 1; }
+    .act-body strong { font-size: 13px; font-weight: 600; color: #0f172a; }
+    .act-body p { margin: 0; font-size: 12px; color: #64748b; }
+    .act-time { font-size: 11px; color: #94a3b8; white-space: nowrap; }
+
+    /* ══════════════════════════════
+       DONUT + CENTER TEXT  (de B)
+    ══════════════════════════════ */
+    .donut-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+    .donut-center { position: absolute; text-align: center; pointer-events: none; }
+    .donut-center .dc-n { font-size: 26px; font-weight: 800; color: #0f172a; }
+    .donut-center .dc-l { font-size: 11px; color: #94a3b8; font-weight: 500; }
+
+    .stat-list { display: flex; flex-direction: column; gap: 12px; }
+    .stat-row  { display: flex; align-items: center; justify-content: space-between; }
+    .stat-label { font-size: 13px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 7px; }
+    .stat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .stat-value { font-size: 14px; font-weight: 700; color: #0f172a; }
+
+    /* ══════════════════════════════
+       QUICK ACCESS  (de B)
+    ══════════════════════════════ */
+    .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .qa-btn {
+      display: flex; align-items: center; gap: 9px;
+      padding: 11px 13px; background: #f8fafc;
+      border: 1px solid #e2e8f0; border-radius: 10px;
+      text-decoration: none; color: #334155;
+      font-size: 12.5px; font-weight: 500; transition: all .15s;
+    }
+    .qa-btn:hover { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+    .qa-btn i { font-size: 16px; color: #2563eb; }
+
+    /* ══════════════════════════════
+       ALERTS  (de B)
+    ══════════════════════════════ */
+    .alert-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .alert-row:last-child { border-bottom: none; }
+    .alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .alert-txt { flex: 1; font-size: 13px; color: #334155; }
+    .alert-txt span { display: block; font-size: 11px; color: #94a3b8; margin-top: 1px; }
+    .badge-a {
+      font-size: 10.5px; font-weight: 600;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .badge-a.warn   { background: #fffbeb; color: #d97706; }
+    .badge-a.danger { background: #fef2f2; color: #dc2626; }
+    .badge-a.info   { background: #eff6ff; color: #2563eb; }
+
+    /* ══════════════════════════════
+       TABLE  (de A — mejor tipografía)
+    ══════════════════════════════ */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .5px;
+      padding: 10px 14px; border-bottom: 1px solid #e2e8f0; text-align: left;
+    }
+    .data-table td {
+      padding: 12px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafbfd; }
+    .t-av {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .badge-s {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-s.ok   { background: #f0fdf4; color: #16a34a; }
+    .badge-s.pend { background: #fffbeb; color: #d97706; }
+    .badge-s.bad  { background: #fef2f2; color: #dc2626; }
+
+    /* ══════════════════════════════
+       FACULTY BARS  (de B)
+    ══════════════════════════════ */
+    .fac-item { margin-bottom: 14px; }
+    .fac-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 500; color: #334155; margin-bottom: 5px; }
+    .fac-bar-bg { height: 6px; border-radius: 10px; background: #f1f5f9; overflow: hidden; }
+    .fac-bar-fill { height: 100%; border-radius: 10px; }
+
+    .demo-label {
+      text-align: center; font-size: 11px; color: #94a3b8;
+      padding: 24px 0 4px; letter-spacing: .05em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ SIDEBAR (oscuro de A) ════════════════════ -->
+<nav id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-icon">
+      <i class="bi bi-heart-pulse-fill text-white fs-5"></i>
+    </div>
+    <div class="sb-brand-text">
+      <div class="b-name">Sistema Integral de Salud</div>
+      <div class="b-sub">UNACAR &middot; Administración</div>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section">Principal</div>
+    <a href="#" class="sb-link active">
+      <i class="bi bi-grid-1x2-fill"></i> Dashboard
+    </a>
+    <a href="#" class="sb-link">
+      <i class="bi bi-folder2-open"></i> Historial Clínico
+      <span class="sb-count">743</span>
+    </a>
+    <a href="#" class="sb-link">
+      <i class="bi bi-activity"></i> Datos Físicos
+    </a>
+
+    <div class="sb-section">Alumnos</div>
+    <a href="#" class="sb-link">
+      <i class="bi bi-people-fill"></i> Alumnos
+    </a>
+    <div class="sb-sub">
+      <a href="#" class="sb-sub-link">Listado</a>
+      <a href="#" class="sb-sub-link">Expediente</a>
+    </div>
+
+    <div class="sb-section">Evaluaciones</div>
+    <a href="#" class="sb-link">
+      <i class="bi bi-clipboard2-pulse-fill"></i> Cuestionarios
+      <span class="sb-count">245</span>
+    </a>
+    <div class="sb-sub">
+      <a href="#" class="sb-sub-link">DASS-21</a>
+      <a href="#" class="sb-sub-link">PEPS-1</a>
+    </div>
+
+    <div class="sb-section">Reportes</div>
+    <a href="#" class="sb-link">
+      <i class="bi bi-bar-chart-fill"></i> Estadísticas
+    </a>
+    <a href="#" class="sb-link">
+      <i class="bi bi-graph-up-arrow"></i> Resultados
+    </a>
+    <a href="#" class="sb-link">
+      <i class="bi bi-person-badge-fill"></i> Credenciales
+    </a>
+
+    <div class="sb-section">Sistema</div>
+    <a href="#" class="sb-link">
+      <i class="bi bi-shield-lock-fill"></i> Control del Sistema
+    </a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-av">MA</div>
+      <div>
+        <div class="sb-u-name">María Alvarado</div>
+        <div class="sb-u-role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════ MAIN ════════════════════ -->
+<div id="main-wrapper">
+
+  <!-- TOPBAR (gradiente de B + buscador central) -->
+  <header id="topbar">
+    <div class="tb-title">
+      <i class="bi bi-heart-pulse-fill"></i>
+      SIS &mdash; UNACAR
+    </div>
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input type="text" placeholder="Buscar alumno por nombre o matrícula…" />
+    </div>
+    <div class="tb-right">
+      <div class="tb-btn">
+        <i class="bi bi-bell"></i>
+        <span class="tb-notif"></span>
+      </div>
+      <div class="tb-btn">
+        <i class="bi bi-gear"></i>
+      </div>
+      <div class="tb-user">
+        <div class="tb-av">MA</div>
+        <div>
+          <div class="u-n">María Alvarado</div>
+          <div class="u-r">Administrador</div>
+        </div>
+        <i class="bi bi-chevron-down" style="color:rgba(255,255,255,0.4);font-size:11px;margin-left:4px;"></i>
+      </div>
+      <button class="btn-salir">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main id="content">
+
+    <!-- WELCOME BANNER (de B) -->
+    <div class="welcome-banner">
+      <div class="wb-left">
+        <h2>Bienvenida, María Alvarado</h2>
+        <p><i class="bi bi-calendar3 me-1"></i>Sábado, 24 de mayo de 2026 &nbsp;&middot;&nbsp; Sistema activo</p>
+      </div>
+      <div class="wb-stats">
+        <div class="wb-stat">
+          <div class="ws-n">1,247</div>
+          <div class="ws-l">Total Alumnos</div>
+        </div>
+        <div class="wb-stat">
+          <div class="ws-n">71%</div>
+          <div class="ws-l">Completitud</div>
+        </div>
+        <div class="wb-stat">
+          <div class="ws-n">34</div>
+          <div class="ws-l">Capturas Hoy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI CARDS (icon de A + borde top + thin progress de B) -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card blue">
+          <div class="kpi-head">
+            <div class="kpi-icon blue"><i class="bi bi-people-fill"></i></div>
+            <span class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+48</span>
+          </div>
+          <div class="kpi-num">1,247</div>
+          <div class="kpi-lbl">Alumnos Registrados</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:100%;background:#1d4ed8;"></div></div>
+          <div class="kpi-foot">
+            <span class="kpi-pct" style="color:#1d4ed8;">100% universo</span>
+            <span class="kpi-sub">este mes</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card green">
+          <div class="kpi-head">
+            <div class="kpi-icon green"><i class="bi bi-folder-check"></i></div>
+            <span class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>71%</span>
+          </div>
+          <div class="kpi-num">892</div>
+          <div class="kpi-lbl">Expedientes Completos</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:71%;background:#16a34a;"></div></div>
+          <div class="kpi-foot">
+            <span class="kpi-pct" style="color:#16a34a;">71% completitud</span>
+            <span class="kpi-sub">355 pendientes</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card amber">
+          <div class="kpi-head">
+            <div class="kpi-icon amber"><i class="bi bi-clipboard2-check-fill"></i></div>
+            <span class="kpi-trend neutral"><i class="bi bi-dash"></i>Normal</span>
+          </div>
+          <div class="kpi-num">34</div>
+          <div class="kpi-lbl">Datos Físicos Hoy</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:52%;background:#d97706;"></div></div>
+          <div class="kpi-foot">
+            <span class="kpi-pct" style="color:#d97706;">52% meta diaria</span>
+            <span class="kpi-sub">Meta: 65</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card red">
+          <div class="kpi-head">
+            <div class="kpi-icon red"><i class="bi bi-clipboard2-x-fill"></i></div>
+            <span class="kpi-trend down"><i class="bi bi-arrow-down-short"></i>Atención</span>
+          </div>
+          <div class="kpi-num">89</div>
+          <div class="kpi-lbl">DASS-21 Pendientes</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:93%;background:#dc2626;"></div></div>
+          <div class="kpi-foot">
+            <span class="kpi-pct" style="color:#dc2626;">93% completados</span>
+            <span class="kpi-sub">89 restantes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 2: Gráfica de barras (A) + Feed de actividad (A) -->
+    <div class="row g-3 mb-3">
+      <div class="col-xl-7">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Completitud por Módulo</div>
+              <div class="panel-sub">Registros completados vs. pendientes</div>
+            </div>
+            <select class="form-select form-select-sm" style="width:130px;font-size:12px;border-color:#e2e8f0;">
+              <option>Este mes</option><option>Trimestre</option>
+            </select>
+          </div>
+          <div class="panel-body">
+            <canvas id="barChart" height="210"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-5">
+        <div class="panel h-100">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Actividad Reciente</div>
+              <div class="panel-sub">Últimos registros del sistema</div>
+            </div>
+            <a href="#" style="font-size:12px;color:#2563eb;text-decoration:none;font-weight:500;">Ver todo</a>
+          </div>
+          <div class="panel-body" style="padding-top:8px;">
+            <div class="act-item">
+              <div class="act-av" style="background:#eff6ff;color:#1d4ed8;">JR</div>
+              <div class="act-body"><strong>Juan Ramírez</strong><p>Expediente clínico actualizado</p></div>
+              <span class="act-time">hace 5 min</span>
+            </div>
+            <div class="act-item">
+              <div class="act-av" style="background:#f0fdf4;color:#16a34a;">SL</div>
+              <div class="act-body"><strong>Sofia López</strong><p>DASS-21 completado</p></div>
+              <span class="act-time">hace 18 min</span>
+            </div>
+            <div class="act-item">
+              <div class="act-av" style="background:#fffbeb;color:#d97706;">CM</div>
+              <div class="act-body"><strong>Carlos Mendoza</strong><p>Datos físicos capturados</p></div>
+              <span class="act-time">hace 34 min</span>
+            </div>
+            <div class="act-item">
+              <div class="act-av" style="background:#fef2f2;color:#dc2626;">AG</div>
+              <div class="act-body"><strong>Ana García</strong><p>PEPS-1 enviado</p></div>
+              <span class="act-time">hace 51 min</span>
+            </div>
+            <div class="act-item">
+              <div class="act-av" style="background:#f5f3ff;color:#7c3aed;">PT</div>
+              <div class="act-body"><strong>Pedro Torres</strong><p>Nuevo alumno registrado</p></div>
+              <span class="act-time">hace 1 h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 3: Donut+stats (B) + Accesos rápidos (B) + Alertas (B) -->
+    <div class="row g-3 mb-3">
+      <div class="col-xl-5">
+        <div class="panel h-100">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Progreso General</div>
+              <div class="panel-sub">Completitud al día de hoy</div>
+            </div>
+            <span style="font-size:11px;background:#f0fdf4;color:#16a34a;font-weight:700;padding:3px 9px;border-radius:20px;">
+              <i class="bi bi-arrow-up-short"></i>+3% vs semana
+            </span>
+          </div>
+          <div class="panel-body">
+            <div class="row align-items-center">
+              <div class="col-6">
+                <div class="donut-wrap">
+                  <canvas id="donutChart" width="190" height="190"></canvas>
+                  <div class="donut-center">
+                    <div class="dc-n">71%</div>
+                    <div class="dc-l">completitud</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="stat-list">
+                  <div class="stat-row">
+                    <span class="stat-label"><span class="stat-dot" style="background:#1d4ed8;"></span>H. Clínico</span>
+                    <span class="stat-value" style="color:#1d4ed8;">743</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label"><span class="stat-dot" style="background:#16a34a;"></span>Expedientes</span>
+                    <span class="stat-value" style="color:#16a34a;">892</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label"><span class="stat-dot" style="background:#d97706;"></span>DASS-21</span>
+                    <span class="stat-value" style="color:#d97706;">1,158</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label"><span class="stat-dot" style="background:#7c3aed;"></span>PEPS-1</span>
+                    <span class="stat-value" style="color:#7c3aed;">1,091</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label"><span class="stat-dot" style="background:#e2e8f0;"></span>Pendientes</span>
+                    <span class="stat-value" style="color:#94a3b8;">355</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3">
+        <div class="panel h-100">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Accesos Rápidos</div>
+              <div class="panel-sub">Módulos frecuentes</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="qa-grid">
+              <a href="#" class="qa-btn"><i class="bi bi-person-plus-fill"></i> Nuevo Alumno</a>
+              <a href="#" class="qa-btn"><i class="bi bi-clipboard2-plus-fill"></i> Expediente</a>
+              <a href="#" class="qa-btn"><i class="bi bi-activity"></i> Datos Físicos</a>
+              <a href="#" class="qa-btn"><i class="bi bi-clipboard2-pulse"></i> DASS-21</a>
+              <a href="#" class="qa-btn"><i class="bi bi-bar-chart-fill"></i> Estadísticas</a>
+              <a href="#" class="qa-btn"><i class="bi bi-download"></i> Exportar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="panel h-100">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Alertas del Sistema</div>
+              <div class="panel-sub">Notificaciones pendientes</div>
+            </div>
+            <span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;">3 urgentes</span>
+          </div>
+          <div class="panel-body" style="padding-top:8px;">
+            <div class="alert-row">
+              <span class="alert-dot" style="background:#dc2626;"></span>
+              <div class="alert-txt">89 alumnos sin DASS-21<span>Cuestionario vence en 5 días</span></div>
+              <span class="badge-a danger">Urgente</span>
+            </div>
+            <div class="alert-row">
+              <span class="alert-dot" style="background:#dc2626;"></span>
+              <div class="alert-txt">156 alumnos sin PEPS-1<span>Periodo de captura activo</span></div>
+              <span class="badge-a danger">Urgente</span>
+            </div>
+            <div class="alert-row">
+              <span class="alert-dot" style="background:#d97706;"></span>
+              <div class="alert-txt">355 expedientes incompletos<span>Requieren datos adicionales</span></div>
+              <span class="badge-a warn">Atención</span>
+            </div>
+            <div class="alert-row">
+              <span class="alert-dot" style="background:#2563eb;"></span>
+              <div class="alert-txt">Copia de seguridad programada<span>Hoy a las 23:00 hrs</span></div>
+              <span class="badge-a info">Info</span>
+            </div>
+            <div class="alert-row">
+              <span class="alert-dot" style="background:#d97706;"></span>
+              <div class="alert-txt">504 historiales pendientes<span>Semestre en curso</span></div>
+              <span class="badge-a warn">Atención</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 4: Tabla de capturas (A) + Barras por facultad (B) -->
+    <div class="row g-3">
+      <div class="col-xl-8">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Últimas Capturas</div>
+              <div class="panel-sub">Registros ingresados recientemente</div>
+            </div>
+            <a href="#" class="btn btn-sm" style="font-size:12px;border:1px solid #e2e8f0;color:#64748b;border-radius:8px;">Ver todo</a>
+          </div>
+          <div class="panel-body" style="padding-top:8px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Alumno</th><th>Tipo</th><th>Fecha</th><th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="d-flex align-items-center gap-2"><div class="t-av" style="background:#eff6ff;color:#1d4ed8;">JR</div><span style="font-weight:500;">Juan Ramírez</span></div></td>
+                  <td><span style="font-size:12px;background:#f0fdf4;color:#16a34a;padding:2px 8px;border-radius:6px;font-weight:600;">Historial</span></td>
+                  <td style="color:#94a3b8;font-size:12px;">24/05/2026 09:45</td>
+                  <td><span class="badge-s ok"><i class="bi bi-check-circle-fill" style="font-size:9px;"></i> Completo</span></td>
+                </tr>
+                <tr>
+                  <td><div class="d-flex align-items-center gap-2"><div class="t-av" style="background:#fffbeb;color:#d97706;">SL</div><span style="font-weight:500;">Sofia López</span></div></td>
+                  <td><span style="font-size:12px;background:#eff6ff;color:#2563eb;padding:2px 8px;border-radius:6px;font-weight:600;">DASS-21</span></td>
+                  <td style="color:#94a3b8;font-size:12px;">24/05/2026 09:18</td>
+                  <td><span class="badge-s ok"><i class="bi bi-check-circle-fill" style="font-size:9px;"></i> Completo</span></td>
+                </tr>
+                <tr>
+                  <td><div class="d-flex align-items-center gap-2"><div class="t-av" style="background:#f0fdf4;color:#16a34a;">CM</div><span style="font-weight:500;">Carlos Mendoza</span></div></td>
+                  <td><span style="font-size:12px;background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:6px;font-weight:600;">Datos Físicos</span></td>
+                  <td style="color:#94a3b8;font-size:12px;">24/05/2026 08:55</td>
+                  <td><span class="badge-s pend"><i class="bi bi-clock-fill" style="font-size:9px;"></i> Revisión</span></td>
+                </tr>
+                <tr>
+                  <td><div class="d-flex align-items-center gap-2"><div class="t-av" style="background:#f5f3ff;color:#7c3aed;">AG</div><span style="font-weight:500;">Ana García</span></div></td>
+                  <td><span style="font-size:12px;background:#f5f3ff;color:#7c3aed;padding:2px 8px;border-radius:6px;font-weight:600;">PEPS-1</span></td>
+                  <td style="color:#94a3b8;font-size:12px;">24/05/2026 08:30</td>
+                  <td><span class="badge-s ok"><i class="bi bi-check-circle-fill" style="font-size:9px;"></i> Completo</span></td>
+                </tr>
+                <tr>
+                  <td><div class="d-flex align-items-center gap-2"><div class="t-av" style="background:#fef2f2;color:#dc2626;">PT</div><span style="font-weight:500;">Pedro Torres</span></div></td>
+                  <td><span style="font-size:12px;background:#f0fdf4;color:#16a34a;padding:2px 8px;border-radius:6px;font-weight:600;">Expediente</span></td>
+                  <td style="color:#94a3b8;font-size:12px;">24/05/2026 08:10</td>
+                  <td><span class="badge-s bad"><i class="bi bi-x-circle-fill" style="font-size:9px;"></i> Incompleto</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Distribución por Facultad</div>
+              <div class="panel-sub">Top 5 con más alumnos</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="fac-item">
+              <div class="fac-row"><span>Medicina</span><span style="font-weight:700;color:#1d4ed8;">312</span></div>
+              <div class="fac-bar-bg"><div class="fac-bar-fill" style="width:75%;background:#1d4ed8;"></div></div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row"><span>Contaduría y Adm.</span><span style="font-weight:700;color:#7c3aed;">264</span></div>
+              <div class="fac-bar-bg"><div class="fac-bar-fill" style="width:63%;background:#7c3aed;"></div></div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row"><span>Ingeniería</span><span style="font-weight:700;color:#16a34a;">248</span></div>
+              <div class="fac-bar-bg"><div class="fac-bar-fill" style="width:60%;background:#16a34a;"></div></div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row"><span>Psicología</span><span style="font-weight:700;color:#0891b2;">225</span></div>
+              <div class="fac-bar-bg"><div class="fac-bar-fill" style="width:54%;background:#0891b2;"></div></div>
+            </div>
+            <div class="fac-item">
+              <div class="fac-row"><span>Derecho</span><span style="font-weight:700;color:#d97706;">198</span></div>
+              <div class="fac-bar-bg"><div class="fac-bar-fill" style="width:47%;background:#d97706;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-label">PROPUESTA A+B — Combinación · Solo prototipo visual</div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── BAR CHART (de A) ──
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Historial Clínico','Datos Físicos','DASS-21','PEPS-1','Expediente','Credenciales'],
+      datasets: [{
+        label: 'Completados',
+        data: [743, 892, 1158, 1091, 892, 1104],
+        backgroundColor: '#1d4ed8', borderRadius: 6, borderSkipped: false,
+      },{
+        label: 'Pendientes',
+        data: [504, 355, 89, 156, 355, 143],
+        backgroundColor: '#e2e8f0', borderRadius: 6, borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Inter', size: 12 }, color: '#64748b', boxWidth: 12, boxHeight: 12 } }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#94a3b8' } },
+        y: { stacked: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Inter', size: 11 }, color: '#94a3b8' } }
+      }
+    }
+  });
+
+  // ── DONUT (de B — con texto centrado) ──
+  new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['H. Clínico','Expedientes','DASS-21','PEPS-1','Pendientes'],
+      datasets: [{
+        data: [743, 892, 1158, 1091, 355],
+        backgroundColor: ['#1d4ed8','#16a34a','#d97706','#7c3aed','#e2e8f0'],
+        borderWidth: 3, borderColor: '#fff', hoverOffset: 5
+      }]
+    },
+    options: {
+      responsive: true, cutout: '68%',
+      plugins: { legend: { display: false } }
+    }
+  });
+</script>
+</body>
+</html>
