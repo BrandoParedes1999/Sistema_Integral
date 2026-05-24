@@ -104,7 +104,7 @@ $conn = getDBConnection();
         echo json_encode([
             'success' => true,
             'message' => 'Inicio de sesión exitoso',
-            'redirect' => '/alumnos/inicio.html',
+            'redirect' => 'inicio.php',
             'nombre_completo' => $alumno['nombres_alum'] . ' ' . $alumno['ape_paterno_alum']
         ], JSON_UNESCAPED_UNICODE);
         

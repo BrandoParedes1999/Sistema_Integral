@@ -13,5 +13,5 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
 // Redirigir al inicio o página de login
-header("Location: despedida.html");
+header("Location: ../alumnos/login-alumno.html");
 exit();

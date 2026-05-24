@@ -41,7 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'id_carrera' => $alumno['id_carrera'],
             'id_facultad' => $alumno['id_facultad']
         ];
-        $_SESSION['bienvenida'] = true;
+        $_SESSION['loggedin']     = true;
+        $_SESSION['tipo_usuario'] = 'alumno';
+        $_SESSION['bienvenida']   = true;
         echo json_encode(['success' => true, 'redirect' => 'menuAlum.php']);
     } else {
         // Matrícula no encontrada (nuevo registro)

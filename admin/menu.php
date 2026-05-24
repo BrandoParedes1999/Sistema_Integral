@@ -105,7 +105,8 @@ $chartPendientes = json_encode([
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard – Sistema Integral de Salud UNACAR</title>
+  <title>Dashboard – UniSalud UNACAR</title>
+  <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -119,11 +120,11 @@ $chartPendientes = json_encode([
 <!-- ════════════ SIDEBAR ════════════ -->
 <nav id="sidebar">
   <div class="sb-brand">
-    <div class="sb-brand-icon">
-      <i class="bi bi-heart-pulse-fill text-white fs-5"></i>
+    <div class="sb-brand-logo-wrap">
+      <img src="../alumnos/imagenes/unisalud-sf.png" alt="UniSalud" class="sb-brand-logo">
     </div>
     <div class="sb-brand-text">
-      <div class="b-name">Sistema Integral de Salud</div>
+      <div class="b-name">UniSalud</div>
       <div class="b-sub">UNACAR &middot; Administración</div>
     </div>
   </div>
@@ -161,6 +162,11 @@ $chartPendientes = json_encode([
       <i class="bi bi-person-badge-fill"></i> Credenciales
     </a>
 
+    <div class="sb-section">Observatorio</div>
+    <a href="../observatorio/observatorio.html" class="sb-link">
+      <i class="bi bi-telescope-fill"></i> Observatorio
+    </a>
+
     <div class="sb-section">Sistema</div>
     <a href="panel_control.php" class="sb-link">
       <i class="bi bi-shield-lock-fill"></i> Control del Sistema
@@ -185,7 +191,7 @@ $chartPendientes = json_encode([
   <!-- TOPBAR -->
   <header id="topbar">
     <div class="tb-title">
-      <i class="bi bi-heart-pulse-fill"></i> SIS &mdash; UNACAR
+      <img src="../alumnos/imagenes/unisalud-sf.png" alt="UniSalud" class="tb-logo"> UniSalud
     </div>
     <div class="search-box">
       <i class="bi bi-search"></i>

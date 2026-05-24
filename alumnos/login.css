@@ -67,6 +67,14 @@
             line-height: 1.6;
         }
 
+        .brand-logo {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,.6));
+        }
+
        
         .login-section {
             width: 100%;

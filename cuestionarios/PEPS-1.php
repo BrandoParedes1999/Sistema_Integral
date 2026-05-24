@@ -8,7 +8,7 @@ header("Pragma: no-cache");
 
 // Seguridad
 if (!isset($_SESSION['alumno']) || !isset($_SESSION['alumno']['matricula'])) {
-    header("Location: registro.php");
+    header("Location: registro.html");
     exit;
 }
 date_default_timezone_set('America/Mexico_City');

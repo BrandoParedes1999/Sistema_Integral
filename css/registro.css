@@ -239,3 +239,25 @@ input:disabled {
         text-align: center;
     }
 }
+
+/* ── Validación dinámica de campos ─────────────────────────────────── */
+input.field-error,
+textarea.field-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, .18) !important;
+}
+input.field-ok,
+textarea.field-ok {
+    border-color: #198754 !important;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, .12) !important;
+}
+.field-error-msg {
+    display: none;
+    font-size: .78rem;
+    color: #dc3545;
+    margin-top: .3rem;
+    font-weight: 500;
+}
+.field-error-msg.visible {
+    display: block;
+}
