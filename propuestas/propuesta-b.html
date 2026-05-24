@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta B – Sidebar Claro Médico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; display:flex; min-height:100vh; background:#f0f4f8; }
+
+    /* ── SIDEBAR ─────────────────────────────────── */
+    .sidebar {
+      width:270px; min-height:100vh; background:#fff;
+      border-right:1px solid #e2e8f0; display:flex; flex-direction:column;
+      position:fixed; top:0; left:0; z-index:100;
+    }
+    .sidebar-brand {
+      padding:22px 20px 18px;
+      border-bottom:1px solid #e2e8f0;
+      display:flex; align-items:center; gap:12px;
+    }
+    .sidebar-brand .brand-icon {
+      width:40px; height:40px; background:linear-gradient(135deg,#1e3a8a,#2563eb);
+      border-radius:10px; display:flex; align-items:center; justify-content:center;
+    }
+    .sidebar-brand .brand-icon i { color:#fff; font-size:1.2rem; }
+    .sidebar-brand .brand-text { font-size:.85rem; font-weight:700; color:#1e293b; line-height:1.2; }
+    .sidebar-brand .brand-text span { font-weight:400; color:#64748b; display:block; font-size:.75rem; }
+
+    .sidebar-nav { padding:12px 0; flex:1; overflow-y:auto; }
+    .nav-section-label {
+      font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+      color:#94a3b8; padding:12px 20px 4px; margin-top:8px;
+    }
+    .nav-item a {
+      display:flex; align-items:center; gap:10px; padding:10px 20px;
+      color:#64748b; text-decoration:none; font-size:.875rem; font-weight:500;
+      border-radius:0; transition:all .15s;
+      border-left:3px solid transparent;
+    }
+    .nav-item a i { font-size:1rem; width:20px; text-align:center; }
+    .nav-item a:hover { background:#f8fafc; color:#2563eb; border-left-color:#bfdbfe; }
+    .nav-item a.active { background:#eff6ff; color:#2563eb; border-left-color:#2563eb; font-weight:600; }
+    .nav-item a.active i { color:#2563eb; }
+    .sub-item a { padding:8px 20px 8px 50px; font-size:.8rem; }
+
+    .sidebar-footer {
+      padding:16px 20px; border-top:1px solid #e2e8f0;
+      display:flex; align-items:center; gap:12px;
+    }
+    .avatar-sm {
+      width:36px; height:36px; background:linear-gradient(135deg,#1e3a8a,#3b82f6);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      color:#fff; font-weight:700; font-size:.875rem; flex-shrink:0;
+    }
+    .sidebar-footer .user-info { flex:1; min-width:0; }
+    .sidebar-footer .user-name { font-size:.8rem; font-weight:600; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sidebar-footer .user-role { font-size:.7rem; color:#64748b; }
+    .sidebar-footer .btn-logout { color:#ef4444; background:none; border:none; cursor:pointer; padding:4px; }
+
+    /* ── MAIN CONTENT ────────────────────────────── */
+    .main-content { margin-left:270px; flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+    /* ── HEADER ──────────────────────────────────── */
+    .top-header {
+      background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 60%,#2563eb 100%);
+      padding:0 28px; height:64px; display:flex; align-items:center;
+      justify-content:space-between; position:sticky; top:0; z-index:50;
+    }
+    .search-box {
+      display:flex; align-items:center; background:rgba(255,255,255,.15);
+      border-radius:8px; padding:6px 14px; gap:8px; width:320px;
+      border:1px solid rgba(255,255,255,.2); backdrop-filter:blur(4px);
+    }
+    .search-box input { background:none; border:none; outline:none; color:#fff; font-size:.875rem; width:100%; }
+    .search-box input::placeholder { color:rgba(255,255,255,.6); }
+    .search-box i { color:rgba(255,255,255,.7); }
+    .header-right { display:flex; align-items:center; gap:16px; }
+    .header-badge { position:relative; }
+    .header-badge i { color:rgba(255,255,255,.8); font-size:1.2rem; cursor:pointer; }
+    .badge-dot { position:absolute; top:-3px; right:-3px; width:8px; height:8px; background:#f59e0b; border-radius:50%; border:2px solid #1d4ed8; }
+    .header-user { display:flex; align-items:center; gap:8px; color:#fff; font-size:.875rem; }
+    .header-user .name { font-weight:600; }
+    .header-user .role { font-size:.75rem; opacity:.8; }
+
+    /* ── PAGE CONTENT ────────────────────────────── */
+    .page-content { padding:24px 28px; flex:1; }
+
+    /* Welcome banner */
+    .welcome-banner {
+      background:linear-gradient(135deg,#1e40af 0%,#2563eb 50%,#7c3aed 100%);
+      border-radius:16px; padding:24px 28px; margin-bottom:24px;
+      display:flex; align-items:center; justify-content:space-between;
+      overflow:hidden; position:relative;
+    }
+    .welcome-banner::before {
+      content:''; position:absolute; right:-40px; top:-40px;
+      width:200px; height:200px;
+      background:rgba(255,255,255,.05); border-radius:50%;
+    }
+    .welcome-banner::after {
+      content:''; position:absolute; right:60px; bottom:-60px;
+      width:150px; height:150px;
+      background:rgba(255,255,255,.04); border-radius:50%;
+    }
+    .welcome-text h2 { color:#fff; font-size:1.4rem; font-weight:700; margin-bottom:4px; }
+    .welcome-text p { color:rgba(255,255,255,.75); font-size:.875rem; }
+    .welcome-date { color:rgba(255,255,255,.9); font-size:.8rem; background:rgba(255,255,255,.15); padding:8px 14px; border-radius:20px; }
+
+    /* KPI Cards */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .kpi-card {
+      background:#fff; border-radius:12px; padding:20px;
+      border-top:4px solid var(--accent-color);
+      box-shadow:0 1px 3px rgba(0,0,0,.06);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .kpi-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.1); }
+    .kpi-card .kpi-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .kpi-card .kpi-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+    .kpi-card .kpi-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#94a3b8; }
+    .kpi-card .kpi-value { font-size:2rem; font-weight:800; color:#1e293b; line-height:1; margin-bottom:10px; }
+    .kpi-card .progress { height:5px; border-radius:3px; background:#f1f5f9; }
+    .kpi-card .kpi-sub { font-size:.75rem; color:#94a3b8; margin-top:6px; }
+
+    /* Charts row */
+    .charts-row { display:grid; grid-template-columns:1fr 340px; gap:16px; margin-bottom:24px; }
+    .chart-card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+    .chart-card .card-header-custom { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .chart-card .card-title { font-size:.9rem; font-weight:700; color:#1e293b; }
+    .chart-card .card-subtitle { font-size:.75rem; color:#94a3b8; margin-top:2px; }
+
+    /* Donut + stats */
+    .donut-wrapper { display:flex; align-items:center; gap:20px; }
+    .donut-stats { flex:1; }
+    .donut-stat-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f1f5f9; }
+    .donut-stat-item:last-child { border-bottom:none; }
+    .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .donut-stat-item .stat-name { font-size:.8rem; color:#64748b; flex:1; }
+    .donut-stat-item .stat-val { font-size:.85rem; font-weight:700; color:#1e293b; }
+    .donut-stat-item .stat-pct { font-size:.75rem; color:#94a3b8; margin-left:4px; }
+
+    /* Quick access */
+    .quick-access { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .qa-btn {
+      display:flex; flex-direction:column; align-items:center; gap:6px;
+      padding:14px 8px; border-radius:10px; background:#f8fafc;
+      border:1px solid #e2e8f0; cursor:pointer; transition:all .15s;
+      text-decoration:none; color:#475569;
+    }
+    .qa-btn:hover { background:#eff6ff; border-color:#bfdbfe; color:#2563eb; }
+    .qa-btn i { font-size:1.3rem; }
+    .qa-btn span { font-size:.7rem; font-weight:600; text-align:center; line-height:1.2; }
+
+    /* Bottom row */
+    .bottom-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .list-card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+    .list-card .card-title { font-size:.9rem; font-weight:700; color:#1e293b; margin-bottom:14px; }
+    .table { font-size:.8rem; }
+    .table th { font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; color:#94a3b8; font-weight:700; padding:8px 12px; border-color:#f1f5f9; }
+    .table td { padding:10px 12px; vertical-align:middle; border-color:#f8fafc; color:#475569; }
+    .badge-estado { font-size:.65rem; padding:3px 8px; border-radius:20px; font-weight:600; }
+    .alert-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+    .alert-item:last-child { border-bottom:none; }
+    .alert-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .alert-text .title { font-size:.8rem; font-weight:600; color:#1e293b; }
+    .alert-text .time { font-size:.7rem; color:#94a3b8; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+    <div class="brand-text">Sistema Integral<span>de Salud · UNACAR</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="list-unstyled">
+      <li class="nav-item"><a href="#" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <div class="nav-section-label">Registro</div>
+      <li class="nav-item"><a href="#"><i class="bi bi-file-earmark-medical"></i> Historial Clínico</a></li>
+      <li class="nav-item"><a href="#"><i class="bi bi-activity"></i> Datos Físicos</a></li>
+      <div class="nav-section-label">Alumnos</div>
+      <li class="nav-item"><a href="#"><i class="bi bi-people"></i> Listado</a></li>
+      <li class="nav-item"><a href="#"><i class="bi bi-person-vcard"></i> Expediente</a></li>
+      <div class="nav-section-label">Evaluaciones</div>
+      <li class="nav-item"><a href="#"><i class="bi bi-emoji-expressionless"></i> DASS-21</a></li>
+      <li class="nav-item"><a href="#"><i class="bi bi-clipboard2-heart"></i> PEPS-1</a></li>
+      <div class="nav-section-label">Reportes</div>
+      <li class="nav-item"><a href="#"><i class="bi bi-graph-up"></i> Estadísticas</a></li>
+      <li class="nav-item"><a href="#"><i class="bi bi-clipboard2-check"></i> Resultados</a></li>
+      <li class="nav-item"><a href="#"><i class="bi bi-credit-card-2-front"></i> Credenciales</a></li>
+      <div class="nav-section-label">Sistema</div>
+      <li class="nav-item"><a href="#"><i class="bi bi-shield-check"></i> Control del Sistema</a></li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar-sm">MA</div>
+    <div class="user-info">
+      <div class="user-name">María Administrador</div>
+      <div class="user-role">Administrador</div>
+    </div>
+    <button class="btn-logout"><i class="bi bi-box-arrow-right"></i></button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input type="text" placeholder="Buscar alumno por matrícula o nombre…">
+    </div>
+    <div class="header-right">
+      <div class="header-badge"><i class="bi bi-bell"></i><span class="badge-dot"></span></div>
+      <div class="header-user">
+        <div class="avatar-sm" style="width:32px;height:32px;font-size:.75rem;">MA</div>
+        <div>
+          <div class="name">María Administrador</div>
+          <div class="role">Administrador</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="page-content">
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2>Bienvenida, María 👋</h2>
+        <p>Tienes <strong style="color:#fcd34d">89 evaluaciones DASS-21</strong> y <strong style="color:#fcd34d">156 PEPS-1</strong> pendientes de captura.</p>
+      </div>
+      <div class="welcome-date"><i class="bi bi-calendar3 me-1"></i> Domingo, 25 de mayo de 2025</div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent-color:#2563eb">
+        <div class="kpi-top">
+          <div>
+            <div class="kpi-label">Alumnos Registrados</div>
+          </div>
+          <div class="kpi-icon" style="background:#eff6ff"><i class="bi bi-mortarboard-fill" style="color:#2563eb;font-size:1.2rem"></i></div>
+        </div>
+        <div class="kpi-value">1,247</div>
+        <div class="progress mb-1"><div class="progress-bar" style="width:100%;background:#2563eb"></div></div>
+        <div class="kpi-sub">↑ 34 nuevos esta semana</div>
+      </div>
+      <div class="kpi-card" style="--accent-color:#059669">
+        <div class="kpi-top">
+          <div><div class="kpi-label">Expedientes Completos</div></div>
+          <div class="kpi-icon" style="background:#ecfdf5"><i class="bi bi-check-circle-fill" style="color:#059669;font-size:1.2rem"></i></div>
+        </div>
+        <div class="kpi-value">892</div>
+        <div class="progress mb-1"><div class="progress-bar" style="width:71%;background:#059669"></div></div>
+        <div class="kpi-sub" style="color:#059669">71% completitud global</div>
+      </div>
+      <div class="kpi-card" style="--accent-color:#d97706">
+        <div class="kpi-top">
+          <div><div class="kpi-label">Capturados Hoy</div></div>
+          <div class="kpi-icon" style="background:#fffbeb"><i class="bi bi-calendar-check-fill" style="color:#d97706;font-size:1.2rem"></i></div>
+        </div>
+        <div class="kpi-value">34</div>
+        <div class="progress mb-1"><div class="progress-bar" style="width:34%;background:#d97706"></div></div>
+        <div class="kpi-sub">Datos físicos registrados</div>
+      </div>
+      <div class="kpi-card" style="--accent-color:#dc2626">
+        <div class="kpi-top">
+          <div><div class="kpi-label">Pendientes DASS-21</div></div>
+          <div class="kpi-icon" style="background:#fef2f2"><i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;font-size:1.2rem"></i></div>
+        </div>
+        <div class="kpi-value">89</div>
+        <div class="progress mb-1"><div class="progress-bar" style="width:7%;background:#dc2626"></div></div>
+        <div class="kpi-sub" style="color:#dc2626">Requieren atención</div>
+      </div>
+    </div>
+
+    <!-- Charts + Quick Access -->
+    <div class="charts-row">
+      <!-- Donut chart -->
+      <div class="chart-card">
+        <div class="card-header-custom">
+          <div>
+            <div class="card-title">Progreso General de Evaluaciones</div>
+            <div class="card-subtitle">Completitud por módulo — ciclo actual</div>
+          </div>
+          <span class="badge" style="background:#eff6ff;color:#2563eb;font-size:.7rem">Actual</span>
+        </div>
+        <div class="donut-wrapper">
+          <div style="width:160px;height:160px;flex-shrink:0">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div class="donut-stats">
+            <div class="donut-stat-item">
+              <span class="dot" style="background:#2563eb"></span>
+              <span class="stat-name">Datos Físicos</span>
+              <span class="stat-val">743</span><span class="stat-pct">(59%)</span>
+            </div>
+            <div class="donut-stat-item">
+              <span class="dot" style="background:#059669"></span>
+              <span class="stat-name">Historial Clínico</span>
+              <span class="stat-val">743</span><span class="stat-pct">(59%)</span>
+            </div>
+            <div class="donut-stat-item">
+              <span class="dot" style="background:#7c3aed"></span>
+              <span class="stat-name">DASS-21</span>
+              <span class="stat-val">1,158</span><span class="stat-pct">(93%)</span>
+            </div>
+            <div class="donut-stat-item">
+              <span class="dot" style="background:#d97706"></span>
+              <span class="stat-name">PEPS-1</span>
+              <span class="stat-val">1,091</span><span class="stat-pct">(87%)</span>
+            </div>
+            <div class="donut-stat-item">
+              <span class="dot" style="background:#dc2626"></span>
+              <span class="stat-name">Completos</span>
+              <span class="stat-val">892</span><span class="stat-pct">(71%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick access -->
+      <div class="chart-card">
+        <div class="card-header-custom">
+          <div class="card-title">Accesos Rápidos</div>
+        </div>
+        <div class="quick-access">
+          <a href="#" class="qa-btn"><i class="bi bi-file-earmark-medical"></i><span>Historial Clínico</span></a>
+          <a href="#" class="qa-btn"><i class="bi bi-activity"></i><span>Datos Físicos</span></a>
+          <a href="#" class="qa-btn"><i class="bi bi-people"></i><span>Listado Alumnos</span></a>
+          <a href="#" class="qa-btn"><i class="bi bi-emoji-expressionless"></i><span>DASS-21</span></a>
+          <a href="#" class="qa-btn"><i class="bi bi-graph-up"></i><span>Estadísticas</span></a>
+          <a href="#" class="qa-btn"><i class="bi bi-credit-card-2-front"></i><span>Credenciales</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <div class="list-card">
+        <div class="card-title">Últimas Capturas de Datos Físicos</div>
+        <table class="table table-hover">
+          <thead><tr><th>Matrícula</th><th>Nombre</th><th>Fecha</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>2021-0045</td><td>Ana García López</td><td>Hoy, 10:32</td><td><span class="badge-estado" style="background:#dcfce7;color:#15803d">Completo</span></td></tr>
+            <tr><td>2022-0132</td><td>Carlos Méndez R.</td><td>Hoy, 09:15</td><td><span class="badge-estado" style="background:#dcfce7;color:#15803d">Completo</span></td></tr>
+            <tr><td>2023-0067</td><td>Sofía Ramírez V.</td><td>Hoy, 08:50</td><td><span class="badge-estado" style="background:#fef9c3;color:#a16207">Parcial</span></td></tr>
+            <tr><td>2020-0198</td><td>Luis Torres H.</td><td>Ayer, 16:40</td><td><span class="badge-estado" style="background:#dcfce7;color:#15803d">Completo</span></td></tr>
+            <tr><td>2021-0301</td><td>Daniela Cruz M.</td><td>Ayer, 14:22</td><td><span class="badge-estado" style="background:#fee2e2;color:#b91c1c">Pendiente</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="list-card">
+        <div class="card-title">Alertas del Sistema</div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#fee2e2"><i class="bi bi-exclamation-circle-fill" style="color:#dc2626"></i></div>
+          <div class="alert-text">
+            <div class="title">89 alumnos sin DASS-21</div>
+            <div class="time">Pendientes de evaluación emocional</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#fef9c3"><i class="bi bi-clipboard2-x-fill" style="color:#d97706"></i></div>
+          <div class="alert-text">
+            <div class="title">156 alumnos sin PEPS-1</div>
+            <div class="time">Estilos de vida no registrados</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#eff6ff"><i class="bi bi-info-circle-fill" style="color:#2563eb"></i></div>
+          <div class="alert-text">
+            <div class="title">504 expedientes incompletos</div>
+            <div class="time">Falta al menos un módulo</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#ecfdf5"><i class="bi bi-check-circle-fill" style="color:#059669"></i></div>
+          <div class="alert-text">
+            <div class="title">Base de datos sincronizada</div>
+            <div class="time">Última actualización: hace 5 min</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main-content -->
+
+<script>
+const donut = new Chart(document.getElementById('donutChart'), {
+  type:'doughnut',
+  data:{
+    labels:['Datos Físicos','Historial','DASS-21','PEPS-1','Pendientes'],
+    datasets:[{
+      data:[743,743,1158,1091,355],
+      backgroundColor:['#2563eb','#059669','#7c3aed','#d97706','#e5e7eb'],
+      borderWidth:0, hoverOffset:4
+    }]
+  },
+  options:{
+    cutout:'72%', plugins:{legend:{display:false},tooltip:{enabled:true}},
+    animation:{animateRotate:true}
+  }
+});
+</script>
+</body>
+</html>

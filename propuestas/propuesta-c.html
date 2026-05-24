@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta C – Glassmorphism | UNACAR</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1e40af 100%);
+      color: #e2e8f0;
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid rgba(255,255,255,.12);
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 24px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 28px 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .sidebar-logo img { height: 44px; filter: brightness(0) invert(1); }
+    .sidebar-logo span { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.3; }
+
+    .sidebar-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem; color: #fff; flex-shrink: 0;
+    }
+    .profile-info .name { font-size: .85rem; font-weight: 600; color: #f1f5f9; }
+    .profile-info .role { font-size: .72rem; color: #94a3b8; }
+
+    .nav-section-label {
+      font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: #64748b;
+      padding: 20px 24px 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 24px;
+      color: #94a3b8;
+      border-radius: 10px;
+      margin: 2px 12px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      font-size: .875rem;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.10); color: #e2e8f0; }
+    .nav-item.active {
+      background: rgba(99,179,237,.18);
+      color: #93c5fd;
+      border-left: 3px solid #3b82f6;
+    }
+    .nav-item i { font-size: 1.05rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 24px 0;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .btn-logout {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 16px; border-radius: 10px;
+      background: rgba(239,68,68,.18); color: #fca5a5;
+      border: 1px solid rgba(239,68,68,.3);
+      cursor: pointer; font-size: .875rem; transition: background .2s;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,.30); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 32px;
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h2 { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-date { font-size: .78rem; color: #94a3b8; }
+
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 30px; padding: 8px 16px; color: #94a3b8; font-size: .82rem;
+    }
+    .search-box input {
+      background: transparent; border: none; outline: none;
+      color: #e2e8f0; font-size: .82rem; width: 160px;
+    }
+    .search-box input::placeholder { color: #64748b; }
+
+    .notif-btn {
+      position: relative; background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.15); border-radius: 10px;
+      width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+      color: #94a3b8; cursor: pointer; transition: background .2s;
+    }
+    .notif-btn:hover { background: rgba(255,255,255,.18); }
+    .notif-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: #ef4444; color: #fff; font-size: .6rem; border-radius: 50%;
+      width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+
+    /* ── PAGE BODY ── */
+    .content { padding: 28px 32px; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      padding: 20px;
+      transition: transform .2s, background .2s;
+    }
+    .kpi-card:hover { transform: translateY(-3px); background: rgba(255,255,255,.11); }
+    .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .kpi-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+    }
+    .kpi-icon.blue  { background: rgba(59,130,246,.25); color: #60a5fa; }
+    .kpi-icon.green { background: rgba(16,185,129,.25); color: #34d399; }
+    .kpi-icon.amber { background: rgba(245,158,11,.25); color: #fbbf24; }
+    .kpi-icon.red   { background: rgba(239,68,68,.25);  color: #f87171; }
+
+    .kpi-trend { display: flex; align-items: center; gap: 4px; font-size: .7rem; }
+    .kpi-trend.up { color: #34d399; }
+    .kpi-trend.down { color: #f87171; }
+
+    .kpi-value { font-size: 1.9rem; font-weight: 800; color: #f1f5f9; line-height: 1; margin-bottom: 4px; }
+    .kpi-label { font-size: .75rem; color: #94a3b8; }
+
+    /* ── CHARTS ROW ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .glass-panel {
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .panel-title {
+      font-size: .875rem; font-weight: 700; color: #e2e8f0;
+      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-title span { color: #64748b; font-size: .72rem; font-weight: 400; }
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── BOTTOM ROW ── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    /* ── PROGRESS LIST ── */
+    .prog-item { margin-bottom: 16px; }
+    .prog-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .prog-name { font-size: .8rem; color: #cbd5e1; }
+    .prog-pct  { font-size: .8rem; font-weight: 700; color: #93c5fd; }
+    .prog-bar-bg {
+      height: 8px; background: rgba(255,255,255,.10); border-radius: 100px; overflow: hidden;
+    }
+    .prog-bar-fill {
+      height: 100%; border-radius: 100px;
+      background: linear-gradient(90deg, #3b82f6, #818cf8);
+      transition: width .6s ease;
+    }
+
+    /* ── ALERT LIST ── */
+    .alert-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+    }
+    .alert-dot.warn  { background: #fbbf24; }
+    .alert-dot.info  { background: #60a5fa; }
+    .alert-dot.error { background: #f87171; }
+    .alert-dot.ok    { background: #34d399; }
+    .alert-text { font-size: .78rem; color: #cbd5e1; line-height: 1.5; }
+    .alert-time { font-size: .68rem; color: #64748b; margin-top: 2px; }
+
+    /* ── QUICK ACCESS ── */
+    .quick-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+      margin-bottom: 24px;
+    }
+    .quick-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; padding: 16px 8px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px; cursor: pointer;
+      color: #94a3b8; font-size: .75rem; text-align: center;
+      transition: background .2s, color .2s, transform .15s;
+    }
+    .quick-btn i { font-size: 1.4rem; }
+    .quick-btn:hover { background: rgba(59,130,246,.18); color: #93c5fd; transform: translateY(-2px); }
+
+    /* ── DEMO NOTE ── */
+    .demo-note {
+      text-align: center; font-size: .7rem; color: #475569;
+      padding: 24px 0 8px; letter-spacing: .05em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ SIDEBAR ════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="../images/logo_unacar (1).png" alt="UNACAR">
+    <span>Sistema Integral<br>de Salud</span>
+  </div>
+
+  <div class="sidebar-profile">
+    <div class="avatar">AP</div>
+    <div class="profile-info">
+      <div class="name">Admin Principal</div>
+      <div class="role">Administrador · 09:42</div>
+    </div>
+  </div>
+
+  <div class="nav-section-label">Principal</div>
+  <a class="nav-item active" href="#">
+    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-file-earmark-medical"></i> Historial Clínico
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-activity"></i> Datos Físicos
+  </a>
+
+  <div class="nav-section-label">Módulos</div>
+  <a class="nav-item" href="#">
+    <i class="bi bi-search"></i> Búsqueda
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-graph-up"></i> Estadísticas
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-clipboard2-check"></i> Resultados
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-credit-card-2-front-fill"></i> Credenciales
+  </a>
+
+  <div class="nav-section-label">Sistema</div>
+  <a class="nav-item" href="#">
+    <i class="bi bi-people"></i> Control del Sistema
+  </a>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout">
+      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+    </button>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════ MAIN ════════════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <h2><i class="bi bi-grid-1x2-fill me-2" style="color:#60a5fa"></i>Dashboard General</h2>
+    <div class="topbar-right">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar alumno…">
+      </div>
+      <div class="notif-btn">
+        <i class="bi bi-bell"></i>
+        <span class="notif-badge">3</span>
+      </div>
+      <div class="topbar-date">Sábado, 24 May 2025</div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon blue"><i class="bi bi-mortarboard-fill"></i></div>
+          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+4.2%</div>
+        </div>
+        <div class="kpi-value">1,284</div>
+        <div class="kpi-label">Alumnos Registrados</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon green"><i class="bi bi-patch-check-fill"></i></div>
+          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+8.1%</div>
+        </div>
+        <div class="kpi-value">873</div>
+        <div class="kpi-label">Expedientes Completos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon amber"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+          <div class="kpi-trend down"><i class="bi bi-arrow-down-short"></i>−2.3%</div>
+        </div>
+        <div class="kpi-value">411</div>
+        <div class="kpi-label">DASS-21 Pendientes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i>+1</div>
+        </div>
+        <div class="kpi-value">18</div>
+        <div class="kpi-label">Casos de Atención</div>
+      </div>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="quick-grid">
+      <button class="quick-btn"><i class="bi bi-file-earmark-plus"></i>Nuevo Historial</button>
+      <button class="quick-btn"><i class="bi bi-person-plus-fill"></i>Registrar Alumno</button>
+      <button class="quick-btn"><i class="bi bi-upload"></i>Importar Datos</button>
+      <button class="quick-btn"><i class="bi bi-file-earmark-pdf-fill"></i>Exportar PDF</button>
+      <button class="quick-btn"><i class="bi bi-bar-chart-fill"></i>Ver Reporte</button>
+      <button class="quick-btn"><i class="bi bi-gear-fill"></i>Configuración</button>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row">
+      <div class="glass-panel">
+        <div class="panel-title">
+          Capturas Semanales
+          <span>Últimas 8 semanas</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+      <div class="glass-panel">
+        <div class="panel-title">
+          Cuestionarios Completos
+          <span>Por módulo</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="donutChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="bottom-row">
+      <!-- Progreso por facultad -->
+      <div class="glass-panel">
+        <div class="panel-title">Completitud por Facultad</div>
+        <div class="prog-item">
+          <div class="prog-meta"><span class="prog-name">Ciencias de la Salud</span><span class="prog-pct">87%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:87%"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-meta"><span class="prog-name">Ingeniería</span><span class="prog-pct">71%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:71%"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-meta"><span class="prog-name">Contaduría y Adm.</span><span class="prog-pct">63%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:63%"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-meta"><span class="prog-name">Ciencias Educativas</span><span class="prog-pct">55%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:55%"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-meta"><span class="prog-name">Derecho</span><span class="prog-pct">44%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:44%"></div></div>
+        </div>
+      </div>
+
+      <!-- Alertas -->
+      <div class="glass-panel">
+        <div class="panel-title">Notificaciones Recientes</div>
+        <div class="alert-item">
+          <div class="alert-dot error"></div>
+          <div>
+            <div class="alert-text">3 alumnos con índice de estrés severo detectados</div>
+            <div class="alert-time">Hace 15 min</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot warn"></div>
+          <div>
+            <div class="alert-text">Importación de datos físicos del grupo AM-301 pendiente de revisión</div>
+            <div class="alert-time">Hace 1 hora</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot info"></div>
+          <div>
+            <div class="alert-text">Reporte mensual de salud listo para descargar</div>
+            <div class="alert-time">Hace 3 horas</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot ok"></div>
+          <div>
+            <div class="alert-text">Carga masiva de matriculados completada: 127 registros</div>
+            <div class="alert-time">Ayer 18:30</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot warn"></div>
+          <div>
+            <div class="alert-text">Credencial de 5 alumnos próxima a vencer este mes</div>
+            <div class="alert-time">Ayer 10:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-note">PROPUESTA C — Glassmorphism · Solo prototipo visual</div>
+  </div>
+</div>
+
+<script>
+// ── Line Chart ──
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+new Chart(lineCtx, {
+  type: 'line',
+  data: {
+    labels: ['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8'],
+    datasets: [{
+      label: 'Datos Físicos',
+      data: [42, 68, 91, 77, 105, 98, 123, 141],
+      borderColor: '#60a5fa',
+      backgroundColor: 'rgba(96,165,250,.15)',
+      borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#60a5fa', fill: true, tension: .4
+    },{
+      label: 'DASS-21',
+      data: [28, 51, 73, 60, 88, 80, 107, 118],
+      borderColor: '#818cf8',
+      backgroundColor: 'rgba(129,140,248,.10)',
+      borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#818cf8', fill: true, tension: .4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 } }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#64748b', font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#64748b', font: { size: 10 } } }
+    }
+  }
+});
+
+// ── Donut Chart ──
+const donutCtx = document.getElementById('donutChart').getContext('2d');
+new Chart(donutCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Datos Físicos','DASS-21','Estilo de Vida','Historial Clínico'],
+    datasets: [{
+      data: [873, 762, 641, 509],
+      backgroundColor: ['#60a5fa','#818cf8','#34d399','#fbbf24'],
+      borderWidth: 0, hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { color: '#94a3b8', font: { size: 10 }, padding: 12, boxWidth: 10 }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
