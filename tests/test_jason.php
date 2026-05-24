@@ -6,8 +6,8 @@ ob_start();
 
 // Verificar rutas de archivos
 $checks = [
-    'PHPMailer existe' => file_exists('PHPMailer/src/PHPMailer.php'),
-    'FPDF existe' => file_exists('fpdf/fpdf.php'),
+    'PHPMailer existe' => file_exists('../vendor/PHPMailer/src/PHPMailer.php'),
+    'FPDF existe' => file_exists('../vendor/fpdf/fpdf.php'),
     'Carpeta temporal' => sys_get_temp_dir(),
     'Carpeta temporal escribible' => is_writable(sys_get_temp_dir()),
     'PHP version' => phpversion(),

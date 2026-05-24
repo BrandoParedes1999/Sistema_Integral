@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Resultados Generales</title>
+    <title>Lista de Alumnos</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!-- Bootstrap CSS v5.3.2 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     
     <!-- CSS personalizado -->
-    <link rel="stylesheet" href="css/coloreslistas.css">
+    <link rel="stylesheet" href="../css/coloreslistas.css">
     <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
     
     <!-- Google Fonts -->
@@ -29,14 +29,14 @@
             <img src="/imagenes/logo_unacar (1).png" alt="Logo UNACAR">
         </div>
         <div class="d-flex">
-            <button class="button me-2" onclick="location.href='menu.php'">
+            <button class="button me-2" onclick="location.href='../admin/menu.php'">
                 <i class="bi bi-house-door me-1"></i> Inicio
             </button>
         </div>
     </nav>
     
     <!-- Título principal -->
-    <h1>Resultados de Evaluaciones</h1>
+    <h1>Listado de Alumnos</h1>
 
     <div class="container">
         <!-- Sección de filtros -->
@@ -81,26 +81,24 @@
             </div>
         </div>
 
-        <!-- Tabla de resultados -->
+        <!-- Tabla de alumnos -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
+                            <th>N°</th>
                             <th>Matrícula</th>
                             <th>Nombre</th>
                             <th>Facultad</th>
                             <th>Sexo</th>
-                            <th><i class="bi bi-clipboard-pulse me-1"></i>DASS-21</th>
-                            <th><i class="bi bi-heart-pulse me-1"></i>Estilo de Vida</th>
-                            <th><i class="bi bi-activity me-1"></i>Datos Físicos</th>
-                            <th><i class="bi bi-file-earmark-pdf me-1"></i>Resultados</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaAlumnos">
                         <!-- Los datos se cargarán dinámicamente -->
                         <tr>
-                            <td colspan="8" class="text-center py-4">
+                            <td colspan="6" class="text-center py-4">
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Cargando...</span>
                                 </div>
@@ -126,7 +124,7 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"></script>
 
-    
+    <!-- Script para cargar facultades -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Obtener facultades al cargar la página
@@ -143,10 +141,8 @@
                 })
                 .catch(error => {
                     console.error('Error al cargar facultades:', error);
+                    mostrarMensajeError('No se pudieron cargar las facultades');
                 });
-            
-            // Cargar alumnos inicialmente
-            cargarAlumnos();
         });
     </script>
 
@@ -155,7 +151,6 @@
         let currentPage = 1;
         let totalPages = 1;
         let totalRegistros = 0;
-        const rowsPerPage = 20;
 
         function cargarAlumnos() {
             const busqueda = document.getElementById("busqueda").value;
@@ -165,7 +160,7 @@
             // Mostrar indicador de carga
             document.getElementById('tablaAlumnos').innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center py-4">
+                    <td colspan="6" class="text-center py-4">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Cargando...</span>
                         </div>
@@ -174,7 +169,8 @@
                 </tr>
             `;
 
-            fetch(`resultadoalumnos.php?pagina=${currentPage}&busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
+            // Cargar datos de la página actual
+            fetch(`Listado.php?pagina=${currentPage}&busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error en la respuesta del servidor');
@@ -184,10 +180,10 @@
                 .then(data => {
                     const tabla = document.getElementById('tablaAlumnos');
                     
-                    if (data.trim() === '' || data.includes('NO HAY ALUMNOS')) {
+                    if (data.trim() === '' || data.includes('No se encontraron') || data.includes('empty-state')) {
                         tabla.innerHTML = `
                             <tr>
-                                <td colspan="8" class="empty-state">
+                                <td colspan="6" class="empty-state">
                                     <i class="bi bi-inbox"></i>
                                     <p>No se encontraron alumnos con los criterios de búsqueda</p>
                                 </td>
@@ -197,6 +193,7 @@
                         actualizarPaginacionHTML();
                     } else {
                         tabla.innerHTML = data;
+                        // Obtener el total de páginas después de cargar los datos
                         actualizarPaginacion(busqueda, facultad, sexo);
                     }
                 })
@@ -204,7 +201,7 @@
                     console.error('Error al cargar los alumnos:', error);
                     document.getElementById('tablaAlumnos').innerHTML = `
                         <tr>
-                            <td colspan="8" class="text-center py-4 text-danger">
+                            <td colspan="6" class="text-center py-4 text-danger">
                                 <i class="bi bi-exclamation-triangle fs-2"></i>
                                 <p class="mt-2">Error al cargar los datos. Por favor, intente nuevamente.</p>
                             </td>
@@ -215,11 +212,16 @@
 
         function actualizarPaginacion(busqueda, facultad, sexo) {
             // Obtener el total de registros desde el servidor
-            fetch(`contar-alumnos.php?busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
+            fetch(`Listado.php?total=1&busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
                 .then(response => response.json())
                 .then(data => {
-                    totalRegistros = data.total || 0;
-                    totalPages = Math.ceil(totalRegistros / rowsPerPage);
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+                    
+                    totalRegistros = data.total_registros;
+                    totalPages = data.total_paginas;
                     
                     actualizarPaginacionHTML();
                 })
@@ -233,8 +235,8 @@
             
             if (totalPages > 1) {
                 // Información de registros
-                const inicio = ((currentPage - 1) * rowsPerPage) + 1;
-                const fin = Math.min(currentPage * rowsPerPage, totalRegistros);
+                const inicio = ((currentPage - 1) * 20) + 1;
+                const fin = Math.min(currentPage * 20, totalRegistros);
                 
                 paginacionHTML += `<div class="pagination-info mb-3">
                     Mostrando <strong>${inicio}</strong> a <strong>${fin}</strong> de <strong>${totalRegistros}</strong> alumnos
@@ -327,6 +329,14 @@
                 behavior: 'smooth' 
             });
         }
+
+        function mostrarMensajeError(mensaje) {
+            // Puedes implementar una notificación toast aquí
+            console.error(mensaje);
+        }
+
+        // Carga inicial de alumnos al cargar la página
+        document.addEventListener("DOMContentLoaded", cargarAlumnos);
 
         // Escucha eventos de los filtros con debounce para búsqueda
         let searchTimeout;

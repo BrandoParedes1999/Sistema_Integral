@@ -228,7 +228,7 @@ $conn->close();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="logoutAlumno.php" class="btn btn-danger">Sí, Salir</a>
+                    <a href="../auth/logoutAlumno.php" class="btn btn-danger">Sí, Salir</a>
                 </div>
             </div>
         </div>

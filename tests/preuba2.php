@@ -14,7 +14,7 @@ define('COLOR_SEPARATOR', [180, 180, 180]);
 
 ob_start();
 
-require('fpdf/fpdf.php');
+require('../vendor/fpdf/fpdf.php');
 
 ob_end_clean();
 

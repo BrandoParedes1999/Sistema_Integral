@@ -23,7 +23,7 @@ if (isset($_SESSION['ultimo_acceso'])) {
 
         session_unset();
         session_destroy();
-        header('Location: login.php?error=timeout');
+        header('Location: ../login.php?error=timeout');
         exit();
     }
 }
@@ -32,7 +32,7 @@ $_SESSION['ultimo_acceso'] = time();
 
 // Validar si el usuario está logueado y si tiene permiso (por ejemplo solo administradores)
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'Administrador') {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -93,7 +93,7 @@ $result = $conn->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS personalizado -->
-    <link rel="stylesheet" href="panel_control.css">
+    <link rel="stylesheet" href="../css/panel_control.css">
     <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
 </head>
 
@@ -304,7 +304,7 @@ $result = $conn->query($sql);
             const formData = new FormData();
             formData.append('accion', 'cerrar_todas');
 
-            fetch('cerrar_sesiones.php', {
+            fetch('../auth/cerrar_sesiones.php', {
                 method: 'POST',
                 body: formData
             })
@@ -352,7 +352,7 @@ $result = $conn->query($sql);
             formData.append('accion', 'cerrar_una');
             formData.append('id', id);
 
-            fetch('cerrar_sesiones.php', {
+            fetch('../auth/cerrar_sesiones.php', {
                 method: 'POST',
                 body: formData
             })

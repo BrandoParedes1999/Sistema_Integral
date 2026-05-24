@@ -2,7 +2,7 @@
 session_start();
 date_default_timezone_set('America/Mexico_City');
 // Registrar hora de salida si hay ingreso
-require_once 'session_security.php';
+require_once '../includes/session_security.php';
 if (isset($_SESSION['registro_ingreso'])) {
     $registroId = $_SESSION['registro_ingreso'];
 
@@ -35,6 +35,6 @@ if (ini_get("session.use_cookies")) {
 }
 
 // 🔥 4. Redirigir seguro al login
-header("Location: login.php");
+header("Location: ../login.php");
 exit();
 ?>

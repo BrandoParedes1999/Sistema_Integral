@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Config/config.php';
+require_once '../config/config.php';
 
 $tipo = $_GET["tipo"] ?? '';
 

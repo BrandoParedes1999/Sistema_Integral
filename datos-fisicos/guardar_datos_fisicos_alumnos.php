@@ -37,10 +37,10 @@ ob_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-require('fpdf/fpdf.php');
+require '../vendor/PHPMailer/src/Exception.php';
+require '../vendor/PHPMailer/src/PHPMailer.php';
+require '../vendor/PHPMailer/src/SMTP.php';
+require('../vendor/fpdf/fpdf.php');
 
 ob_end_clean();
 header('Content-Type: application/json; charset=UTF-8');

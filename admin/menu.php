@@ -4,12 +4,12 @@ session_start();
 
 
 if (!isset($_SESSION['usuario'])) {
-  header('Location: login.php');
+  header('Location: ../login.php');
   exit();
 }
 date_default_timezone_set('America/Mexico_City');
 
-  require_once 'Config/config.php';
+  require_once '../config/config.php';
       $database = new Database();
       $conn = $database->connect();
 
@@ -71,7 +71,7 @@ $_SESSION['nombre_admi'] = $nombre_admi;
 $_SESSION['rol'] = $rol;
 
 // Si no existe foto, usar default
-$foto_base64 = $foto ? base64_encode($foto) : base64_encode(file_get_contents("images/escudo_UNACAR.png"));
+$foto_base64 = $foto ? base64_encode($foto) : base64_encode(file_get_contents(__DIR__ . "/../images/escudo_UNACAR.png"));
 
 
 $conn->close();
@@ -86,7 +86,7 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menú Principal - UNACAR</title>
-  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="../css/menu.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -113,7 +113,7 @@ $conn->close();
     <nav class="navbar navbar-expand-lg">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img src="images/logo_unacar (1).png" alt="Logo UNACAR" style="height:60px;">
+          <img src="../images/logo_unacar (1).png" alt="Logo UNACAR" style="height:60px;">
         </a>
 
         <div class="d-flex align-items-center ms-auto">
@@ -123,7 +123,7 @@ $conn->close();
             <small class="text-muted"><?php echo htmlspecialchars($_SESSION['rol']); ?></small><br>
             <small class="text-muted">Ingreso: <?php echo date('H:i') . ' - ' . date('d/m/Y'); ?></small>
           </div>
-          <form action="cerrar_sesion.php" method="POST">
+          <form action="../auth/cerrar_sesion.php" method="POST">
             <button type="submit" class="btn btn-danger btn-sm">
               <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
             </button>
@@ -168,18 +168,18 @@ $conn->close();
 
 
   <main class="container menu-grid">
-    <div class="menu-card" onclick="location.href='historial_clinico.html'" data-aos="fade-up" data-aos-delay="100">
+    <div class="menu-card" onclick="location.href='../historial/historial_clinico.html'" data-aos="fade-up" data-aos-delay="100">
       <i class="bi bi-file-earmark-medical"></i>
       <h5 class="mt-3">Registro de Historial Clínico</h5>
     </div>
 
-    <div class="menu-card" onclick="location.href='datos_fisicos.html'" data-aos="fade-up" data-aos-delay="200">
+    <div class="menu-card" onclick="location.href='../datos-fisicos/datos_fisicos.html'" data-aos="fade-up" data-aos-delay="200">
       <i class="bi bi-activity"></i>
       <h5 class="mt-3">Registro de Datos Físicos</h5>
     </div>
 
     <?php if ($_SESSION['rol'] === 'Administrador') { ?>
-      <div class="menu-card" onclick="location.href='estadisticas.html'" data-aos="fade-up" data-aos-delay="300">
+      <div class="menu-card" onclick="location.href='../estadisticas/estadisticas.html'" data-aos="fade-up" data-aos-delay="300">
         <i class="bi bi-graph-up"></i>
         <h5 class="mt-3">Estadísticas</h5>
       </div>
@@ -192,7 +192,7 @@ $conn->close();
         </div>
         <ul class="dropdown-menu dropdown-menu-center text-center" id="menuBusqueda">
           <li><a class="dropdown-item d-flex align-items-center justify-content-center gap-5"
-              href="ListadoAlumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
+              href="../gestion-alumnos/ListadoAlumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
           <li hidden><a class="dropdown-item" href="ListadoDocentes.html"><i class="bi bi-person-badge"></i>
               Docentes</a></li>
           <li hidden><a class="dropdown-item" href="ListadoEmpleados.html"><i class="bi bi-briefcase"></i> Empleados</a>
@@ -213,7 +213,7 @@ $conn->close();
         </div>
         <ul class="dropdown-menu dropdown-menu-center text-center" id="menuResultados">
           <li><a class="dropdown-item d-flex align-items-center justify-content-center gap-5"
-              href="resultadoalumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
+              href="../reportes/resultadoalumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
           <li hidden><a class="dropdown-item" href="ListadoDocentes.html"><i class="bi bi-person-badge"></i> Docentes</a>
           </li>
           <li hidden><a class="dropdown-item" href="ListadoEmpleados.html"><i class="bi bi-briefcase"></i> Empleados</a>
@@ -229,7 +229,7 @@ $conn->close();
         </div>
         <ul class="dropdown-menu dropdown-menu-center text-center" id="menuCredenciales">
           <li><a class="dropdown-item d-flex align-items-center justify-content-center gap-5"
-              href="credencialesalumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
+              href="../credenciales/credencialesalumnos.html"><i class="bi bi-mortarboard"></i> Alumnos</a></li>
           <li hidden><a class="dropdown-item" href="ListadoDocentes.html"><i class="bi bi-person-badge"></i> Docentes</a>
           </li>
           <li hidden><a class="dropdown-item" href="ListadoEmpleados.html"><i class="bi bi-briefcase"></i> Empleados</a>
