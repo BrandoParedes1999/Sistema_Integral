@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Alumnos - Iniciar Sesión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <div class="brand-section">
+        <div class="brand-content">
+            <h2>Bienvenido al Portal de Estudiantes</h2>
+            <p>Gestiona tu información de Salud, resultados de cuestionarios realizados, además de información de emergencia.</p>
+        </div>
+    </div>
+
+    <div class="login-section">
+        <div class="login-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Ingresa tus credenciales institucionales para continuar.</p>
+        </div>
+
+        <div id="alerta" class="alert" style="display: none;"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="matricula">Matrícula</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="matricula" 
+                        name="matricula" 
+                        placeholder="Ej. 123456"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Ingresa tu contraseña"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar contraseña">
+                        <span id="eye-icon">👁️</span>
+                    </button>
+                </div>
+                <div class="password-hint">
+                    Formato: Salud + fecha de nacimiento (AAAA-MM-DD) (Ejem:Salud0000-01-01)
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login" id="submitBtn">
+                Acceder al Portal
+            </button>
+        </form>
+
+        <div class="help-text">
+            ¿No tienes una cuenta activa? <a href="/registro.html">Solicitar registro</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            var passwordInput = document.getElementById('password');
+            var icon = document.getElementById('eye-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+
+        function mostrarAlerta(mensaje, tipo) {
+            var alerta = document.getElementById('alerta');
+            alerta.className = 'alert alert-' + tipo;
+            alerta.textContent = mensaje;
+            alerta.style.display = 'block';
+            
+            if (tipo === 'error') {
+                var btn = document.querySelector('.btn-login');
+                btn.classList.add('shake');
+                setTimeout(function() {
+                    btn.classList.remove('shake');
+                }, 300);
+            }
+
+            setTimeout(function() {
+                alerta.style.display = 'none';
+            }, 5000);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            var btn = document.getElementById('submitBtn');
+            var originalBtnText = btn.innerText;
+            
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+            
+            var matricula = document.getElementById('matricula').value.trim();
+            var password = document.getElementById('password').value.trim();
+            
+            if (!matricula || !password) {
+                mostrarAlerta('Por favor completa todos los campos', 'error');
+                btn.disabled = false;
+                btn.innerText = originalBtnText;
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('matricula', matricula);
+            formData.append('password', password);
+
+            try {
+                console.log('Intentando conectar a: /alumnos/alumnos-login.php');
+                
+                var response = await fetch('/alumnos/alumnos-login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Status de respuesta:', response.status);
+                console.log('Headers:', response.headers);
+                
+                // Intentar obtener el texto primero para ver qué está devolviendo
+                var textoRespuesta = await response.text();
+                console.log('Respuesta como texto:', textoRespuesta);
+                
+                // Intentar parsear como JSON
+                var data;
+                try {
+                    data = JSON.parse(textoRespuesta);
+                } catch (parseError) {
+                    console.error('Error al parsear JSON:', parseError);
+                    mostrarAlerta('Error del servidor. Respuesta no válida. Revisa la consola (F12)', 'error');
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                    return;
+                }
+
+                console.log('Datos parseados:', data);
+
+                if (data.success) {
+                    mostrarAlerta('Acceso correcto. Redirigiendo...', 'success');
+                    setTimeout(function() {
+                        window.location.href = "/alumnos/inicio.html";
+                    }, 1000);
+                } else if (data.error) {
+                    mostrarAlerta(data.error, 'error');
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                }
+            } catch (error) {
+                console.error('Error completo:', error);
+                mostrarAlerta('Error de conexión con el servidor. Detalles en consola (F12)', 'error');
+                btn.disabled = false;
+                btn.innerText = originalBtnText;
+            }
+        });
+
+        document.getElementById('matricula').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>

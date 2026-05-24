@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Alumno</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Puntajes del Estilo de Vida</h2>
+    <canvas id="graficaEstiloVida"></canvas>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matricula = urlParams.get('matricula');
+            console.log("Matrícula recibida:", matricula);
+
+            if (!matricula) {
+                throw new Error('No se proporcionó matrícula en la URL');
+            }
+
+            const response = await fetch(`puntajes_PEPS-1.php?matricula_alum=${matricula}`);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Datos del servidor:", data);
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            const categorias = ["Nutrición", "Ejercicio", "Salud", "Soporte Interpersonal", "Manejo del Estrés", "Autoactualización"];
+            const puntajes = [
+                data.total_nutricion || 0,
+                data.total_ejercicio || 0,
+                data.total_salud || 0,
+                data.total_soporte || 0,
+                data.total_manejoestres || 0,
+                data.total_autoactualizacion || 0
+            ];
+
+            const ctx = document.getElementById("graficaEstiloVida").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: categorias,
+                    datasets: [{
+                        label: "Puntaje por Categoría",
+                        data: puntajes,
+                        backgroundColor: ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC133", "#33FFF1"],
+                        borderColor: "#333",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 50, title: { display: true, text: "Puntaje" } },
+                        x: { title: { display: true, text: "Categorías" } }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            document.body.innerHTML += `<p>Error: ${error.message}</p>`;
+        }
+    });
+    </script>
+</body>
+</html>

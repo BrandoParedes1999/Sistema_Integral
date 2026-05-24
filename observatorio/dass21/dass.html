@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>DASS 21</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css dass21/observatorio.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="imagenes/logo_pequeño.ico">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="">
+                <img src="imagenes/logo_unacar (1).png" alt="" width="160px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="#">Ansiedad</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="#">Depresión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="#">Estrés</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="/observatorio/observatorio.html">Salir</a>
+                    </li>
+
+            </div>
+            <a class="navbar-brand" href="/observatorio/dass21/dass.html">
+                <img src="imagenes/EDUCANDO VF SLOGAN (IDENTIDAD)_ NEGRO.png" alt="" width="50px" id="imagen">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-4 d-none d-md-block">
+                <nav class="h-100 flex-column align-items-stretch pe-4"
+                    style="position: fixed; overflow-y: auto; width: 250px; max-height: calc(100vh - 100px); border-right: 1px solid #000; border-radius: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);">
+                    <nav class="nav nav-pills flex-column p-3">
+                        <p class="lead text-center"><strong>¡Prueba con Diferentes Parámetros!</strong></p>
+
+                        <div class="mb-3">
+                            <label for="facultad" class="form-label"><strong>Facultad</strong></label>
+                            <select class="form-select form-select-sm" name="facultad" id="facultad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="carrera" class="form-label"><strong>Carrera</strong></label>
+                            <select class="form-select form-select-sm" name="carrera" id="carrera">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label"><strong>Sexo</strong></label>
+                            <select class="form-select form-select-sm" name="sexo" id="sexo">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nacimiento" class="form-label"><strong>Año de Nacimiento</strong></label>
+                            <select class="form-select form-select-sm" name="nacimiento" id="nacimiento">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="severidad" class="form-label"><strong>Severidad</strong></label>
+                            <select class="form-select form-select-sm" name="severidad" id="severidad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+                    </nav>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9 offset-md-4 offset-lg-3 text-center mt-2 px-3">
+                <h1 class="display-6 display-md-5">Gráficas de DASS (Depresión, Ansiedad y Escala de Estrés)</h1>
+
+                <!-- FILTROS MOBILE -->
+                <div class="d-md-none mt-4">
+                    <button class="btn btn-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtrosMobile">
+                        <i class="bi bi-funnel"></i> Mostrar Filtros
+                    </button>
+
+                    <div class="collapse" id="filtrosMobile">
+                        <div class="card card-body">
+                            <div class="mb-3">
+                                <label for="facultad-mobile" class="form-label"><strong>Facultad</strong></label>
+                                <select class="form-select" name="facultad" id="facultad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="carrera-mobile" class="form-label"><strong>Carrera</strong></label>
+                                <select class="form-select" name="carrera" id="carrera-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sexo-mobile" class="form-label"><strong>Sexo</strong></label>
+                                <select class="form-select" name="sexo" id="sexo-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nacimiento-mobile" class="form-label"><strong>Año de
+                                        Nacimiento</strong></label>
+                                <select class="form-select" name="nacimiento" id="nacimiento-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="severidad" class="form-label"><strong>Severidad</strong></label>
+                                <select class="form-select form-select-sm" name="severidad" id="severidad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA ÚNICA -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0">Alumnos Con Ansiedad</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary active"
+                                            id="btnBarras">
+                                            📊 Barras
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPastel">
+                                            🥧 Pastel
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="mainChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 mb-3">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas Ansiedad</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Normal</h6>
+                                        <h3 id="cantidadSaludable" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Leve</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-success">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Moderado</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Extremadamente Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 mb-3" style="display: none;">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas Depresión</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Normal</h6>
+                                        <h3 id="cantidadSaludable" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Leve</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-success">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Moderado</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Extremadamente Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 mb-3" style="display: none;">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas Estrés</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Normal</h6>
+                                        <h3 id="cantidadSaludable" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Leve</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-success">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Moderado</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Severidad Extremadamente Severo</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const API_BASE_URL = 'dass.php';
+
+        let currentChart = null;
+        let currentView = 'ansiedad';
+        let chartType = 'bar';
+        let isInitialized = false;
+        let currentDataGlobal = null; // Para mantener los datos actuales
+
+        // INICIALIZACIÓN AL CARGAR LA PÁGINA
+        document.addEventListener('DOMContentLoaded', async function () {
+            console.log('Iniciando aplicación...');
+
+            try {
+                showWelcomeModal();
+                await initializeFilters();
+                setupEventListeners();
+
+                isInitialized = true;
+                await loadData();
+
+                console.log('Aplicación inicializada correctamente');
+            } catch (error) {
+                console.error('Error en la inicialización:', error);
+                showError('Error al inicializar la aplicación: ' + error.message);
+            }
+        });
+
+        // ============================================
+        // FUNCIÓN PARA MOSTRAR ERRORES
+        // ============================================
+        function showError(message) {
+            const alertHTML = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+
+            const container = document.querySelector('.col-12.col-md-8');
+            if (container) {
+                container.insertAdjacentHTML('afterbegin', alertHTML);
+            }
+        }
+
+        // ============================================
+        // MODAL DE BIENVENIDA
+        // ============================================
+        function showWelcomeModal() {
+            const modalHTML = `
+        <div class="modal fade" id="welcomeModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle-fill"></i> ¿Qué es el DASS-21?
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 class="fw-bold">Escala de Depresión, Ansiedad y Estrés (DASS-21)</h6>
+                        <p>El DASS-21 es un instrumento de evaluación psicológica compuesto por 21 ítems que mide tres dimensiones emocionales negativas:</p>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <div class="card border-info h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-info">😰 Ansiedad</h6>
+                                        <p class="small">Evalúa la activación del sistema autónomo, efectos músculo-esqueléticos, ansiedad situacional y experiencias subjetivas de ansiedad.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-warning h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-warning">😔 Depresión</h6>
+                                        <p class="small">Mide disforia, desesperanza, devaluación de la vida, autodesprecio, falta de interés y anhedonia.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-danger h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-danger">😤 Estrés</h6>
+                                        <p class="small">Evalúa dificultad para relajarse, excitación nerviosa, facilidad para agitarse, irritabilidad e impaciencia.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-3 mb-0">
+                            <strong>Niveles de Severidad:</strong> Normal, Leve, Moderado, Severo, Extremadamente Severo
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+            welcomeModal.show();
+        }
+
+        // ============================================
+        // INICIALIZACIÓN DE FILTROS
+        // ============================================
+        async function initializeFilters() {
+            console.log('Inicializando filtros...');
+
+            try {
+                const facultades = await fetchData('?endpoint=facultades');
+                console.log('Facultades cargadas:', facultades);
+                populateSelect('facultad', facultades, 'id_facultad', 'nombre_facultad');
+                populateSelect('facultad-mobile', facultades, 'id_facultad', 'nombre_facultad');
+
+                const years = await fetchData('?endpoint=years-nacimiento');
+                console.log('Años cargados:', years);
+                populateSelect('nacimiento', years, 'fe_nacimiento_alum', 'fe_nacimiento_alum');
+                populateSelect('nacimiento-mobile', years, 'fe_nacimiento_alum', 'fe_nacimiento_alum');
+
+                const severidades = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente Severo'];
+                severidades.forEach(sev => {
+                    ['severidad', 'severidad-mobile'].forEach(selectId => {
+                        const select = document.getElementById(selectId);
+                        if (select) {
+                            const option = document.createElement('option');
+                            option.value = sev;
+                            option.textContent = sev;
+                            select.appendChild(option);
+                        }
+                    });
+                });
+
+                console.log('Filtros inicializados correctamente');
+            } catch (error) {
+                console.error('Error al inicializar filtros:', error);
+                throw error;
+            }
+        }
+
+        function populateSelect(selectId, data, valueKey, textKey) {
+            const select = document.getElementById(selectId);
+            if (!select) {
+                console.warn(`Select ${selectId} no encontrado`);
+                return;
+            }
+
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[valueKey];
+                option.textContent = item[textKey];
+                select.appendChild(option);
+            });
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        function setupEventListeners() {
+            console.log('Configurando event listeners...');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const text = this.textContent.trim().toLowerCase();
+
+                    // Solo prevenir si es un enlace interno (ansiedad, depresión, estrés)
+                    if (text.includes('ansiedad') || text.includes('depresión') ||
+                        text.includes('depresion') || text.includes('estrés') ||
+                        text.includes('estres')) {
+
+                        e.preventDefault(); // Solo prevenir para enlaces internos
+
+                        if (text.includes('ansiedad')) {
+                            switchView('ansiedad');
+                        } else if (text.includes('depresión') || text.includes('depresion')) {
+                            switchView('depresion');
+                        } else if (text.includes('estrés') || text.includes('estres')) {
+                            switchView('estres');
+                        }
+                    }
+                    // Si no coincide (como "Observatorio"), deja que navegue normalmente
+                });
+            });
+
+            const btnBarras = document.getElementById('btnBarras');
+            const btnPastel = document.getElementById('btnPastel');
+
+            if (btnBarras) btnBarras.addEventListener('click', () => changeChartType('bar'));
+            if (btnPastel) btnPastel.addEventListener('click', () => changeChartType('pie'));
+
+            ['facultad', 'carrera', 'sexo', 'nacimiento', 'severidad'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', handleFilterChange);
+                }
+            });
+
+            ['facultad-mobile', 'carrera-mobile', 'sexo-mobile', 'nacimiento-mobile', 'severidad-mobile'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', handleFilterChange);
+                }
+            });
+
+            const facultadDesktop = document.getElementById('facultad');
+            const facultadMobile = document.getElementById('facultad-mobile');
+
+            if (facultadDesktop) {
+                facultadDesktop.addEventListener('change', async function () {
+                    await loadCarrerasByFacultad(this.value);
+                    syncFilter('facultad', this.value);
+                });
+            }
+
+            if (facultadMobile) {
+                facultadMobile.addEventListener('change', async function () {
+                    await loadCarrerasByFacultad(this.value);
+                    syncFilter('facultad-mobile', this.value);
+                });
+            }
+        }
+
+        async function loadCarrerasByFacultad(facultadId) {
+            if (!facultadId) return;
+
+            try {
+                const carreras = await fetchData(`?endpoint=carreras&id_facultad=${facultadId}`);
+                console.log('Carreras cargadas:', carreras);
+
+                ['carrera', 'carrera-mobile'].forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        select.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                        carreras.forEach(carrera => {
+                            const option = document.createElement('option');
+                            option.value = carrera.id_carrera;
+                            option.textContent = carrera.nombre_carrera;
+                            select.appendChild(option);
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar carreras:', error);
+            }
+        }
+
+        function syncFilter(sourceId, value) {
+            const targetId = sourceId.includes('mobile') ? sourceId.replace('-mobile', '') : sourceId + '-mobile';
+            const target = document.getElementById(targetId);
+            if (target) target.value = value;
+        }
+
+        function handleFilterChange() {
+            if (isInitialized) {
+                loadData();
+            }
+        }
+
+        // ============================================
+        // CAMBIO DE VISTA
+        // ============================================
+        function switchView(view) {
+            console.log('Cambiando a vista:', view);
+            currentView = view;
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                const text = link.textContent.trim().toLowerCase();
+                if (text.includes(view)) {
+                    link.classList.add('active');
+                }
+            });
+
+            const titles = {
+                'ansiedad': 'Alumnos Con Ansiedad',
+                'depresion': 'Alumnos Con Depresión',
+                'estres': 'Alumnos Con Estrés'
+            };
+
+            const cardTitle = document.querySelector('.card-title');
+            if (cardTitle) {
+                cardTitle.textContent = titles[view];
+            }
+
+            const estadisticasSections = document.querySelectorAll('.row.mt-4.mb-3');
+            estadisticasSections.forEach((section, index) => {
+                if (index === 0 && view === 'ansiedad') {
+                    section.style.display = 'block';
+                } else if (index === 1 && view === 'depresion') {
+                    section.style.display = 'block';
+                } else if (index === 2 && view === 'estres') {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+
+            loadData();
+        }
+
+        // ============================================
+        // CAMBIO DE TIPO DE GRÁFICA
+        // ============================================
+        function changeChartType(type) {
+            console.log('Cambiando tipo de gráfica a:', type);
+            chartType = type;
+
+            const btnBarras = document.getElementById('btnBarras');
+            const btnPastel = document.getElementById('btnPastel');
+
+            if (btnBarras) btnBarras.classList.toggle('active', type === 'bar');
+            if (btnPastel) btnPastel.classList.toggle('active', type === 'pie');
+
+            // Redibujar con los datos actuales
+            if (currentDataGlobal) {
+                updateChart(currentDataGlobal);
+            }
+        }
+
+        // ============================================
+        // CARGA DE DATOS
+        // ============================================
+        async function loadData() {
+            if (!isInitialized) {
+                console.log('Esperando inicialización...');
+                return;
+            }
+
+            console.log('Cargando datos...');
+            const filters = getFilters();
+            console.log('Filtros aplicados:', filters);
+
+            try {
+                const data = await fetchData(`?endpoint=dass-stats&view=${currentView}&${new URLSearchParams(filters)}`);
+                console.log('Datos recibidos:', data);
+
+                currentDataGlobal = data; // Guardar datos
+                updateChart(data);
+                updateStats(data);
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                showError('No se pudieron cargar los datos. Verifica la conexión con el servidor.');
+            }
+        }
+
+        function getFilters() {
+            const getValue = (id) => {
+                const desktop = document.getElementById(id)?.value;
+                const mobile = document.getElementById(id + '-mobile')?.value;
+                return desktop || mobile || '';
+            };
+
+            return {
+                facultad: getValue('facultad'),
+                carrera: getValue('carrera'),
+                sexo: getValue('sexo'),
+                nacimiento: getValue('nacimiento'),
+                severidad: getValue('severidad')
+            };
+        }
+
+        // ============================================
+        // ACTUALIZACIÓN DE GRÁFICA CON PORCENTAJES
+        // ============================================
+        function updateChart(data) {
+            console.log('Actualizando gráfica...');
+
+            const ctx = document.getElementById('mainChart');
+
+            if (!ctx) {
+                console.error('Canvas mainChart no encontrado');
+                return;
+            }
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const severidades = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremadamente Severo'];
+            const conteos = severidades.map(sev => data.conteos[sev] || 0);
+            const total = data.total || 0;
+
+            const colors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#991B1B'];
+
+            currentChart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: severidades,
+                    datasets: [{
+                        label: 'Cantidad de Alumnos',
+                        data: conteos,
+                        backgroundColor: colors,
+                        borderColor: chartType === 'bar' ? colors : '#ffffff',
+                        borderWidth: chartType === 'bar' ? 1 : 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: chartType === 'pie',
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const valor = context.parsed.y !== undefined ? context.parsed.y : context.parsed;
+                                    const porcentaje = total > 0 ? ((valor / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${valor} (${porcentaje}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: chartType === 'bar' ? {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    } : {}
+                },
+                plugins: chartType === 'bar' ? [{
+                    afterDatasetsDraw: function (chart) {
+                        const ctx = chart.ctx;
+                        chart.data.datasets.forEach((dataset, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            meta.data.forEach((bar, index) => {
+                                const data = dataset.data[index];
+                                const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                ctx.fillStyle = '#fff';
+                                ctx.font = 'bold 12px Arial';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+
+                                const x = bar.x;
+                                const y = bar.y + 20;
+
+                                ctx.fillText(`${data}`, x, y - 10);
+                                ctx.fillText(`(${porcentaje}%)`, x, y + 10);
+                            });
+                        });
+                    }
+                }] : [{
+                    afterDatasetsDraw: function (chart) {
+                        const ctx = chart.ctx;
+                        chart.data.datasets.forEach((dataset, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            meta.data.forEach((slice, index) => {
+                                const data = dataset.data[index];
+                                const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                const angle = (slice.startAngle + slice.endAngle) / 2;
+                                const radius = (slice.innerRadius + slice.outerRadius) / 2;
+                                const x = slice.x + Math.cos(angle) * radius * 0.7;
+                                const y = slice.y + Math.sin(angle) * radius * 0.7;
+
+                                ctx.fillStyle = '#fff';
+                                ctx.font = 'bold 12px Arial';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+
+                                ctx.fillText(`${data}`, x, y - 8);
+                                ctx.fillText(`(${porcentaje}%)`, x, y + 8);
+                            });
+                        });
+                    }
+                }]
+            });
+
+            console.log('Gráfica creada exitosamente');
+        }
+
+        // ============================================
+        // ACTUALIZACIÓN DE ESTADÍSTICAS CON PORCENTAJES
+        // ============================================
+        function updateStats(data) {
+            console.log('Actualizando estadísticas...');
+
+            const section = document.querySelectorAll('.row.mt-4.mb-3')[
+                currentView === 'ansiedad' ? 0 : currentView === 'depresion' ? 1 : 2
+            ];
+
+            if (!section) {
+                console.warn('Sección de estadísticas no encontrada');
+                return;
+            }
+
+            const stats = section.querySelectorAll('h3');
+            const total = data.total || 0;
+
+            if (stats.length >= 6) {
+                // Total (sin porcentaje)
+                stats[0].textContent = total;
+
+                // Calcular porcentajes para cada severidad
+                const calcularPorcentaje = (cantidad) => {
+                    if (total === 0) return '0.0%';
+                    return ((cantidad / total) * 100).toFixed(1) + '%';
+                };
+
+                // Normal
+                const normalCount = data.conteos['Normal'] || 0;
+                stats[1].textContent = calcularPorcentaje(normalCount);
+
+                // Leve
+                const leveCount = data.conteos['Leve'] || 0;
+                stats[2].textContent = calcularPorcentaje(leveCount);
+
+                // Moderado
+                const moderadoCount = data.conteos['Moderado'] || 0;
+                stats[3].textContent = calcularPorcentaje(moderadoCount);
+
+                // Severo
+                const severoCount = data.conteos['Severo'] || 0;
+                stats[4].textContent = calcularPorcentaje(severoCount);
+
+                // Extremadamente Severo
+                const extremoCount = data.conteos['Extremadamente Severo'] || 0;
+                stats[5].textContent = calcularPorcentaje(extremoCount);
+            }
+        }
+
+        // ============================================
+        // FUNCIÓN PARA FETCH DE DATOS
+        // ============================================
+        async function fetchData(endpoint) {
+            console.log('Fetching:', API_BASE_URL + endpoint);
+
+            try {
+                const response = await fetch(API_BASE_URL + endpoint);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error en fetchData:', error);
+                throw error;
+            }
+        }
+    </script>
+</body>
+
+</html>

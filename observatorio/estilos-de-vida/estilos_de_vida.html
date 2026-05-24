@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Estilos de Vida</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css estilo_de_vida/observatorio.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="imagenes estilo/logo_pequeño.ico">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            
+            <a class="navbar-brand" href="/observatorio/observatorio.html">
+                <img src="imagenes estilo/logo_unacar (1).png" alt="" width="160px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="/observatorio/estilos-de-vida/nutricion.html">Nutrición</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="/observatorio/estilos-de-vida/ejercicio.html">Ejercicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1"
+                            href="/observatorio/estilos-de-vida/autoactualizacion.html">Autoactualización</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="/observatorio/estilos-de-vida/manejo-estres.html">Manejo de
+                            Estrés</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1" href="/observatorio/estilos-de-vida/salud.html">Salud</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-3 my-1"
+                            href="/observatorio/estilos-de-vida/soporte-interpersonal.html">Soporte Interpersonal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/observatorio.html">Salir</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="estilos_de_vida.html">
+                <img src="imagenes estilo/EDUCANDO VF SLOGAN (IDENTIDAD)_ NEGRO.png" alt="" width="50px" id="imagen">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-4 d-none d-md-block">
+                <nav class="h-100 flex-column align-items-stretch pe-4"
+                    style="position: fixed; overflow-y: auto; width: 250px; max-height: calc(100vh - 100px); border-right: 1px solid #000; border-radius: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);">
+                    <nav class="nav nav-pills flex-column p-3">
+                        <p class="lead text-center"><strong>¡Prueba con Diferentes Parámetros!</strong></p>
+
+                        <div class="mb-3">
+                            <label for="facultad" class="form-label"><strong>Facultad</strong></label>
+                            <select class="form-select form-select-sm" name="facultad" id="facultad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="carrera" class="form-label"><strong>Carrera</strong></label>
+                            <select class="form-select form-select-sm" name="carrera" id="carrera">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label"><strong>Sexo</strong></label>
+                            <select class="form-select form-select-sm" name="sexo" id="sexo">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nacimiento" class="form-label"><strong>Año de Nacimiento</strong></label>
+                            <select class="form-select form-select-sm" name="nacimiento" id="nacimiento">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+                    </nav>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9 offset-md-4 offset-lg-3 text-center mt-2 px-3">
+                <h1 class="display-6 display-md-5">Gráfica General de Estilos de Vida</h1>
+
+                <!-- FILTROS MOBILE -->
+                <div class="d-md-none mt-4">
+                    <button class="btn btn-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtrosMobile">
+                        <i class="bi bi-funnel"></i> Mostrar Filtros
+                    </button>
+
+                    <div class="collapse" id="filtrosMobile">
+                        <div class="card card-body">
+                            <div class="mb-3">
+                                <label for="facultad-mobile" class="form-label"><strong>Facultad</strong></label>
+                                <select class="form-select" name="facultad" id="facultad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="carrera-mobile" class="form-label"><strong>Carrera</strong></label>
+                                <select class="form-select" name="carrera" id="carrera-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sexo-mobile" class="form-label"><strong>Sexo</strong></label>
+                                <select class="form-select" name="sexo" id="sexo-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nacimiento-mobile" class="form-label"><strong>Año de
+                                        Nacimiento</strong></label>
+                                <select class="form-select" name="nacimiento" id="nacimiento-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA ÚNICA -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0">Distribución por Estado Saludable</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary active"
+                                            id="btnBarras">
+                                            📊 Barras
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPastel">
+                                            🥧 Pastel
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="mainChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESTADÍSTICAS -->
+                <div class="row mt-4 mb-3">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas Generales</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Cantidad Saludables</h6>
+                                        <h3 id="cantidadSaludable" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Cantidad No Saludables</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Script para estilos_de_vida.html
+        // Reemplazar el <script> completo dentro del body
+
+        let mainChart = null;
+        let currentChartType = 'bar';
+        let currentData = null;
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // ========================================
+            // MODAL DE BIENVENIDA
+            // ========================================
+            function mostrarModalBienvenida() {
+                const modalHTML = `
+        <div class="modal fade" id="welcomeModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-heart-pulse-fill"></i> ¿Qué son los Estilos de Vida Saludables?
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="lead">El cuestionario de Estilos de Vida evalúa 6 dimensiones fundamentales para el bienestar integral:</p>
+                        
+                        <div class="row mt-4 g-3">
+                            <!-- Nutrición -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-success h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-success">
+                                            <i class="bi bi-apple"></i> 🥗 Nutrición
+                                        </h6>
+                                        <p class="small mb-2">Evalúa los hábitos alimenticios, consumo de alimentos saludables, hidratación y patrones de alimentación balanceada.</p>
+                                        <span class="badge bg-success-subtle text-success">Alimentación Saludable</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ejercicio -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-info h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-info">
+                                            <i class="bi bi-bicycle"></i> 🏃 Ejercicio
+                                        </h6>
+                                        <p class="small mb-2">Mide la frecuencia, intensidad y tipo de actividad física realizada, incluyendo ejercicio cardiovascular y de fuerza.</p>
+                                        <span class="badge bg-info-subtle text-info">Actividad Física</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Autoactualizacion -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-warning h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-warning">
+                                            <i class="bi bi-star"></i> 🌟 Autoactualizacion
+                                        </h6>
+                                        <p class="small mb-2">Evalúa el desarrollo personal, búsqueda de metas, superación personal y satisfacción con los logros alcanzados.</p>
+                                        <span class="badge bg-warning-subtle text-warning">Crecimiento Personal</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Manejo de Estrés -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-danger h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-danger">
+                                            <i class="bi bi-emoji-smile"></i> 😰 Manejo de Estrés
+                                        </h6>
+                                        <p class="small mb-2">Mide las estrategias de afrontamiento, técnicas de relajación y capacidad para manejar situaciones estresantes.</p>
+                                        <span class="badge bg-danger-subtle text-danger">Control Emocional</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Salud -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-primary">
+                                            <i class="bi bi-heart"></i> 💊 Salud
+                                        </h6>
+                                        <p class="small mb-2">Evalúa comportamientos relacionados con chequeos médicos, higiene personal, sueño y prevención de enfermedades.</p>
+                                        <span class="badge bg-primary-subtle text-primary">Cuidado de la Salud</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Soporte Interpersonal -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-secondary h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-secondary">
+                                            <i class="bi bi-people"></i> 🤝 Soporte Interpersonal
+                                        </h6>
+                                        <p class="small mb-2">Mide la calidad de las relaciones sociales, apoyo familiar y comunitario, y capacidad para establecer vínculos.</p>
+                                        <span class="badge bg-secondary-subtle text-secondary">Red de Apoyo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-4 mb-0">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-graph-up"></i> Clasificación de Resultados
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong class="text-success">✓ Saludable:</strong> Prácticas positivas y hábitos saludables consolidados</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-0"><strong class="text-danger">✗ No Saludable:</strong> Áreas de oportunidad y mejora en los hábitos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check-circle"></i> ¡Entendido!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+                welcomeModal.show();
+            }
+
+            mostrarModalBienvenida();
+
+            function cargarFacultades(selectId) {
+                fetch("obtener-datos.php?tipo=facultad")
+                    .then(response => response.json())
+                    .then(data => {
+                        let select = document.getElementById(selectId);
+                        if (!select) return;
+
+                        select.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                        data.forEach(facultad => {
+                            let option = document.createElement("option");
+                            option.value = facultad.id_facultad;
+                            option.textContent = facultad.nombre_facultad;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function cargarCarreras(facultadID, selectCarreraId) {
+                let selectCarrera = document.getElementById(selectCarreraId);
+                if (!selectCarrera) return;
+
+                selectCarrera.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                if (!facultadID) return;
+
+                fetch(`obtener-datos.php?tipo=carrera&idfacultad=${facultadID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(carrera => {
+                            let option = document.createElement("option");
+                            option.value = carrera.id_carrera;
+                            option.textContent = carrera.nombre_carrera;
+                            selectCarrera.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function cargarAnios(selectId) {
+                let select = document.getElementById(selectId);
+                if (!select) return;
+
+                select.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                for (let año = 2025; año >= 1980; año--) {
+                    let option = document.createElement("option");
+                    option.value = año;
+                    option.textContent = año;
+                    select.appendChild(option);
+                }
+            }
+
+            function obtenerValoresFiltros() {
+                const isMobile = window.innerWidth < 768;
+
+                return {
+                    facultad: document.getElementById(isMobile ? "facultad-mobile" : "facultad")?.value || "",
+                    carrera: document.getElementById(isMobile ? "carrera-mobile" : "carrera")?.value || "",
+                    sexo: document.getElementById(isMobile ? "sexo-mobile" : "sexo")?.value || "",
+                    anio: document.getElementById(isMobile ? "nacimiento-mobile" : "nacimiento")?.value || ""
+                };
+            }
+
+            function cargarDatosEstilosVida() {
+                const filtros = obtenerValoresFiltros();
+
+                let params = new URLSearchParams();
+                params.append("tipo", "estilos_vida");
+                if (filtros.facultad) params.append("facultad", filtros.facultad);
+                if (filtros.carrera) params.append("carrera", filtros.carrera);
+                if (filtros.sexo) params.append("sexo", filtros.sexo);
+                if (filtros.anio) params.append("anio", filtros.anio);
+
+                console.log("Parámetros enviados:", params.toString());
+
+                fetch(`obtener-datos.php?${params.toString()}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Datos recibidos:", data);
+                        currentData = data;
+                        mostrarDatos(data);
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function mostrarDatos(data) {
+                if (!data || data.length === 0) {
+                    actualizarEstadisticas(0, 0, 0);
+                    actualizarGrafica({});
+                    return;
+                }
+
+                function normalizar(texto) {
+                    return (texto || '')
+                        .toLowerCase()
+                        .trim()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "");
+                }
+
+                let total = data.length;
+
+                let saludables = data.filter(item => {
+                    let estado = normalizar(item.estado_saludable);
+                    return estado === 'saludable';
+                });
+
+                let noSaludables = data.filter(item => {
+                    let estado = normalizar(item.estado_saludable);
+                    return estado.startsWith('no') || estado === 'no saludable';
+                });
+
+                actualizarEstadisticas(total, saludables.length, noSaludables.length);
+
+                let estadosData = {};
+                data.forEach(item => {
+                    let estado = item.estado_saludable || 'Sin definir';
+                    estadosData[estado] = (estadosData[estado] || 0) + 1;
+                });
+
+                actualizarGrafica(estadosData, total);
+            }
+
+            function actualizarEstadisticas(total, cantidadSaludable, cantidadNoSaludable) {
+                document.getElementById('totalRegistros').textContent = total;
+
+                const porcentajeSaludable = total > 0 ? ((cantidadSaludable / total) * 100).toFixed(1) : 0;
+                const porcentajeNoSaludable = total > 0 ? ((cantidadNoSaludable / total) * 100).toFixed(1) : 0;
+
+                document.getElementById('cantidadSaludable').textContent = porcentajeSaludable + '%';
+                document.getElementById('cantidadNoSaludable').textContent = porcentajeNoSaludable + '%';
+            }
+
+            function actualizarGrafica(chartData, total) {
+                if (mainChart) mainChart.destroy();
+
+                const ctx = document.getElementById('mainChart').getContext('2d');
+
+                function normalizarEstado(estado) {
+                    return (estado || '').toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                }
+
+                const labels = Object.keys(chartData);
+                const valores = Object.values(chartData);
+
+                const colores = labels.map(label => {
+                    let estadoNormalizado = normalizarEstado(label);
+                    if (estadoNormalizado === 'saludable') {
+                        return 'rgba(75, 192, 192, 0.8)';
+                    } else if (estadoNormalizado === 'no saludable' || estadoNormalizado.startsWith('no')) {
+                        return 'rgba(255, 99, 132, 0.8)';
+                    } else {
+                        return 'rgba(201, 203, 207, 0.8)';
+                    }
+                });
+
+                const bordes = labels.map(label => {
+                    let estadoNormalizado = normalizarEstado(label);
+                    if (estadoNormalizado === 'saludable') {
+                        return 'rgba(75, 192, 192, 1)';
+                    } else if (estadoNormalizado === 'no saludable' || estadoNormalizado.startsWith('no')) {
+                        return 'rgba(255, 99, 132, 1)';
+                    } else {
+                        return 'rgba(201, 203, 207, 1)';
+                    }
+                });
+
+                mainChart = new Chart(ctx, {
+                    type: currentChartType,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: valores,
+                            backgroundColor: colores,
+                            borderColor: bordes,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: currentChartType === 'pie',
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.parsed.y || context.parsed;
+                                        const porcentaje = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${porcentaje}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: currentChartType === 'bar' ? {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        } : {}
+                    },
+                    plugins: currentChartType === 'bar' ? [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((bar, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    const x = bar.x;
+                                    const y = bar.y + 20;
+
+                                    ctx.fillText(`${data}`, x, y - 10);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 10);
+                                });
+                            });
+                        }
+                    }] : [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((slice, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    const angle = (slice.startAngle + slice.endAngle) / 2;
+                                    const radius = (slice.innerRadius + slice.outerRadius) / 2;
+                                    const x = slice.x + Math.cos(angle) * radius * 0.7;
+                                    const y = slice.y + Math.sin(angle) * radius * 0.7;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    ctx.fillText(`${data}`, x, y - 8);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 8);
+                                });
+                            });
+                        }
+                    }]
+                });
+            }
+
+            document.getElementById('btnBarras').addEventListener('click', function () {
+                currentChartType = 'bar';
+                this.classList.add('active');
+                document.getElementById('btnPastel').classList.remove('active');
+                if (currentData) mostrarDatos(currentData);
+            });
+
+            document.getElementById('btnPastel').addEventListener('click', function () {
+                currentChartType = 'pie';
+                this.classList.add('active');
+                document.getElementById('btnBarras').classList.remove('active');
+                if (currentData) mostrarDatos(currentData);
+            });
+
+            cargarFacultades("facultad");
+            cargarFacultades("facultad-mobile");
+            cargarAnios("nacimiento");
+            cargarAnios("nacimiento-mobile");
+
+            document.getElementById("facultad")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera");
+                cargarDatosEstilosVida();
+            });
+
+            document.getElementById("carrera")?.addEventListener("change", cargarDatosEstilosVida);
+            document.getElementById("sexo")?.addEventListener("change", cargarDatosEstilosVida);
+            document.getElementById("nacimiento")?.addEventListener("change", cargarDatosEstilosVida);
+
+            document.getElementById("facultad-mobile")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera-mobile");
+                cargarDatosEstilosVida();
+            });
+
+            document.getElementById("carrera-mobile")?.addEventListener("change", cargarDatosEstilosVida);
+            document.getElementById("sexo-mobile")?.addEventListener("change", cargarDatosEstilosVida);
+            document.getElementById("nacimiento-mobile")?.addEventListener("change", cargarDatosEstilosVida);
+
+            cargarDatosEstilosVida();
+        });
+    </script>
+</body>
+
+</html>

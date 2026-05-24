@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Registro Sistema Integral de Salud</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="registro.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Sistema Integral de Salud UNACAR</h1>
+        <p>Registro de Estudiantes</p>
+    </div>
+
+    <div class="modal fade" id="modalConsentimiento" tabindex="-1" aria-labelledby="modalConsentimientoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConsentimientoLabel">Aviso de Privacidad</h5>
+                </div>
+                <div class="modal-body">
+                    <p><b>Estimado(a) Alumno(a):</b></p>
+                    <p>A continuación, se presentan una serie de preguntas relacionadas con tu estilo de vida.</p>
+                    <p class="text-muted small">La información proporcionada será confidencial y utilizada
+                        exclusivamente para fines de salud estudiantil.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="btnNoConsentimiento">No aceptar</button>
+                    <button type="button" class="btn btn-primary" id="btnSiConsentimiento">Aceptar y Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalMatricula" tabindex="-1" aria-labelledby="modalMatriculaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMatriculaLabel">Validación de Alumno</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="matriculaInput" class="form-label">Ingresa tu Matrícula</label>
+                        <input type="text" class="form-control" id="matriculaInput" placeholder="Ej. 180000"
+                            maxlength="6" inputmode="numeric">
+                    </div>
+                    <div id="matriculaError" class="alert alert-danger p-2 small" role="alert" style="display: none;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" id="verificarMatricula">Verificar
+                        Matrícula</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form action="registro.php" method="post">
+
+            <div class="form-section">
+                <h4 class="section-title">Identificación</h4>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="matricula">Matrícula</label>
+                        <input type="text" name="matricula" id="matricula" placeholder="000000" required maxlength="6"
+                            pattern="\d{6}" inputmode="numeric" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4 class="section-title">Datos Personales</h4>
+
+                <div class="form-field">
+                    <label for="nombre">Nombre(s)</label>
+                    <input type="text" name="nombre" id="nombre" placeholder="Ingresa tus nombres" required />
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="apepa">Apellido Paterno</label>
+                        <input type="text" name="apepa" id="apepa" required />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="apema">Apellido Materno</label>
+                        <input type="text" name="apema" id="apema" required />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="fecha">Fecha de Nacimiento</label>
+                        <input type="date" name="fecha" id="fecha" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edad">Edad</label>
+                        <input type="number" name="edad" id="edad" placeholder="Automático" disabled required />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="sexo">Sexo</label>
+                        <select name="sexo" id="sexo" required>
+                            <option value="" selected disabled>Seleccione una opción</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="correo">Correo Institucional</label>
+                        <input type="email" name="correo" id="correo" placeholder="Automático" disabled required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4 class="section-title">Información Académica</h4>
+
+                <div class="form-field">
+                    <label for="facultades">Facultad</label>
+                    <select name="facultades" id="facultades" required>
+                        <option value="" selected disabled>-- Seleccione Facultad --</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="carreras">Carrera</label>
+                        <select name="carreras" id="carreras" required>
+                            <option value="" selected disabled>-- Seleccione Carrera --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="generacion">Generación</label>
+                        <select name="generacion" id="generacion" required>
+                            <option value="" selected disabled>Seleccione año</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4 class="section-title">Datos de Emergencia</h4>
+
+                <div class="form-field">
+                    <label for="sangre">Tipo de Sangre</label>
+                    <select name="sangre" id="sangre" required>
+                        <option value="" selected disabled> Selecciona una </option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="nss">Número de Seguridad Social</label>
+                    <input type="tel" name="nss" id="nss"
+                        placeholder="Intruduce tu Numero de Seguridad Social, En caso de no saberlo dejar en blanco y actualizar después" maxlength="11"
+                        pattern="\d{11}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">¿Padeces de alguna enfermedad crónica o alergia?</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="check_enfermedad" id="enf_no" value="no"
+                            checked onclick="toggleEnfermedad(false)">
+                        <label class="form-check-label" for="enf_no">No</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="check_enfermedad" id="enf_si" value="si"
+                            onclick="toggleEnfermedad(true)">
+                        <label class="form-check-label" for="enf_si">Sí</label>
+                    </div>
+                </div>
+                <div id="detalle-enfermedad" class="form-field d-none mb-3">
+                    <label for="enfermedad">Especifique cuál(es):</label>
+                    <textarea class="form-control" name="enfermedad" id="enfermedad" rows="3"
+                        placeholder="Ej: Diabetes, Hipertensión..."></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label for="emergencia">Contacto de Emergencia</label>
+                    <input type="tel" name="emergencia" id="emergencia"
+                        placeholder="Teléfono de alguien que sepas que contestará" required maxlength="10"
+                        pattern="\d{10}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                </div>
+            </div>
+    </div>
+
+    <div class="submit-container text-center">
+        <button type="submit" id="enviar" class="btn-submit">
+            Guardar Información
+        </button>
+    </div>
+    </form>
+    </div>
+
+    <script>
+        function toggleEnfermedad(mostrar) {
+            var contenedor = document.getElementById('detalle-enfermedad');
+            var inputTexto = document.getElementById('enfermedad');
+
+            if (mostrar) {
+                
+                contenedor.classList.remove('d-none');
+                inputTexto.required = true;
+                inputTexto.focus(); 
+            } else {
+                
+                contenedor.classList.add('d-none');
+                inputTexto.value = '';
+                inputTexto.required = false;
+            }
+        }
+    </script>
+
+    <script>
+        // ... (Tu código JavaScript original va aquí, no necesita cambios lógicos) ...
+        // Mantén exactamente el mismo script que tenías en el archivo original
+        document.addEventListener("DOMContentLoaded", function () {
+            // (Pega aquí el contenido de tu script original)
+            // ... Fetch facultades, date logic, modal logic ...
+
+            // Solo para referencia, el código JS no cambia
+            fetch("obtener-datos.php?tipo=facultades")
+                .then(response => response.json())
+                .then(data => {
+                    let selectFacultad = document.getElementById("facultades");
+                    data.forEach(facultad => {
+                        let option = document.createElement("option");
+                        option.value = facultad.id_facultad;
+                        option.textContent = facultad.nombre_facultad;
+                        selectFacultad.appendChild(option);
+                    });
+                });
+
+            document.getElementById("facultades").addEventListener("change", function () {
+                let facultadID = this.value;
+                let selectCarrera = document.getElementById("carreras");
+                selectCarrera.innerHTML = '<option value="" selected disabled>Seleccione</option>';
+
+                fetch(`obtener-datos.php?tipo=carreras&idfacultad=${facultadID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(carrera => {
+                            let option = document.createElement("option");
+                            option.value = carrera.id_carrera;
+                            option.textContent = carrera.nombre_carrera;
+                            selectCarrera.appendChild(option);
+                        });
+                    });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#fecha").on("change", function () {
+                let fechaNacimiento = new Date(this.value);
+                let hoy = new Date();
+                let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+                let mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+                if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+                    edad--;
+                }
+                $("#edad").val(edad);
+            });
+
+            $("#matricula").on("input", function () {
+                let matricula = $(this).val();
+                if (matricula.length === 6) {
+                    $("#correo").val(matricula + "@mail.unacar.mx");
+                } else {
+                    $("#correo").val("");
+                }
+            });
+
+            const modalConsentimiento = new bootstrap.Modal(document.getElementById('modalConsentimiento'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            const modalMatricula = new bootstrap.Modal(document.getElementById('modalMatricula'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            modalConsentimiento.show();
+
+            $('#btnSiConsentimiento').click(function () {
+                modalConsentimiento.hide();
+                modalMatricula.show();
+            });
+
+            $('#btnNoConsentimiento').click(function () {
+                $('#modalConsentimiento .modal-body').html('<p>Gracias por tu tiempo.</p>');
+                $('#btnSiConsentimiento, #btnNoConsentimiento').prop('disabled', true);
+                setTimeout(function () {
+                    window.location.href = 'despedida.html';
+                }, 1500);
+            });
+
+            $('#verificarMatricula').click(function () {
+                const matricula = $('#matriculaInput').val().trim();
+
+                if (!matricula) {
+                    $('#matriculaError').text('Por favor, ingresa una matrícula.').show();
+                    return;
+                }
+
+                const regex = /^\d{6}$/;
+                if (!regex.test(matricula)) {
+                    $('#matriculaError').text('La matrícula debe tener exactamente 6 dígitos numéricos.').show();
+                    return;
+                }
+
+                $('#matriculaError').hide();
+
+                $.ajax({
+                    url: 'verificar_matricula.php',
+                    type: 'POST',
+                    data: { matricula: matricula },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirect;
+                        } else {
+                            modalMatricula.hide();
+                            $('#matriculaError').hide();
+                            $('#matricula').val(matricula);
+                            $('#matricula').trigger('input');
+                        }
+                    },
+                    error: function (xhr) {
+                        // Manejo de error simulado o real
+                        modalMatricula.hide(); // Ocultar para pruebas si no hay backend
+                        $('#matricula').val(matricula);
+                        $('#matricula').trigger('input');
+                    }
+                });
+            });
+        });
+
+        document.getElementById("enviar").addEventListener("click", function (event) {
+            // El script de envío original se mantiene
+            event.preventDefault();
+            let edadInput = document.getElementById("edad");
+            let correoInput = document.getElementById("correo");
+
+            edadInput.removeAttribute("disabled");
+            correoInput.removeAttribute("disabled");
+
+            let form = document.querySelector("form");
+            let formData = new FormData(form);
+
+            fetch("registro.php", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert("Ocurrió un error inesperado.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+
+</html>

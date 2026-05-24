@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Índice Cintura Estatura</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css datos/observatorio.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="imagenes/logo_pequeño.ico">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/observatorio/observatorio.html">
+                <img src="imagenes/logo_unacar (1).png" alt="" width="160px">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1 " href="/observatorio/datos-fisicos/imc.html">Índice de Masa
+                            Corporal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1 active"
+                            href="/observatorio/datos-fisicos/clasificacionice.html">Índice
+                            Cintura Estatura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1"
+                            href="/observatorio/datos-fisicos/clasificacioncad-cin.html">Índice Cadera Cintura</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/colesterol.html">Colesterol</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1"
+                            href="/observatorio/datos-fisicos/trigliceridos.html">Trigliceridos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/glucosa.html">Glucosa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/tensionarterial.html">Tensión
+                            Arterial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/observatorio.html">Salir</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="/observatorio/datos-fisicos/imc.html">
+                <img src="imagenes/EDUCANDO VF SLOGAN (IDENTIDAD)_ NEGRO.png" alt="" width="50px" id="imagen">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-4 d-none d-md-block">
+                <nav class="h-100 flex-column align-items-stretch pe-4"
+                    style="position: fixed; overflow-y: auto; width: 250px; max-height: calc(100vh - 100px); border-right: 1px solid #000; border-radius: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);">
+                    <nav class="nav nav-pills flex-column p-3">
+                        <p class="lead text-center"><strong>¡Prueba con Diferentes Parámetros!</strong></p>
+
+                        <div class="mb-3">
+                            <label for="facultad" class="form-label"><strong>Facultad</strong></label>
+                            <select class="form-select form-select-sm" name="facultad" id="facultad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="carrera" class="form-label"><strong>Carrera</strong></label>
+                            <select class="form-select form-select-sm" name="carrera" id="carrera">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label"><strong>Sexo</strong></label>
+                            <select class="form-select form-select-sm" name="sexo" id="sexo">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="severidad" class="form-label"><strong>Clasificación</strong></label>
+                            <select class="form-select form-select-sm" name="severidad" id="severidad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+                    </nav>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9 offset-md-4 offset-lg-3 text-center mt-2 px-3">
+                <h1 class="display-6 display-md-5">Gráfica de Clasificación de índice Cintura Estatura</h1>
+
+                <!-- FILTROS MOBILE -->
+                <div class="d-md-none mt-4">
+                    <button class="btn btn-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtrosMobile">
+                        <i class="bi bi-funnel"></i> Mostrar Filtros
+                    </button>
+
+                    <div class="collapse" id="filtrosMobile">
+                        <div class="card card-body">
+                            <div class="mb-3">
+                                <label for="facultad-mobile" class="form-label"><strong>Facultad</strong></label>
+                                <select class="form-select" name="facultad" id="facultad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="carrera-mobile" class="form-label"><strong>Carrera</strong></label>
+                                <select class="form-select" name="carrera" id="carrera-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sexo-mobile" class="form-label"><strong>Sexo</strong></label>
+                                <select class="form-select" name="sexo" id="sexo-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="severidad" class="form-label"><strong>Clasificación</strong></label>
+                                <select class="form-select form-select-sm" name="severidad" id="severidad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA ÚNICA -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0"></h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary active"
+                                            id="btnBarras">
+                                            📊 Barras
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPastel">
+                                            🥧 Pastel
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="mainChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 mb-3">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas ICE</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros" class="text-info">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Riesgo Bajo</h6>
+                                        <h3 id="cantidadSaludable" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Riesgo Elevado</h6>
+                                        <h3 id="cantidadNoSaludable" class="text-danger">0</h3>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let mainChartICE = null;
+        let currentChartTypeICE = 'bar';
+        let currentDataICE = null;
+        const TEMA_ACTUAL_ICE = "ice_datos";
+        const COLUMNA_ESTADO_ICE = "clasificacionice";
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // ========================================
+            // FUNCIONES DE CARGA
+            // ========================================
+
+            function cargarFacultades(selectId) {
+                fetch("obtener-datos-ice.php?tipo=facultad")
+                    .then(response => response.json())
+                    .then(data => {
+                        let select = document.getElementById(selectId);
+                        if (!select) return;
+
+                        select.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                        data.forEach(facultad => {
+                            let option = document.createElement("option");
+                            option.value = facultad.id_facultad;
+                            option.textContent = facultad.nombre_facultad;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar facultades:", error));
+            }
+
+            function cargarCarreras(facultadID, selectCarreraId) {
+                let selectCarrera = document.getElementById(selectCarreraId);
+                if (!selectCarrera) return;
+
+                selectCarrera.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                if (!facultadID) return;
+
+                fetch(`obtener-datos-ice.php?tipo=carrera&idfacultad=${facultadID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(carrera => {
+                            let option = document.createElement("option");
+                            option.value = carrera.id_carrera;
+                            option.textContent = carrera.nombre_carrera;
+                            selectCarrera.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar carreras:", error));
+            }
+
+            function cargarSeveridades(selectId) {
+                let select = document.getElementById(selectId);
+                if (!select) return;
+
+                fetch("obtener-datos-ice.php?tipo=severidad")
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(item => {
+                            let option = document.createElement("option");
+                            option.value = item.clasificacionice;
+                            option.textContent = item.clasificacionice;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar severidades:", error));
+            }
+
+            function obtenerValoresFiltros() {
+                const isMobile = window.innerWidth < 768;
+
+                return {
+                    facultad: document.getElementById(isMobile ? "facultad-mobile" : "facultad")?.value || "",
+                    carrera: document.getElementById(isMobile ? "carrera-mobile" : "carrera")?.value || "",
+                    sexo: document.getElementById(isMobile ? "sexo-mobile" : "sexo")?.value || "",
+                    severidad: document.getElementById(isMobile ? "severidad-mobile" : "severidad")?.value || ""
+                };
+            }
+
+            function cargarDatosDelDashboard() {
+                const filtros = obtenerValoresFiltros();
+
+                let params = new URLSearchParams();
+                params.append("tipo", TEMA_ACTUAL_ICE);
+
+                if (filtros.facultad) params.append("facultad", filtros.facultad);
+                if (filtros.carrera) params.append("carrera", filtros.carrera);
+                if (filtros.sexo) params.append("sexo", filtros.sexo);
+                if (filtros.severidad) params.append("severidad", filtros.severidad);
+
+                fetch(`obtener-datos-ice.php?${params.toString()}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        currentDataICE = data;
+                        mostrarDatos(data);
+                    })
+                    .catch(error => console.error("Error al cargar datos:", error));
+            }
+
+            // ========================================
+            // MOSTRAR DATOS EN GRÁFICA
+            // ========================================
+
+            function mostrarDatos(data) {
+                if (!data || data.length === 0) {
+                    actualizarEstadisticas({});
+                    actualizarGrafica({});
+                    return;
+                }
+
+                let estadosData = {};
+                data.forEach(item => {
+                    estadosData[item.clasificacionice] = parseInt(item.cantidad);
+                });
+
+                actualizarEstadisticas(estadosData);
+                actualizarGrafica(estadosData);
+            }
+
+            function actualizarEstadisticas(chartData) {
+                const total = Object.values(chartData).reduce((sum, val) => sum + val, 0);
+
+                const calcularPorcentaje = (valor) => {
+                    if (total === 0) return '0.0%';
+                    return ((valor / total) * 100).toFixed(1) + '%';
+                };
+
+                document.getElementById('totalRegistros').textContent = total;
+                document.getElementById('cantidadSaludable').textContent = calcularPorcentaje(chartData['Riesgo Bajo'] || 0);
+                document.getElementById('cantidadNoSaludable').textContent = calcularPorcentaje(chartData['Riesgo Elevado'] || 0);
+            }
+
+            function actualizarGrafica(chartData) {
+                if (mainChartICE) mainChartICE.destroy();
+
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                const total = Object.values(chartData).reduce((sum, val) => sum + val, 0);
+
+                const labels = Object.keys(chartData);
+                const valores = Object.values(chartData);
+
+                const colores = labels.map(label => {
+                    if (label === 'Riesgo Bajo') return '#28a745';
+                    if (label === 'Riesgo Elevado') return '#dc3545';
+                    return '#6c757d';
+                });
+
+                mainChartICE = new Chart(ctx, {
+                    type: currentChartTypeICE,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: valores,
+                            backgroundColor: colores,
+                            borderColor: colores,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: currentChartTypeICE === 'pie',
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.parsed.y || context.parsed;
+                                        const porcentaje = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${porcentaje}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: currentChartTypeICE === 'bar' ? {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        } : {}
+                    },
+                    plugins: currentChartTypeICE === 'bar' ? [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((bar, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    const x = bar.x;
+                                    const y = bar.y + 20;
+
+                                    ctx.fillText(`${data}`, x, y - 10);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 10);
+                                });
+                            });
+                        }
+                    }] : [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((slice, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    const angle = (slice.startAngle + slice.endAngle) / 2;
+                                    const radius = (slice.innerRadius + slice.outerRadius) / 2;
+                                    const x = slice.x + Math.cos(angle) * radius * 0.7;
+                                    const y = slice.y + Math.sin(angle) * radius * 0.7;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    ctx.fillText(`${data}`, x, y - 8);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 8);
+                                });
+                            });
+                        }
+                    }]
+                });
+            }
+
+            // ========================================
+            // CAMBIO DE TIPO DE GRÁFICA
+            // ========================================
+
+            document.getElementById('btnBarras').addEventListener('click', function () {
+                currentChartTypeICE = 'bar';
+                this.classList.add('active');
+                document.getElementById('btnPastel').classList.remove('active');
+                if (currentDataICE) mostrarDatos(currentDataICE);
+            });
+
+            document.getElementById('btnPastel').addEventListener('click', function () {
+                currentChartTypeICE = 'pie';
+                this.classList.add('active');
+                document.getElementById('btnBarras').classList.remove('active');
+                if (currentDataICE) mostrarDatos(currentDataICE);
+            });
+
+            // ========================================
+            // INICIALIZACIÓN Y LISTENERS
+            // ========================================
+
+            cargarFacultades("facultad");
+            cargarFacultades("facultad-mobile");
+            cargarSeveridades("severidad");
+            cargarSeveridades("severidad-mobile");
+
+            // Desktop Listeners
+            document.getElementById("facultad")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera");
+                cargarDatosDelDashboard();
+            });
+            document.getElementById("carrera")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("sexo")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("severidad")?.addEventListener("change", cargarDatosDelDashboard);
+
+            // Mobile Listeners
+            document.getElementById("facultad-mobile")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera-mobile");
+                cargarDatosDelDashboard();
+            });
+            document.getElementById("carrera-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("sexo-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("severidad-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+
+            // Carga inicial
+            cargarDatosDelDashboard();
+        });
+    </script>
+</body>
+
+</html>

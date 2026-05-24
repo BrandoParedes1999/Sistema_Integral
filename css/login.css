@@ -1,0 +1,199 @@
+body {
+    background: url('UNACAR-1-1.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    background: #f5f5f5;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header-bar {
+    background: #d3d300;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 10px;
+    font-weight: bold;
+    font-family: Arial;
+    color: #000000;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+h4{
+    font-size: 20px;
+}
+
+.delfin-logo {
+    width: 80px;
+    height: 80px;
+    margin: 15px auto;
+    display: block;
+}
+
+label{
+    font-family: Arial;
+}
+
+input[type="text"], input[type="password"] {
+    width: 85%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #bbb;
+    border-radius: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 16px;
+}
+
+/*
+.input-container {
+    position: relative;
+    width: 85%;
+    margin: 0 auto;
+}
+*/
+
+button {
+    background: #d32f2f;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    width: 85%;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #b71c1c;
+}
+
+.footer-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 15px;
+}
+
+.header-bar label {
+    font-size: 50%;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.forgot-password-link {
+    color: blue;
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
+}
+.password-container {
+    position: relative; /* Hacemos que el contenedor sea relativo para que el ícono se pueda posicionar en relación a él */
+    transition: margin-bottom 0.3s ease;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 30px;
+    top: 75%; /* Alineamos verticalmente con respecto al contenedor de la contraseña */
+    transform: translateY(-50%); /* Ajustamos para que esté centrado */
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.error-msg {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 5px;
+    display: none; /* Ocultar el mensaje por defecto */
+    transition: margin-top 0.3s ease;
+}
+
+.password-container.error-active {
+    margin-bottom: 30px; /* Este margen se activa solo cuando hay un mensaje de error */
+}
+
+
+.input-container, .password-container {
+    transition: margin-bottom 0.3s ease; /* Transición suave en el contenedor */
+}
+
+.input-container.error-active, .password-container.error-active {
+    margin-bottom: 30px; /* Agregamos margen extra cuando haya un mensaje de error */
+}
+.password-container.error-active .toggle-password {
+    display: none;
+}
+
+
+/* Media queries para dispositivos más pequeños */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .header-bar {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    input[type="text"], input[type="password"], button {
+        width: 100%;
+    }
+
+    .delfin-logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .unacar1-logo {
+        width: 40px;
+        height: 55px;
+        
+    }
+}
+
+@media (max-width: 400px) {
+    .header-bar {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .delfin-logo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .unacar1-logo {
+        width: 35px;
+        height: 50px;
+    }
+}

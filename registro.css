@@ -1,0 +1,241 @@
+:root {
+    /* Paleta Institucional (Aproximada a UNACAR) */
+    --primary: #003da5;      /* Azul Institucional */
+    --primary-dark: #002a70;
+    --secondary: #ffd100;    /* Amarillo acento */
+    --text-main: #1f2937;    /* Gris oscuro para texto */
+    --text-light: #6b7280;   /* Gris medio para etiquetas */
+    --bg-page: #f3f4f6;      /* Gris muy claro de fondo */
+    --white: #ffffff;
+    --border: #e5e7eb;       /* Gris claro para bordes */
+    --focus-ring: rgba(0, 61, 165, 0.15);
+    
+    /* Sombras suaves y profesionales */
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    /* Fondo sutil con una franja superior institucional */
+    background-image: linear-gradient(to bottom, var(--primary) 0%, var(--primary) 300px, var(--bg-page) 300px);
+    background-repeat: no-repeat;
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    line-height: 1.5;
+}
+
+/* Header simplificado y elegante */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--white);
+    padding-top: 1rem;
+}
+
+.header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.header p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 300;
+}
+
+/* Contenedor principal tipo Tarjeta */
+.form-container {
+    max-width: 850px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 16px; /* Bordes redondeados modernos pero no excesivos */
+    box-shadow: var(--shadow-card);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Barra superior decorativa en la tarjeta */
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+}
+
+/* Secciones del formulario */
+.form-section {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background-color: var(--secondary);
+    margin-right: 12px;
+    border-radius: 2px;
+}
+
+/* Campos del formulario */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-field {
+    margin-bottom: 1.5rem;
+}
+
+.form-grid .form-field {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+input[type="tel"],
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background-color: var(--white);
+    border: 1px solid #d1d5db; /* Gris neutro */
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Estado Focus */
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+/* Inputs deshabilitados */
+input:disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+}
+
+/* Estilo para inputs pequeños */
+.small-input {
+    max-width: 100%; /* En móvil full width, en escritorio controlado por grid */
+}
+
+/* Botón de Enviar */
+.submit-container {
+    margin-top: 2rem;
+    text-align: right; /* Alineado a la derecha es más profesional en formularios largos */
+    padding-top: 1rem;
+}
+
+.btn-submit {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.875rem 2.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 61, 165, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* Ajustes Responsivos */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+        background-image: linear-gradient(to bottom, var(--primary) 0%, var(--primary) 200px, var(--bg-page) 200px);
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .form-container {
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+        gap: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-submit {
+        width: 100%; /* Botón ancho completo en móvil */
+        justify-content: center;
+    }
+
+    .submit-container {
+        text-align: center;
+    }
+}

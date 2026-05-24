@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Índice de Masa Corporal</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css datos/observatorio.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="imagenes/logo_pequeño.ico">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/observatorio/observatorio.html">
+                <img src="imagenes/logo_unacar (1).png" alt="" width="160px">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1 active" href="/observatorio/datos-fisicos/imc.html">Índice de Masa
+                            Corporal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/clasificacionice.html">Índice
+                            Cintura Estatura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1"
+                            href="/observatorio/datos-fisicos/clasificacioncad-cin.html">Índice Cadera Cintura</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/colesterol.html">Colesterol</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1"
+                            href="/observatorio/datos-fisicos/trigliceridos.html">Trigliceridos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/glucosa.html">Glucosa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/datos-fisicos/tensionarterial.html">Tensión
+                            Arterial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ms-1 my-1" href="/observatorio/observatorio.html">Salir</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="/observatorio/datos-fisicos/imc.html">
+                <img src="imagenes/EDUCANDO VF SLOGAN (IDENTIDAD)_ NEGRO.png" alt="" width="50px" id="imagen">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 d-none d-md-block">
+                <nav class="h-100 flex-column align-items-stretch pe-4"
+                    style="position: fixed; overflow-y: auto; width: 250px; max-height: calc(100vh - 100px); border-right: 1px solid #000; border-radius: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);">
+                    <nav class="nav nav-pills flex-column p-3">
+                        <p class="lead text-center"><strong>¡Prueba con Diferentes Parámetros!</strong></p>
+
+                        <div class="mb-3">
+                            <label for="facultad" class="form-label"><strong>Facultad</strong></label>
+                            <select class="form-select form-select-sm" name="facultad" id="facultad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="carrera" class="form-label"><strong>Carrera</strong></label>
+                            <select class="form-select form-select-sm" name="carrera" id="carrera">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label"><strong>Sexo</strong></label>
+                            <select class="form-select form-select-sm" name="sexo" id="sexo">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="severidad" class="form-label"><strong>Clasificación</strong></label>
+                            <select class="form-select form-select-sm" name="severidad" id="severidad">
+                                <option value="" selected disabled>Selecciona</option>
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+                    </nav>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9 offset-md-4 offset-lg-3 text-center mt-2 px-3">
+                <h1 class="display-6 display-md-5">Gráfica de Clasificación de Índice de Masa Corporal(IMC)</h1>
+
+                <!-- FILTROS MOBILE -->
+                <div class="d-md-none mt-4">
+                    <button class="btn btn-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtrosMobile">
+                        <i class="bi bi-funnel"></i> Mostrar Filtros
+                    </button>
+
+                    <div class="collapse" id="filtrosMobile">
+                        <div class="card card-body">
+                            <div class="mb-3">
+                                <label for="facultad-mobile" class="form-label"><strong>Facultad</strong></label>
+                                <select class="form-select" name="facultad" id="facultad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="carrera-mobile" class="form-label"><strong>Carrera</strong></label>
+                                <select class="form-select" name="carrera" id="carrera-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sexo-mobile" class="form-label"><strong>Sexo</strong></label>
+                                <select class="form-select" name="sexo" id="sexo-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="severidad-mobile" class="form-label"><strong>Clasificación</strong></label>
+                                <select class="form-select" name="severidad" id="severidad-mobile">
+                                    <option value="" selected disabled>Selecciona</option>
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA ÚNICA -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0"></h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary active"
+                                            id="btnBarras">
+                                            📊 Barras
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPastel">
+                                            🥧 Pastel
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="mainChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESTADÍSTICAS -->
+                <div class="row mt-4 mb-3">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Estadísticas IMC</h5>
+                                <div class="row text-center">
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Total Registros</h6>
+                                        <h3 id="totalRegistros" class="text-info">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Peso Insuficiente</h6>
+                                        <h3 id="pesoInsuficiente" class="text-info">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Peso Normal</h6>
+                                        <h3 id="pesoNormal" class="text-success">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Sobrepeso</h6>
+                                        <h3 id="sobrepeso" class="text-warning">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Obesidad Grado 1</h6>
+                                        <h3 id="obesidad1" class="text-danger">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Obesidad Grado 2</h6>
+                                        <h3 id="obesidad2" class="text-danger">0</h3>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <h6 class="text-muted">Obesidad Grado 3 (mórbida)</h6>
+                                        <h3 id="obesidad3" class="text-danger">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Script para imc.html con porcentajes, valores en gráficas y modal informativo
+        // Reemplazar el <script> completo dentro del body
+
+        let mainChart = null;
+        let currentChartType = 'bar';
+        let currentData = null;
+        const TEMA_ACTUAL = "imc_datos";
+        const COLUMNA_ESTADO = "clasificacion_imc";
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Mostrar modal de bienvenida
+            showWelcomeModal();
+
+            // ========================================
+            // MODAL DE BIENVENIDA
+            // ========================================
+            function showWelcomeModal() {
+                const modalHTML = `
+        <div class="modal fade" id="welcomeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-info-circle-fill"></i> Indicadores de Salud Física
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="lead">Estos indicadores son herramientas fundamentales para evaluar tu estado de salud y prevenir enfermedades crónicas:</p>
+                    
+                    <div class="row mt-3 g-3">
+                        <!-- IMC -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-primary h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary">
+                                        <i class="bi bi-person-fill"></i> Índice de Masa Corporal (IMC)
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Evalúa si tu peso es adecuado para tu estatura</li>
+                                        <li>Identifica riesgos de enfermedades relacionadas con el peso</li>
+                                        <li>Ayuda a establecer metas de peso saludables</li>
+                                        <li>Es un indicador inicial de salud metabólica</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Índice Cintura-Estatura -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-success h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">
+                                        <i class="bi bi-rulers"></i> Índice Cintura-Estatura (ICE)
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Detecta la acumulación de grasa abdominal</li>
+                                        <li>Evalúa el riesgo de diabetes tipo 2</li>
+                                        <li>Predice enfermedades cardiovasculares</li>
+                                        <li>Es más preciso que el IMC para riesgo metabólico</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Índice Cadera-Cintura -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-info h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info">
+                                        <i class="bi bi-body-text"></i> Índice Cadera-Cintura (ICC)
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Identifica el patrón de distribución de grasa corporal</li>
+                                        <li>Evalúa el riesgo cardiovascular según el tipo de obesidad</li>
+                                        <li>Diferencia entre obesidad androide (abdominal) y ginecoide (cadera)</li>
+                                        <li>Ayuda a personalizar estrategias de prevención</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colesterol -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-warning h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-warning">
+                                        <i class="bi bi-droplet-fill"></i> Colesterol Total
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Evalúa el riesgo de enfermedades del corazón</li>
+                                        <li>Detecta problemas de acumulación de grasa en arterias</li>
+                                        <li>Permite prevenir infartos y derrames cerebrales</li>
+                                        <li>Guía cambios en dieta y estilo de vida</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Triglicéridos -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-danger h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-danger">
+                                        <i class="bi bi-heart-pulse-fill"></i> Triglicéridos
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Mide la cantidad de grasa circulante en la sangre</li>
+                                        <li>Alerta sobre riesgo de pancreatitis aguda</li>
+                                        <li>Indica problemas en el metabolismo de grasas</li>
+                                        <li>Complementa la evaluación de riesgo cardiovascular</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Glucosa -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-secondary h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-secondary">
+                                        <i class="bi bi-activity"></i> Glucosa en Ayunas
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Detecta diabetes y prediabetes tempranamente</li>
+                                        <li>Evalúa el control del azúcar en sangre</li>
+                                        <li>Previene complicaciones como daño renal y ceguera</li>
+                                        <li>Permite ajustar dieta y tratamiento oportunamente</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tensión Arterial -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-dark h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-dark">
+                                        <i class="bi bi-heart-fill"></i> Tensión Arterial
+                                    </h6>
+                                    <p class="small mb-2"><strong>¿Para qué sirve?</strong></p>
+                                    <ul class="small mb-0">
+                                        <li>Detecta hipertensión (presión alta)</li>
+                                        <li>Previene infartos, derrames cerebrales e insuficiencia renal</li>
+                                        <li>Evalúa la salud del sistema cardiovascular</li>
+                                        <li>Permite monitorear la efectividad del tratamiento</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-4 mb-0">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-lightbulb-fill"></i> Importancia de la Prevención
+                        </h6>
+                        <p class="mb-0 small">
+                            El monitoreo regular de estos indicadores permite detectar problemas de salud en etapas tempranas, cuando son más fáciles de tratar. 
+                            <strong>Recuerda:</strong> estos datos son herramientas de evaluación general. Para un diagnóstico preciso y recomendaciones personalizadas, 
+                            siempre consulta a un profesional de la salud.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <i class="bi bi-check-circle"></i> Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+                welcomeModal.show();
+            }
+
+            // ========================================
+            // FUNCIONES DE CARGA
+            // ========================================
+
+            function cargarFacultades(selectId) {
+                fetch("obtener-datos-imc.php?tipo=facultad")
+                    .then(response => response.json())
+                    .then(data => {
+                        let select = document.getElementById(selectId);
+                        if (!select) return;
+
+                        select.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                        data.forEach(facultad => {
+                            let option = document.createElement("option");
+                            option.value = facultad.id_facultad;
+                            option.textContent = facultad.nombre_facultad;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function cargarCarreras(facultadID, selectCarreraId) {
+                let selectCarrera = document.getElementById(selectCarreraId);
+                if (!selectCarrera) return;
+
+                selectCarrera.innerHTML = '<option value="" selected disabled>Selecciona</option><option value="">Ninguno</option>';
+
+                if (!facultadID) return;
+
+                fetch(`obtener-datos-imc.php?tipo=carrera&idfacultad=${facultadID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(carrera => {
+                            let option = document.createElement("option");
+                            option.value = carrera.id_carrera;
+                            option.textContent = carrera.nombre_carrera;
+                            selectCarrera.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function cargarSeveridades(selectId) {
+                let select = document.getElementById(selectId);
+                if (!select) return;
+
+                fetch("obtener-datos-imc.php?tipo=severidad")
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(item => {
+                            let option = document.createElement("option");
+                            option.value = item.clasificacion_imc;
+                            option.textContent = item.clasificacion_imc;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function obtenerValoresFiltros() {
+                const isMobile = window.innerWidth < 768;
+
+                return {
+                    facultad: document.getElementById(isMobile ? "facultad-mobile" : "facultad")?.value || "",
+                    carrera: document.getElementById(isMobile ? "carrera-mobile" : "carrera")?.value || "",
+                    sexo: document.getElementById(isMobile ? "sexo-mobile" : "sexo")?.value || "",
+                    severidad: document.getElementById(isMobile ? "severidad-mobile" : "severidad")?.value || ""
+                };
+            }
+
+            function cargarDatosDelDashboard() {
+                const filtros = obtenerValoresFiltros();
+
+                let params = new URLSearchParams();
+                params.append("tipo", TEMA_ACTUAL);
+
+                if (filtros.facultad) params.append("facultad", filtros.facultad);
+                if (filtros.carrera) params.append("carrera", filtros.carrera);
+                if (filtros.sexo) params.append("sexo", filtros.sexo);
+                if (filtros.severidad) params.append("severidad", filtros.severidad);
+
+                fetch(`obtener-datos-imc.php?${params.toString()}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        currentData = data;
+                        mostrarDatos(data);
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            // ========================================
+            // MOSTRAR DATOS EN GRÁFICA
+            // ========================================
+
+            function mostrarDatos(data) {
+                if (!data || data.length === 0) {
+                    actualizarEstadisticas({});
+                    actualizarGrafica({});
+                    return;
+                }
+
+                let estadosData = {};
+                data.forEach(item => {
+                    estadosData[item.clasificacion_imc] = parseInt(item.cantidad);
+                });
+
+                actualizarEstadisticas(estadosData);
+                actualizarGrafica(estadosData);
+            }
+
+            function actualizarEstadisticas(chartData) {
+                const total = Object.values(chartData).reduce((sum, val) => sum + val, 0);
+
+                const calcularPorcentaje = (valor) => {
+                    if (total === 0) return '0.0%';
+                    return ((valor / total) * 100).toFixed(1) + '%';
+                };
+
+                document.getElementById('totalRegistros').textContent = total;
+                document.getElementById('pesoInsuficiente').textContent = calcularPorcentaje(chartData['Peso insuficiente'] || 0);
+                document.getElementById('pesoNormal').textContent = calcularPorcentaje(chartData['Peso normal'] || 0);
+                document.getElementById('sobrepeso').textContent = calcularPorcentaje(chartData['Sobrepeso'] || 0);
+                document.getElementById('obesidad1').textContent = calcularPorcentaje(chartData['Obesidad grado 1'] || 0);
+                document.getElementById('obesidad2').textContent = calcularPorcentaje(chartData['Obesidad grado 2'] || 0);
+                document.getElementById('obesidad3').textContent = calcularPorcentaje(chartData['Obesidad grado 3 (mórbida)'] || 0);
+            }
+
+            function actualizarGrafica(chartData) {
+                if (mainChart) mainChart.destroy();
+
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                const total = Object.values(chartData).reduce((sum, val) => sum + val, 0);
+
+                const labels = Object.keys(chartData);
+                const valores = Object.values(chartData);
+
+                const colores = labels.map(label => {
+                    if (label === 'Peso insuficiente') return '#17a2b8';
+                    if (label === 'Peso normal') return '#28a745';
+                    if (label === 'Sobrepeso') return '#ffc107';
+                    if (label === 'Obesidad grado 1') return '#fd7e14';
+                    if (label === 'Obesidad grado 2') return '#dc3545';
+                    if (label === 'Obesidad grado 3 (mórbida)') return '#721c24';
+                    return '#6c757d';
+                });
+
+                mainChart = new Chart(ctx, {
+                    type: currentChartType,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: valores,
+                            backgroundColor: colores,
+                            borderColor: colores,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: currentChartType === 'pie',
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.parsed.y || context.parsed;
+                                        const porcentaje = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${porcentaje}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: currentChartType === 'bar' ? {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        } : {}
+                    },
+                    plugins: currentChartType === 'bar' ? [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((bar, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    const x = bar.x;
+                                    const y = bar.y + 20;
+
+                                    ctx.fillText(`${data}`, x, y - 10);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 10);
+                                });
+                            });
+                        }
+                    }] : [{
+                        afterDatasetsDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            chart.data.datasets.forEach((dataset, i) => {
+                                const meta = chart.getDatasetMeta(i);
+                                meta.data.forEach((slice, index) => {
+                                    const data = dataset.data[index];
+                                    const porcentaje = total > 0 ? ((data / total) * 100).toFixed(1) : 0;
+
+                                    const angle = (slice.startAngle + slice.endAngle) / 2;
+                                    const radius = (slice.innerRadius + slice.outerRadius) / 2;
+                                    const x = slice.x + Math.cos(angle) * radius * 0.7;
+                                    const y = slice.y + Math.sin(angle) * radius * 0.7;
+
+                                    ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 12px Arial';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+
+                                    ctx.fillText(`${data}`, x, y - 8);
+                                    ctx.fillText(`(${porcentaje}%)`, x, y + 8);
+                                });
+                            });
+                        }
+                    }]
+                });
+            }
+
+            // ========================================
+            // CAMBIO DE TIPO DE GRÁFICA
+            // ========================================
+
+            document.getElementById('btnBarras').addEventListener('click', function () {
+                currentChartType = 'bar';
+                this.classList.add('active');
+                document.getElementById('btnPastel').classList.remove('active');
+                if (currentData) mostrarDatos(currentData);
+            });
+
+            document.getElementById('btnPastel').addEventListener('click', function () {
+                currentChartType = 'pie';
+                this.classList.add('active');
+                document.getElementById('btnBarras').classList.remove('active');
+                if (currentData) mostrarDatos(currentData);
+            });
+
+            // ========================================
+            // INICIALIZACIÓN
+            // ========================================
+
+            cargarFacultades("facultad");
+            cargarFacultades("facultad-mobile");
+            cargarSeveridades("severidad");
+            cargarSeveridades("severidad-mobile");
+
+            // ========================================
+            // EVENT LISTENERS - DESKTOP
+            // ========================================
+
+            document.getElementById("facultad")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera");
+                cargarDatosDelDashboard();
+            });
+
+            document.getElementById("carrera")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("sexo")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("severidad")?.addEventListener("change", cargarDatosDelDashboard);
+
+            // ========================================
+            // EVENT LISTENERS - MOBILE
+            // ========================================
+
+            document.getElementById("facultad-mobile")?.addEventListener("change", function () {
+                cargarCarreras(this.value, "carrera-mobile");
+                cargarDatosDelDashboard();
+            });
+
+            document.getElementById("carrera-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("sexo-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+            document.getElementById("severidad-mobile")?.addEventListener("change", cargarDatosDelDashboard);
+
+            cargarDatosDelDashboard();
+        });
+    </script>
+
+</body>
+
+</html>

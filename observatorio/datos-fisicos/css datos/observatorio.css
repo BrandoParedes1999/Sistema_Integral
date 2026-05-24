@@ -1,0 +1,56 @@
+
+.nav-link:hover {
+    color: #fafafa; 
+    background-color: #05961df3 !important; 
+    border-radius: 15px;
+}
+
+
+.nav-link:active {
+    color: #112fdb; 
+}
+
+/* Nota: Es buena práctica también definir el estilo para el enlace activo actual,
+   que en tu código es el que tiene la clase 'active' */
+.nav-link.active {
+    color: white !important; 
+    background-color: #05961df3 !important; 
+    border-radius: 15px;
+}
+
+.navbar{
+    background-color: #e0d20d;
+}
+
+.dentro{
+    background-color: #24335c;
+}
+
+.fuera{
+    background-color: #E5E7EB;
+}
+
+p{
+    font-size: 18px;
+}
+
+li{
+    font-size: 18px;
+}
+#imagen {
+    transition: transform 0.3s ease-out;
+}
+
+#imagen:hover {
+    /* Mueve la imagen 5 píxeles a la izquierda */
+    transform: translateX(5px); 
+    border-radius: 15px;
+}
+
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        

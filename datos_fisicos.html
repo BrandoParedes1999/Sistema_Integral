@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Registro de Datos Físicos</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="datos_fisicos.css">
+    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* Estilos adicionales para el modal */
+        .modal-header.bg-warning {
+            background-color: #ffc107 !important;
+        }
+
+        .modal-header .modal-title i {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        #listaCuestionariosFaltantes .list-group-item {
+            border-left: 4px solid #ffc107;
+        }
+
+        #listaCuestionariosFaltantes .list-group-item i {
+            color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-3 display: flex">
+        <button class="salir" title="salir" onclick="window.location.href='menu.php'">
+            <div class="salir-box">
+                <span class="salir-elem">
+                    <svg viewBox="0 0 46 40" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z">
+                        </path>
+                    </svg>
+                </span>
+                <span class="button-elem">
+                    <svg viewBox="0 0 46 40">
+                        <path
+                            d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z">
+                        </path>
+                    </svg>
+                </span>
+            </div>
+        </button>
+    </div>
+    <div class="container mt-3">
+        <div class="text-center mb-2">
+            <span class="titulo">REGISTRO DE DATOS FÍSICOS</span>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="mb-2">¿A quién va dirigido?</label>
+                <select id="ambos" class="form-select" onchange="mostrarFormulario()">
+                    <option selected disabled>Escoge una opción</option>
+                    <option value="alumnos">Alumnos</option>
+                </select>
+            </div>
+        </div>
+
+        <form action="guardar_datos_fisicos_alumnos.php" id="formalumnos" style="display: none;" method="post">
+            <div class="card fondogenerales">
+                <div class="card-body">
+                    <div class="seccion-header">
+                        DATOS GENERALES
+                    </div>
+
+                    <div class="instruccion-busqueda">
+                        <div class="icono-info">i</div>
+                        <span><strong>Ingrese la matrícula y presione Enter</strong> para buscar al alumno</span>
+                    </div>
+
+                    <div class="datos-principales" style="justify-items: center;">
+                        <div class="Fila-campos">
+                            <div class="campo-grupo text-center" style="width: 200px;">
+                                <label for="matricula"><strong> Matrícula </strong></label>
+                                <input type="number" class="form-control" name="matricula" id="matricula"
+                                    placeholder="Ej: 12345" required style="border: 2px solid #260db6;" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Datos Principales -->
+                    <div class="datos-principales">
+                        <div class="fila-campos">
+
+                            <div class="campo-grupo">
+                                <label for="fecha1">Fecha</label>
+                                <input type="date" class="form-control" name="fecha1" id="fecha1" required />
+                            </div>
+
+                            <div class="campo-grupo">
+                                <label for="nombre1">Nombre(s)</label>
+                                <input type="text" class="form-control" name="nombre1" id="nombre1"
+                                    placeholder="Se llenará automáticamente" readonly />
+                            </div>
+
+                            <div class="campo-grupo">
+                                <label for="apellidos1">Apellidos</label>
+                                <input type="text" class="form-control" name="apellidos1" id="apellidos1"
+                                    placeholder="Se llenará automáticamente" readonly />
+                            </div>
+
+                            <div class="campo-grupo">
+                                <label for="sexo1">Sexo</label>
+                                <select class="form-select" name="sexo1" id="sexo1">
+                                    <option value="" selected disabled>Seleccionar...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos Secundarios -->
+                    <div class="fila-campos-secundarios">
+
+
+                        <div class="campo-grupo">
+                            <label for="edad1">Edad</label>
+                            <input type="number" class="form-control" name="edad1" id="edad1" placeholder="Años"
+                                disabled />
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="facultad1">Facultad</label>
+                            <select class="form-select" name="facultad1" id="facultad1">
+                                <option value="" selected disabled>Seleccionar...</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="carrera1">Carrera</label>
+                            <select class="form-select" name="carrera1" id="carrera1">
+                                <option value="" selected disabled>Seleccionar...</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-grupo" style="grid-column: span 2;">
+                            <label for="correo1">Correo Electrónico</label>
+                            <input type="email" class="form-control" name="correo1" id="correo1"
+                                placeholder="ejemplo@correo.com" readonly />
+                        </div>
+                    </div>
+
+                    <div class="grid-mediciones">
+                        <!-- Sección 1: Cintura/Cadera -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">CINTURA / CADERA</div>
+
+                            <div class="grupo-medicion">
+                                <label for="cintura1">Cintura (cm)</label>
+                                <input type="number" id="cintura1" name="cintura1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="cadera1">Cadera (cm)</label>
+                                <input type="number" id="cadera1" name="cadera1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="icc1">ICC</label>
+                                <input type="text" id="icc1" name="icc1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacioncadcin1">Clasificación Cad-Cintura</label>
+                                <input type="text" id="clasificacioncadcin1" name="clasificacioncadcin1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacionicc1">Clasificación ICC</label>
+                                <input type="text" id="clasificacionicc1" name="clasificacionicc1" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Peso/Talla -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">PESO Y TALLA</div>
+
+                            <div class="grupo-medicion">
+                                <label for="peso1">Peso (kg)</label>
+                                <input type="number" id="peso1" name="peso1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="talla1">Talla (cm)</label>
+                                <input type="number" id="talla1" name="talla1" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="imc1">IMC</label>
+                                <input type="text" id="imc1" name="imc1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacionimc1">Clasificación IMC</label>
+                                <input type="text" id="clasificacionimc1" name="clasificacionimc1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="ice">ICE</label>
+                                <input type="text" id="ice" name="ice" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacionice">Clasificacion ICE</label>
+                                <input type="text" id="clasificacionice" name="clasificacionice" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Sección 3: Masa Grasa -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">MASA GRASA</div>
+
+                            <div class="grupo-medicion">
+                                <label for="mb1">MB (Kcal)</label>
+                                <input type="number" id="mb1" name="mb1" step="0.01" required readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="actividad1">Nivel de Actividad</label>
+                                <select id="actividad1" name="actividad1" required>
+                                    <option value="" selected disabled>Seleccionar...</option>
+                                    <option value="1.2">Sedentario</option>
+                                    <option value="1.375">Actividad Ligera</option>
+                                    <option value="1.55">Actividad Moderada</option>
+                                    <option value="1.725">Actividad Intensa</option>
+                                    <option value="1.9">Actividad Muy Intensa</option>
+                                </select>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="get1">GET</label>
+                                <input type="number" id="get1" name="get1" step="0.01" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="pormasagrasa1">% Masa Grasa</label>
+                                <input type="number" id="pormasagrasa1" name="pormasagrasa1" step="0.01" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="valoridealgrasa1">Valor Ideal % Grasa</label>
+                                <input type="text" id="valoridealgrasa1" name="valoridealgrasa1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificaciongrasa1">Clasificación % Grasa</label>
+                                <input type="text" id="clasificaciongrasa1" name="clasificaciongrasa1" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Sección 4: Masa Magra y Agua -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">MASA MAGRA Y AGUA</div>
+
+                            <div class="grupo-medicion">
+                                <label for="masamagra1">Masa Magra (kg)</label>
+                                <input type="number" id="masamagra1" name="masamagra1" step="0.01" required readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="aguatotal1">Agua Total (Litros)</label>
+                                <input type="number" id="aguatotal1" name="aguatotal1" step="0.01" required readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="porcentajeaguatotal1">% Agua Total</label>
+                                <input type="text" id="porcentajeaguatotal1" name="porcentajeaguatotal1" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Sección 5: Glucosa y Colesterol -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">GLUCOSA Y COLESTEROL</div>
+
+                            <div class="grupo-medicion">
+                                <label for="glucosa1">Glucosa (mg/dL)</label>
+                                <input type="number" id="glucosa1" name="glucosa1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacionglucosa1">Clasificación Glucosa</label>
+                                <input type="text" id="clasificacionglucosa1" name="clasificacionglucosa1" readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="colesterol1">Colesterol (mg/dL)</label>
+                                <input type="number" id="colesterol1" name="colesterol1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacioncolesterol1">Clasificación Colesterol</label>
+                                <input type="text" id="clasificacioncolesterol1" name="clasificacioncolesterol1"
+                                    readonly>
+                            </div>
+                        </div>
+
+                        <!-- Sección 6: Triglicéridos y Tensión -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">TRIGLICÉRIDOS Y TENSIÓN ARTERIAL</div>
+
+                            <div class="grupo-medicion">
+                                <label for="trigliceridos1">Triglicéridos (mg/dL)</label>
+                                <input type="number" id="trigliceridos1" name="trigliceridos1" step="0.01" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificaciontrigliceridos1">Clasificación Triglicéridos</label>
+                                <input type="text" id="clasificaciontrigliceridos1" name="clasificaciontrigliceridos1"
+                                    readonly>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="tensionarterial1">Tensión Arterial (mmHg)</label>
+                                <input type="text" id="tensionarterial1" name="tensionarterial1" required>
+                            </div>
+
+                            <div class="grupo-medicion">
+                                <label for="clasificacionta1">Clasificación T.A</label>
+                                <input type="text" id="clasificacionta1" name="clasificacionta1" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <button type="submit" class="btn btn-primary btn-guardar" title="Guardar datos">
+                            <span>Guardar Datos</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        function mostrarFormulario() {
+            var tipoUsuario = document.getElementById("ambos").value;
+
+            // Obtenemos los elementos
+            var formMaestros = document.getElementById("formmaestros");
+            var formAlumnos = document.getElementById("formalumnos");
+
+            // Ocultamos los formularios, SÓLO SI EXISTEN
+            if (formMaestros) {
+                formMaestros.style.display = "none";
+            }
+            if (formAlumnos) {
+                formAlumnos.style.display = "none";
+            }
+
+
+            // Mostramos el formulario correspondiente
+            if (tipoUsuario === "maestros" && formMaestros) {
+                formMaestros.style.display = "block";
+            } else if (tipoUsuario === "alumnos" && formAlumnos) {
+                formAlumnos.style.display = "block";
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Evitar el envío del formulario cuando se presiona "Enter"
+
+
+            // Detectar "Enter" en el campo matrícula y buscar el alumno
+            document.getElementById("matricula").addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); // ✅ Evita que se envíe el formulario
+                    const matricula = this.value.trim();
+                    if (matricula) {
+
+                        const formulario = document.getElementById("formalumnos");
+                        const inputAConservar = document.getElementById("matricula");
+                        const valorGuardado = inputAConservar.value;
+
+                        formulario.reset();
+                        inputAConservar.value = valorGuardado;
+                     
+                        buscarAlumno(matricula);
+
+
+                    }
+                }
+            });
+        });
+
+        function buscarAlumno(matricula) {
+            fetch(`buscar_alumno.php?matricula=${matricula}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire({
+                            title: 'Sin Alumno',
+                            text: 'Se encontró un error: ' + data.error,
+                            text: 'Verfica que el alumno esté registrado',
+                            icon: 'warning'
+                        });
+                    } else {
+                        document.getElementById("nombre1").value = data.nombres_alum;
+                        document.getElementById("apellidos1").value = `${data.ape_paterno_alum} ${data.ape_materno_alum}`;
+                        document.getElementById("edad1").value = data.edad_alum;
+                        document.getElementById("correo1").value = data.correo_alum;
+
+                        // Actualizar selects
+                        document.getElementById("sexo1").innerHTML = `<option selected>${data.sexo}</option>`;
+                        document.getElementById("facultad1").innerHTML = `<option selected>${data.nombre_facultad}</option>`;
+                        document.getElementById("carrera1").innerHTML = `<option selected>${data.nombre_carrera}</option>`;
+
+                        // Asignar fecha actual
+                        document.getElementById("fecha1").value = new Date().toISOString().split("T")[0];
+
+                        ideales();
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                            title: 'SIN ALUMNO',
+                            text: 'Verifica que el Alumno esté Registrado',
+                            icon: 'warning'
+                        });
+                });
+        }
+    </script>
+
+    <script>
+        document.getElementById("peso1").addEventListener("input", calcularIMC);
+        document.getElementById("talla1").addEventListener("input", calcularIMC);
+
+        function calcularIMC() {
+            const peso = parseFloat(document.getElementById("peso1").value);
+            const talla = parseFloat(document.getElementById("talla1").value) / 100;
+            let clasificacion = "";
+
+            // Verificar si ambos campos son válidos
+            if (!isNaN(peso) && peso > 0 && !isNaN(talla) && talla > 0) {
+                const imc = peso / (talla * talla);
+
+                // Clasificación según el IMC
+                if (imc < 18.5) {
+                    clasificacion = "Peso insuficiente";
+                } else if (imc >= 18.5 && imc <= 24.9) {
+                    clasificacion = "Peso normal";
+                } else if (imc >= 25.0 && imc <= 29.9) {
+                    clasificacion = "Sobrepeso";
+                } else if (imc >= 30.0 && imc <= 34.9) {
+                    clasificacion = "Obesidad grado 1";
+                } else if (imc >= 35.0 && imc <= 39.9) {
+                    clasificacion = "Obesidad grado 2";
+                } else {
+                    clasificacion = "Obesidad grado 3 (mórbida)";
+                }
+
+                // Mostrar clasificación en el campo de texto
+                document.getElementById("clasificacionimc1").value = clasificacion;
+                document.getElementById("imc1").value = imc.toFixed(2);
+
+                masagrasa();
+            } else {
+                // Limpiar los valores si alguno de los campos no es válido
+                document.getElementById("clasificacionimc1").value = "";
+                document.getElementById("imc1").value = "";
+
+                masagrasa();
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("cintura1").addEventListener("input", calcularice);
+        document.getElementById("talla1").addEventListener("input", calcularice);
+
+        function calcularice() {
+            const cintura = parseFloat(document.getElementById("cintura1").value);
+            const talla = parseFloat(document.getElementById("talla1").value);
+
+            if (!isNaN(cintura) && !isNaN(talla) && talla > 0) {
+                const ice = cintura / talla;
+                
+                document.getElementById("ice").value = ice.toFixed(2);
+                calcularclasice();
+            } else {
+                
+                document.getElementById("ice").value = "";
+            }
+        }
+    </script>
+
+
+    <script>
+        document.getElementById("cintura1").addEventListener("input", calcularICC);
+        document.getElementById("cadera1").addEventListener("input", calcularICC);
+        document.getElementById("sexo1").addEventListener("change", calcularICC);
+
+        function calcularICC() {
+            const cintura = parseFloat(document.getElementById("cintura1").value);
+            const cadera = parseFloat(document.getElementById("cadera1").value);
+            const sexo = document.getElementById("sexo1").value;
+            let clasificacion = "";
+            let clasificacion1 = "";
+
+            if (cintura > 0 && cadera > 0 && sexo) {
+                const icc = cintura / cadera;
+
+                if (sexo === "MASCULINO") {
+                    if (icc < 0.9) {
+                        clasificacion = "Riesgo Bajo";
+                    } else if (icc >= 0.90 && icc <= 0.99) {
+                        clasificacion = "Riesgo Moderado";
+                    } else {
+                        clasificacion = "Riesgo Alto";
+                    }
+                } else if (sexo === "FEMENINO") {
+                    if (icc < 0.80) {
+                        clasificacion = "Riesgo Bajo";
+                    } else if (icc >= 0.80 && icc <= 0.84) {
+                        clasificacion = "Riesgo Moderado";
+                    } else {
+                        clasificacion = "Riesgo Alto";
+                    }
+                }
+
+                if (sexo === "MASCULINO") {
+                    if (icc < 1.0) {
+                        clasificacion1 = "Ginecoide";
+                    } else {
+                        clasificacion1 = "Androide";
+                    }
+                } else if (sexo === "FEMENINO") {
+                    if (icc < 0.8) {
+                        clasificacion1 = "Ginecoide";
+                    } else {
+                        clasificacion1 = "Androide";
+                    }
+                }
+
+                // Mostrar clasificación en el campo de texto
+                document.getElementById("clasificacioncadcin1").value = clasificacion;
+                document.getElementById("clasificacionicc1").value = clasificacion1;
+                document.getElementById("icc1").value = icc.toFixed(2);
+            } else {
+                document.getElementById("clasificacioncadcin1").value = "";
+                document.getElementById("clasificacionicc1").value = "";
+                document.getElementById("icc1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("sexo1").addEventListener("input", calculargrasa);
+        document.getElementById("peso1").addEventListener("input", calculargrasa);
+        document.getElementById("talla1").addEventListener("input", calculargrasa);
+
+        function calculargrasa() {
+            const peso = parseFloat(document.getElementById("peso1").value);
+            const talla = parseFloat(document.getElementById("talla1").value);
+            const sexo = document.getElementById("sexo1").value;
+            let resultado = "";
+
+            if (peso > 0 && talla > 0 && sexo) {
+                if (sexo == "MASCULINO") {
+                    resultado = (0.407 * peso) + (0.267 * talla) - 19.2;
+                } else if (sexo == "FEMENINO") {
+                    resultado = (0.252 * peso) + (0.473 * talla) - 48.3
+                }
+
+                document.getElementById("masamagra1").value = resultado.toFixed(2);
+            } else {
+                document.getElementById("masamagra1").value = "";
+            }
+        }
+
+    </script>
+
+    <script>
+        document.getElementById("sexo1").addEventListener("input", calcularmb);
+        document.getElementById("peso1").addEventListener("input", calcularmb);
+        document.getElementById("talla1").addEventListener("input", calcularmb);
+        document.getElementById("edad1").addEventListener("input", calcularmb)
+
+        function calcularmb() {
+            const peso = parseFloat(document.getElementById("peso1").value);
+            const talla = parseFloat(document.getElementById("talla1").value);
+            const edad = parseInt(document.getElementById("edad1").value)
+            const sexo = document.getElementById("sexo1").value;
+            let resultado = "";
+
+            if (peso > 0 && talla > 0 && edad > 0 && sexo) {
+
+                if (sexo == "MASCULINO") {
+                    resultado = (10 * peso) + (6.25 * talla) - (5 * edad) + 5;
+                } else if (sexo == "FEMENINO") {
+                    resultado = (10 * peso) + (6.25 * talla) - (5 * edad) - 161
+                }
+
+                calcularGet();
+                document.getElementById("mb1").value = resultado.toFixed(2);
+            } else {
+                document.getElementById("mb1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+        // Debes llamar a esta función cuando el MB o el nivel de actividad cambien
+        document.getElementById("mb1").addEventListener("input", calcularGet);
+        document.getElementById("actividad1").addEventListener("input", calcularGet); // ¡Añade este!
+
+        function calcularGet() {
+            const kcal = parseFloat(document.getElementById("mb1").value);
+            // Obtenemos el factor de actividad del nuevo selector
+            const factorActividad = parseFloat(document.getElementById("actividad1").value);
+
+            if (!isNaN(kcal) && !isNaN(factorActividad)) {
+
+                // FÓRMULA CORREGIDA: MB * Factor de Actividad
+                const get = kcal * factorActividad;
+
+                document.getElementById("get1").value = get.toFixed(2);
+            } else {
+                document.getElementById("get1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("imc1").addEventListener("input", masagrasa);
+        document.getElementById("edad1").addEventListener("input", masagrasa);
+        document.getElementById("sexo1").addEventListener("input", masagrasa);
+
+        function masagrasa() {
+            const imc = parseFloat(document.getElementById("imc1").value);
+            const edad = parseFloat(document.getElementById("edad1").value);
+
+            // 1. Leemos el texto del campo 'sexo1'
+            const sexoTexto = document.getElementById("sexo1").value.toLowerCase();
+
+            // 2. Creamos una variable para guardar el valor numérico del sexo
+            let valorSexo;
+
+            // 3. Convertimos el texto a número usando una condición
+            if (sexoTexto === "masculino") {
+                valorSexo = 1;
+            } else if (sexoTexto === "femenino") {
+                valorSexo = 0;
+            }
+
+            // 4. La validación ahora comprueba que 'valorSexo' tenga un número (0 o 1)
+            if (!isNaN(imc) && !isNaN(edad) && !isNaN(valorSexo) && imc > 0) {
+                // 5. Usamos la nueva variable 'valorSexo' en la fórmula
+                const mg = (1.2 * imc) + (0.23 * edad) - (10.8 * valorSexo) - 5.4;
+
+                document.getElementById("pormasagrasa1").value = mg.toFixed(2);
+                clasificacionGra();
+            } else {
+                document.getElementById("pormasagrasa1").value = "";
+                clasificacionGra();
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("pormasagrasa1").addEventListener("input", clasificacionGra);
+        document.getElementById("sexo1").addEventListener("change", clasificacionGra);
+
+        function clasificacionGra() {
+            const masa = parseFloat(document.getElementById("pormasagrasa1").value);
+            const sexo = document.getElementById("sexo1").value;
+            let clasificacion = "";
+
+            if (sexo == "MASCULINO") {
+                if (masa < 10) {
+                    clasificacion = "Debajo Recomendado";
+                } else if (masa >= 10 && masa <= 20) {
+                    clasificacion = "Recomendado";
+                } else {
+                    clasificacion = "Arriba Recomendado";
+                }
+            } else if (sexo == "FEMENINO") {
+                if (masa < 20) {
+                    clasificacion = "Debajo Recomendado";
+                } else if (masa > 20 && masa <= 30) {
+                    clasificacion = "Recomendado";
+                } else {
+                    clasificacion = "Arriba Recomendado";
+                }
+            } else {
+                clasificacion = "";
+            }
+
+            document.getElementById("clasificaciongrasa1").value = clasificacion;
+        }
+    </script>
+
+    <script>
+        document.getElementById("edad1").addEventListener("input", aguatotal);
+        document.getElementById("talla1").addEventListener("input", aguatotal);
+        document.getElementById("peso1").addEventListener("input", aguatotal);
+        document.getElementById("sexo1").addEventListener("input", aguatotal);
+
+        function aguatotal() {
+            const peso = parseFloat(document.getElementById("peso1").value);
+            const talla = parseFloat(document.getElementById("talla1").value);
+            const edad = parseFloat(document.getElementById("edad1").value);
+            const sexo = document.getElementById("sexo1").value;
+            let result = "";
+
+
+            if (!isNaN(peso) && !isNaN(talla) && !isNaN(edad) && peso > 0 && talla > 0 && edad > 0) {
+
+                if (sexo.toUpperCase() === "MASCULINO") {
+                    result = 2.447 - (0.09516 * edad) + (0.1074 * talla) + (0.3362 * peso);
+                } else if (sexo.toUpperCase() === "FEMENINO") {
+                    result = -2.097 + (0.1069 * talla) + (0.2466 * peso);
+                }
+            }
+
+
+            if (typeof result === 'number') {
+                document.getElementById("aguatotal1").value = result.toFixed(2);
+                calcularagua();
+            } else {
+                document.getElementById("aguatotal1").value = "";
+                calcularagua();
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("sexo1").addEventListener("input", ideales);
+
+        function ideales() {
+            // Usamos .toUpperCase() para que funcione con "MASCULINO", "masculino", etc.
+            const sexo = document.getElementById("sexo1").value.toUpperCase();
+            let result = "";
+
+            if (sexo === "MASCULINO") {
+                result = "18 - 24%";
+            } else if (sexo === "FEMENINO") {
+                result = "25 - 31%";
+            }
+
+            document.getElementById("valoridealgrasa1").value = result;
+        }
+        ideales();
+    </script>
+
+    <script>
+        document.getElementById("aguatotal1").addEventListener("input", calcularagua);
+        document.getElementById("peso1").addEventListener("input", calcularagua);
+
+        function calcularagua() {
+            const agua = parseFloat(document.getElementById("aguatotal1").value);
+            const peso = parseFloat(document.getElementById("peso1").value);
+
+            if (!isNaN(agua) && !isNaN(peso)) {
+                // Realiza el cálculo solo si el valor ingresado es un número válido
+                const poragua = (agua * 100) / peso;
+
+                document.getElementById("porcentajeaguatotal1").value = poragua.toFixed(2);
+            } else {
+                document.getElementById("porcentajeaguatotal1").value = ""; // Limpia el campo si alguno no es un número válido
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("glucosa1").addEventListener("input", calcularGlu);
+
+        function calcularGlu() {
+            const glucosa = parseFloat(document.getElementById("glucosa1").value);
+            let clasificacion = "";
+
+            if (!isNaN(glucosa)) {
+                if (glucosa <= 0) {
+                    clasificacion = "Sin resultados";
+                } else if (glucosa < 70) {
+                    clasificacion = "Bajo"
+                } else if (glucosa < 100) {
+                    clasificacion = "Normal";
+                } else if (glucosa >= 100 && glucosa <= 125) {
+                    clasificacion = "Glucosa Alterada (Pre-diabetes)";
+                } else {
+                    clasificacion = "DM";
+                }
+                document.getElementById("clasificacionglucosa1").value = clasificacion;
+            } else {
+                document.getElementById("clasificacionglucosa1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("colesterol1").addEventListener("input", calcularcole);
+
+        function calcularcole() {
+            const colesterol = parseFloat(document.getElementById("colesterol1").value);
+            let clasificacion = "";
+
+            if (!isNaN(colesterol)) {
+
+                if (colesterol <= 0) {
+                    clasificacion = "Sin resultados";
+                } else if (colesterol < 160) {
+                    clasificacion = "Bajo";
+                } else if (colesterol < 200) {
+                    clasificacion = "Optimo";
+                } else if (colesterol < 240) {
+                    clasificacion = "Límite Alto";
+                } else {
+                    clasificacion = "Alto";
+                }
+                document.getElementById("clasificacioncolesterol1").value = clasificacion;
+            } else {
+                document.getElementById("clasificacioncolesterol1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+
+        document.getElementById("trigliceridos1").addEventListener("input", calculartri);
+
+        function calculartri() {
+            const trigliceridos = parseFloat(document.getElementById("trigliceridos1").value);
+            let clasificacion = "";
+
+            if (!isNaN(trigliceridos)) {
+
+                if (trigliceridos <= 0) {
+                    clasificacion = "Sin resultados";
+                } else if (trigliceridos < 50) {
+                    clasificacion = "Bajo";
+                }
+                else if (trigliceridos < 150) {
+                    clasificacion = "Normal";
+                } else if (trigliceridos < 200) {
+                    clasificacion = "Límite Alto";
+                } else if (trigliceridos < 500) {
+                    clasificacion = "Alto";
+                } else { // Todo lo demás (>= 500)
+                    clasificacion = "Muy Alto";
+                }
+                document.getElementById("clasificaciontrigliceridos1").value = clasificacion;
+            } else {
+                document.getElementById("clasificaciontrigliceridos1").value = "";
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById("tensionarterial1").addEventListener("input", function () {
+            let valor = this.value;
+            let clasificacionInput = document.getElementById("clasificacionta1");
+
+            let partes = valor.split("/");
+            if (partes.length === 2) {
+                let sistolica = parseInt(partes[0]);
+                let diastolica = parseInt(partes[1]);
+
+                if (!isNaN(sistolica) && !isNaN(diastolica)) {
+                    let clasificacion = "";
+
+                    if (sistolica < 90 || diastolica < 60) {
+                        clasificacion = "Hipotensión";
+                    } else if (sistolica <= 120 && diastolica <= 80) {
+                        clasificacion = "Normal";
+                    } else if (sistolica <= 129 && diastolica < 80) {
+                        clasificacion = "Elevada";
+                    } else if (sistolica <= 139 || diastolica <= 89) {
+                        clasificacion = "Hipertensión Grado 1";
+                    } else if (sistolica >= 140 || diastolica >= 90) {
+                        clasificacion = "Hipertensión Grado 2";
+                    } else if (sistolica >= 180 || diastolica >= 120) {
+                        clasificacion = "Crisis Hipertensiva";
+                    }
+
+                    clasificacionInput.value = clasificacion;
+                } else {
+                    clasificacionInput.value = "Valor no válido";
+                }
+            } else {
+                clasificacionInput.value = "Formato incorrecto";
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById("ice").addEventListener("input", calcularclasice);
+        function calcularclasice(){
+            const ice = parseFloat(document.getElementById("ice").value);
+            let result= "";
+
+            if(!isNaN(ice)){
+                if(ice>=0.5){
+                    result= "Riesgo Elevado";
+                }else{
+                    result="Riesgo Bajo";
+                }
+                document.getElementById("clasificacionice").value = result;
+
+            }else{
+                document.getElementById("clasificacionice").value = "";
+            }
+        }
+    </script>
+
+    <!-- REEMPLAZAR EL SCRIPT DE ENVÍO DEL FORMULARIO (el último script en datos_fisicos.html) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("formalumnos");
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const boton = form.querySelector(".btn-guardar");
+                const textoBoton = boton.querySelector("span");
+
+                boton.disabled = true;
+                textoBoton.textContent = "Guardando...";
+
+                const formData = new FormData(form);
+
+                fetch('guardar_datos_fisicos_alumnos.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        console.log('Status:', response.status);
+                        console.log('Headers:', response.headers.get('content-type'));
+
+                        return response.text().then(text => {
+                            console.log('Respuesta raw:', text);
+
+                            try {
+                                const data = JSON.parse(text);
+                                return { ok: response.ok, data: data };
+                            } catch (e) {
+                                console.error('Error al parsear JSON:', e);
+                                throw new Error('Respuesta no es JSON válido: ' + text.substring(0, 100));
+                            }
+                        });
+                    })
+                    .then(result => {
+                        if (!result.ok) {
+                            throw new Error(result.data.error || 'Error en el servidor');
+                        }
+
+                        const data = result.data;
+
+                        // Verificar si hay advertencia de cuestionarios faltantes
+                        if (data.warning && data.cuestionarios_faltantes) {
+                            mostrarModalAdvertencia(data.cuestionarios_faltantes);
+                            form.reset();
+                            limpiarCamposReadonly();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            return;
+                        }
+
+                        // Si todo está bien
+                        if (data.success) {
+                            mostrarMensajeExito(data);
+                            form.reset();
+                            limpiarCamposReadonly();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else if (data.error) {
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error completo:', error);
+                        alert('Error: ' + error.message);
+                    })
+                    .finally(() => {
+                        boton.disabled = false;
+                        textoBoton.textContent = "Guardar Datos";
+                    });
+            });
+
+            function mostrarModalAdvertencia(cuestionariosFaltantes) {
+                const lista = document.getElementById('listaCuestionariosFaltantes');
+                lista.innerHTML = '';
+
+                cuestionariosFaltantes.forEach(cuestionario => {
+                    const item = document.createElement('li');
+                    item.className = 'list-group-item';
+                    item.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i>${cuestionario}`;
+                    lista.appendChild(item);
+                });
+
+                const modal = new bootstrap.Modal(document.getElementById('modalAdvertencia'));
+                modal.show();
+            }
+
+            function mostrarMensajeExito(data) {
+
+                let titulo = data.success;
+                let texto = '';
+                let icono = 'success';
+
+                // 2. Comprueba el estado del correo
+                if (data.correo_enviado) {
+                    texto = 'Correo enviado exitosamente';
+
+                } else if (data.error_correo) {
+                    texto = '⚠️ No se pudo enviar el correo: ' + data.error_correo;
+                    icono = 'warning';
+                }
+
+                
+                Swal.fire({
+
+                    text: texto,
+                    icon: icono
+                });
+            }
+
+            function limpiarCamposReadonly() {
+                document.getElementById("nombre1").value = "";
+                document.getElementById("apellidos1").value = "";
+                document.getElementById("sexo1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
+                document.getElementById("facultad1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
+                document.getElementById("carrera1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
+            }
+        });
+    </script>
+
+    <div class="modal fade" id="modalAdvertencia" tabindex="-1" aria-labelledby="modalAdvertenciaLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalAdvertenciaLabel">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Cuestionarios Incompletos
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info" role="alert">
+                        <strong>Datos físicos guardados correctamente</strong>
+                    </div>
+                    <p><strong>Sin embargo, no se puede generar el reporte PDF porque el alumno no ha
+                            completado:</strong></p>
+                    <ul id="listaCuestionariosFaltantes" class="list-group mb-3">
+
+                    </ul>
+                    <div class="alert alert-warning" role="alert">
+                        <small>
+                            <strong>Instrucción:</strong> El alumno debe completar todos los cuestionarios para poder
+                            generar su reporte de salud integral.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

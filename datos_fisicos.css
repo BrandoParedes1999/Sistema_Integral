@@ -1,0 +1,347 @@
+/* PASO 1: Se agregaron todas las variables de menu.css 
+  para unificar el diseño.
+*/
+:root {
+  --azul-rey: #1e40af;
+  --azul-oscuro: #1e3a8a;
+  --azul-claro: #3b82f6;
+  --acento: #f59e0b;
+  --gris-oscuro: #1f2937;
+  --gris-medio: #6b7280;
+  --gris-claro: #f3f4f6;
+  --blanco: #FFFFFF;
+  --sombra-suave: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --sombra-media: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --sombra-profunda: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.salir {
+  display: block;
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  overflow: hidden;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+}
+
+.salir:before,
+.salir:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 7px;
+}
+
+.salir:before {
+  /* CAMBIO: Usando color de variable */
+  border: 4px solid var(--gris-oscuro); 
+  transition: opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.salir:after {
+   /* CAMBIO: Usando un rojo más estándar */
+  border: 4px solid #dc2626;
+  transform: scale(1.3);
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+}
+
+.salir:hover:before,
+.salir:focus:before {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.salir:hover:after,
+.salir:focus:after {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.salir-box {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.salir-elem {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 22px 18px 0 18px;
+  transform: rotate(180deg);
+  /* CAMBIO: Usando color de variable */
+  fill: var(--gris-oscuro);
+}
+
+.button:hover .salir-box,
+.salir:focus .salir-box {
+  transition: 0.4s;
+  transform: translateX(-56px);
+}
+
+body {
+  /* ⭐ NUEVO DEGRADADO MÁS NOTABLE ⭐ */
+  background: 
+    /* Capa 2 (Superior): Tu azul-rey (15% opaco) difuminándose a transparente */
+    linear-gradient(
+      180deg, 
+      rgba(30, 64, 175, 0.15), /* 15% opacidad de azul-rey */
+      transparent 50%          /* Se vuelve transparente a la mitad de la página */
+    ),
+    /* Capa 1 (Inferior): El degradado gris que ya teníamos */
+    linear-gradient(180deg, #dee2e6 0%, #ced4da 100%);
+
+  /* El resto de tus estilos de body se mantienen */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  color: var(--gris-oscuro);
+  letter-spacing: -0.01em;
+  padding: 20px 0;
+}
+
+.titulo {
+  display: inline-block;
+  text-align: center;
+  font-size: 2.25rem; /* Ajustado para jerarquía */
+  font-weight: 700;   /* Más parecido a los h1 de menu.css */
+  margin: auto;
+  font-family: 'Inria Sans', sans-serif;
+  /* CAMBIO: Color oscuro para fondo claro */
+  color: var(--gris-oscuro);
+  letter-spacing: -0.02em;
+}
+
+/* PASO 3: Se actualizaron las tarjetas y contenedores 
+  para usar las variables de color y sombra.
+*/
+.fondogenerales {
+  background-color: var(--blanco);
+  border: 1px solid #e5e7eb; /* Borde sutil como menu.css */
+  box-shadow: var(--sombra-media); /* Sombra de variable */
+  border-radius: 16px; /* Borde más redondeado */
+}
+
+.seccion-header {
+  /* CAMBIO: Degradado con variables */
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+}
+
+.instruccion-busqueda {
+  /* CAMBIO: Usando colores de acento para alertas */
+  background: #fffbeb; /* Amarillo muy claro */
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--acento); /* Borde de acento */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instruccion-busqueda strong {
+  color: #b45309; /* Naranja oscuro para texto */
+}
+
+.icono-info {
+  background-color: var(--acento); /* Fondo de acento */
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.datos-principales {
+  background-color: var(--gris-claro); /* Fondo gris claro */
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--azul-rey); /* Borde azul */
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.campo-grupo label {
+  font-weight: 600;
+  color: var(--gris-medio); /* Color de texto más suave */
+  margin-bottom: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+  border: 1px solid #ced4da; /* Borde más sutil */
+  border-radius: 8px; /* Bordes más redondeados */
+  padding: 10px 12px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.campo-grupo input:focus,
+.campo-grupo select:focus {
+  border-color: var(--azul-rey); /* Color de foco azul */
+  /* Sombra de foco azul */
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15); 
+  outline: none;
+}
+
+.campo-grupo input[readonly] {
+  background-color: var(--gris-claro); /* Fondo gris claro */
+  cursor: not-allowed;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: 150px 180px 1fr 1fr;
+  gap: 15px;
+  align-items: end;
+}
+
+.fila-campos-secundarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+/* Secciones de mediciones */
+.seccion-mediciones {
+  background-color: var(--blanco); /* Fondo blanco para resaltar */
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb; /* Borde sutil */
+  box-shadow: var(--sombra-suave); /* Sombra sutil */
+}
+
+.titulo-medicion {
+  font-weight: 700;
+  color: var(--azul-rey); /* Color azul */
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--azul-rey); /* Borde azul */
+}
+
+.grupo-medicion {
+  margin-bottom: 18px;
+}
+
+.grupo-medicion label {
+  display: block;
+  font-weight: 600;
+  color: var(--gris-medio); /* Color de texto gris */
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.grupo-medicion input,
+.grupo-medicion select {
+  width: 100%;
+  border: 1px solid #ced4da; /* Borde sutil */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.grupo-medicion input:focus,
+.grupo-medicion select:focus {
+  border-color: var(--azul-rey); /* Color de foco azul */
+  /* Sombra de foco azul */
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15);
+  outline: none;
+}
+
+.grupo-medicion input[readonly] {
+  background-color: var(--gris-claro);
+  color: var(--gris-oscuro); /* Texto oscuro en campos readonly */
+  font-weight: 600;
+}
+
+.grid-mediciones {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .grid-mediciones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .fila-campos {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid-mediciones {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .fila-campos {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Botón de guardar con el estilo de menu.css */
+.btn-guardar {
+  /* CAMBIO: Degradado azul de variables */
+  background: linear-gradient(135deg, var(--azul-rey), var(--azul-claro));
+  border: none;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: var(--sombra-suave); /* Sombra de variable */
+  transition: all 0.3s ease;
+  color: var(--blanco); /* Texto blanco */
+}
+
+.btn-guardar:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-media); /* Sombra más grande al pasar el mouse */
+  /* Degradado ligeramente más oscuro */
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
+}
+
+  

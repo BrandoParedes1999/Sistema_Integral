@@ -1,0 +1,297 @@
+:root {
+    /* Paleta Institucional */
+    --primary: #003da5;
+    --primary-dark: #002a70;
+    --secondary: #ffd100;
+    --text-main: #1f2937;
+    --text-light: #6b7280;
+    --bg-page: #f3f4f6;
+    --white: #ffffff;
+    --success: #10b981;
+    --success-bg: #ecfdf5;
+    --border: #e5e7eb;
+    
+    /* Sombras */
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    /* Franja azul superior profesional */
+    background-image: linear-gradient(to bottom, var(--primary) 0%, var(--primary) 250px, var(--bg-page) 250px);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    color: var(--text-main);
+}
+
+/* Contenedor Principal Limitado */
+.main-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Header del Dashboard */
+.dashboard-header {
+    color: white;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.dashboard-header h2 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.dashboard-header .subtext {
+    font-weight: 300;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+/* Botón de Logout en el Header (Estilo sutil) */
+.btn-logout-header {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-logout-header:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+/* Tarjeta de Información del Alumno */
+.profile-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    background: var(--white);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.profile-title h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--primary);
+}
+
+.profile-body {
+    padding: 1.5rem;
+}
+
+/* Grid de datos del alumno */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.info-item span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* Sección de Acciones (Formularios) */
+.actions-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Tarjetas de Acción (Formularios) */
+.action-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--primary); /* Borde superior azul por defecto */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.action-card h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-main);
+}
+
+.action-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.btn-action {
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.2s;
+    border: none;
+    width: 100%;
+}
+
+.btn-action:hover {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+/* Estado: Completado */
+.action-card.completed {
+    border-top-color: var(--success);
+    background-color: #fcfdfd;
+}
+
+.action-card.completed h4 {
+    color: var(--success);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.action-card.completed h4::after {
+    content: '✓';
+    font-size: 1.2rem;
+    background: var(--success-bg);
+    color: var(--success);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-badge {
+    background-color: var(--success-bg);
+    color: var(--success);
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Modales personalizados para que coincidan con el tema */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: var(--shadow-hover);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border);
+    background-color: var(--white);
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .btn-logout-header {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .action-card {
+        padding: 1.5rem;
+    }
+}

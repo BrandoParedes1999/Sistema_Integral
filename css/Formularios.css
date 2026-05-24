@@ -1,0 +1,316 @@
+/* RESET GENERAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* FONDO DE LA PÁGINA */
+body {
+    background: linear-gradient(195deg, 
+    #9996AA 8.23%, 
+    #DBD992 41.78%, 
+    #B6B344 64.69%, 
+    #9D993E 71.24%);
+    text-align: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.profile-container {
+    position: absolute;
+    right: 20px;
+    top: calc(100% + 10px);
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 4px solid white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.header-container {
+    background: #2e2e2e; /* Fondo sólido negro */
+    padding: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: -25px;
+   
+}
+
+
+.header-container span {
+    background: linear-gradient(195deg, 
+        #DBD992 41.78%, 
+        #cacabc 8.23%, 
+        #cacabc 64.69%, 
+        #9D993E 71.24%);
+    -webkit-background-clip: text; /* Aplica el degradado solo al texto */
+    -webkit-text-fill-color: transparent; /* Hace el texto transparente para mostrar el degradado */
+    margin-right: 70%; 
+}
+
+
+/* GALERÍA */
+.gallery-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 300px;
+    gap: -50px; /* Para superponer los elementos como una baraja */
+    margin-top: 180px; /* Agrega un margen superior para separar de los elementos anteriores */
+}
+
+.gallery-item {
+    width: 250px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: absolute;
+    cursor: pointer;
+  
+}
+
+
+
+.gallery-item:nth-child(1) { transform: translateX(-100%) scale(1); z-index: 1;  background: rgba(114, 143, 163, 0.64);; }
+.gallery-item:nth-child(2) { transform: translateX(0) scale(1); z-index: 2; background: rgba(173, 78, 78, 0.6); }
+.gallery-item:nth-child(3) { transform: translateX(100%) scale(1); z-index: 1; background:  rgba(103, 160, 142, 0.63);;}
+
+.gallery-item img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    padding: 15px;
+}
+.gallery-item h2 {
+    position: absolute;
+    top: 10px; /* Mueve el texto hacia arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+}
+
+/* Cuando una galería es seleccionada */
+.gallery-item.active {
+    transform: translateX(0) scale(1.4);
+    z-index: 3;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* INDICADORES */
+/* INDICADORES */
+.gallery-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;  /* Espacio superior para los círculos */
+    margin-bottom: 30px; /* Agrega un margen inferior para separarlos de la galería */
+}
+/* Círculos de los indicadores con colores distintos */
+.circle {
+    width: 35px;
+    height: 35px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    transition: background 0.3s;
+    cursor: pointer;
+}
+
+/* Color para el primer círculo */
+.circle:nth-child(1) {
+    background-color: #af2ba4; /* Tomate */
+}
+
+/* Color para el segundo círculo */
+.circle:nth-child(2) {
+    background-color: #1E90FF; /* Verde */
+}
+
+/* Color para el tercer círculo */
+.circle:nth-child(3) {
+    background-color: #af2ba4; /* Azul */
+}
+
+/* Efecto hover para cambiar el color al pasar el mouse */
+.circle:hover {
+    transform: scale(1.2);
+    background: #555; /* Gris más oscuro cuando el mouse pasa por encima */
+}
+
+/* Estado activo de cada círculo */
+.circle.active {
+    background: #928c8c; /* Color negro para el círculo activo */
+}
+
+
+.circle.active, .circle:hover {
+    background: #7a7474;
+    transform: scale(1.2);
+}
+.gallery-btn {
+    position: relative;  /* Permite mover el elemento con top, left, etc. */
+    top: 35px; /* Mueve el botón 20px hacia abajo */
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background: #b83615;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.gallery-btn:hover {
+    background: #cf887b;
+    transform: scale(1.1);
+}
+
+.profile-btn:hover {
+    background-color: #3785e4;
+    transform: scale(1.05);
+}
+.profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre la imagen y el texto */
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #eedddd;
+    color: #e1c44c;
+    border: 2px solid #e1c44c;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    width: 84px;  /* Tamaño fijo para la imagen */
+    height: 44px;
+    position: absolute; /* Necesario para moverlo */
+    top: 15px;
+    right: 30px;
+}
+
+.btn-icon {
+    width: 34px;  /* Tamaño fijo para la imagen */
+    height: 34px; /* Tamaño fijo para la imagen */
+    object-fit: cover; /* Mantiene la proporción sin distorsión */
+    border-radius: 50%; /* Hace que la imagen sea completamente redonda */
+
+}
+
+/* Estilos para pantallas pequeñas (móviles) */
+@media screen and (max-width: 768px) {
+    header {
+        height: 150px;
+    }
+
+    .profile-container {
+        right: 10px;
+        top: calc(100% + 20px);
+    }
+
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+    }
+
+    .header-container {
+        font-size: 30px;
+        margin-top: -20px;
+    }
+
+    .gallery-container {
+        height: 250px;
+        gap: -40px;
+        margin-top: 120px;
+    }
+
+    .gallery-item {
+        width: 200px;
+        height: 240px;
+    }
+
+    .gallery-item img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .gallery-item h2 {
+        font-size: 18px;
+    }
+
+    .gallery-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+        top: 25px;
+    }
+}
+
+/* Estilos para pantallas más pequeñas (móviles muy pequeños) */
+@media screen and (max-width: 480px) {
+    header {
+        height: 120px;
+    }
+
+    .profile-container {
+        right: 5px;
+        top: calc(100% + 30px);
+    }
+
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+    }
+
+    .header-container {
+        font-size: 24px;
+        margin-top: -15px;
+    }
+
+    .gallery-container {
+        height: 220px;
+        gap: -30px;
+        margin-top: 80px;
+    }
+
+    .gallery-item {
+        width: 150px;
+        height: 180px;
+    }
+
+    .gallery-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .gallery-item h2 {
+        font-size: 16px;
+    }
+
+    .gallery-btn {
+        font-size: 10px;
+        padding: 5px 10px;
+        top: 15px;
+    }
+}

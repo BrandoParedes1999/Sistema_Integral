@@ -1,0 +1,214 @@
+/* =========================================
+   BASE: Estilos heredados de registro.css
+   ========================================= */
+:root {
+    --primary: #003da5;      /* Azul Institucional */
+    --primary-dark: #002a70;
+    --secondary: #ffd100;    /* Amarillo acento */
+    --text-main: #1f2937;
+    --text-light: #6b7280;
+    --bg-page: #f3f4f6;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --focus-ring: rgba(0, 61, 165, 0.15);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    background-image: linear-gradient(to bottom, var(--primary) 0%, var(--primary) 300px, var(--bg-page) 300px);
+    background-repeat: no-repeat;
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    line-height: 1.5;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--white);
+    padding-top: 1rem;
+}
+.header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.header p { font-size: 1rem; color: rgba(255, 255, 255, 0.9); font-weight: 300; }
+
+/* Contenedor Tarjeta */
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 6px;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+}
+
+/* Secciones */
+.form-section {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+}
+.section-title {
+    font-size: 1.25rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+.section-title::before {
+    content: ''; display: inline-block; width: 4px; height: 24px;
+    background-color: var(--secondary); margin-right: 12px; border-radius: 2px;
+}
+
+/* Instrucciones */
+.instructions-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* =========================================
+   ESTILOS ESPECÍFICOS PARA PREGUNTAS (FIX FINAL)
+   ========================================= */
+
+.questions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .questions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.question-card {
+    background-color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem; /* Aumenté un poco el padding interno */
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.question-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 61, 165, 0.08);
+}
+
+.question-label {
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    display: block;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Opciones de respuesta */
+.options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: auto;
+    padding-left: 0.25rem; /* Pequeño margen interno de seguridad */
+}
+
+/* Contenedor de cada opción (Radio + Label) */
+.form-check {
+    display: flex; 
+    align-items: center; 
+    margin: 0;
+    padding-left: 0 !important; /* FORZAMOS QUE NO TENGA PADDING IZQUIERDO DE BOOTSTRAP */
+    min-height: auto;
+}
+
+/* El círculo del radio button */
+.form-check-input {
+    float: none !important; /* Anular float de Bootstrap */
+    margin-left: 0 !important; /* CORRECCIÓN CLAVE: Eliminar margen negativo */
+    margin-right: 12px !important; /* Espacio derecho asegurado */
+    margin-top: 0;
+    
+    width: 20px; 
+    height: 20px; 
+    min-width: 20px; /* Evita que se aplaste */
+    
+    border: 2px solid #d1d5db; 
+    cursor: pointer;
+    background-color: #fff;
+    
+    /* Resetear estilos nativos */
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 50%;
+    
+    position: relative;
+}
+
+/* Estilo cuando está seleccionado */
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+    background-size: 60%; 
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 4px var(--focus-ring);
+    border-color: var(--primary);
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    line-height: 1.3;
+}
+
+/* Botón Enviar */
+.submit-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.btn-submit {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(0, 61, 165, 0.3);
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}

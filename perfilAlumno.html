@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <title>Perfil Alumno</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/colores.css">
+</head>
+
+
+    <body>
+        <!--ENCABEZADO LOGO/NOMBRE/BTN-->
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-between"> 
+                <img src="images/logo_unacar (1).png" alt="logo">
+                <h1 class="perfil-alumnado m-0">PERFIL ALUMNO</h1>
+                    <div class="d-flex">
+                        <button class="button me-2" onclick="location.href='listadoAlumnos.html'">Atras</button>
+                    </div>
+            </nav>
+            <!--Navbar Btn reportes etc..-->
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <button class="btn navbar-toogler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span>Reportes</span>
+                    </button>              
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Reportes Estadisticos
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Datos Fisicos</a></li>
+                                    <li><a class="dropdown-item" id="enlacePuntajes" href="#">Estilo de Vida</a></li>
+                                    <li><a class="dropdown-item" href="#"></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+        <header>
+            <div class="container-fluid mt-3">
+                <form class="was-validated" id="" action="" method="post">       
+                    <div class="rectangle-info d-flex align-items-center p-4">
+                        
+                        <!-- Foto del alumno -->
+                        <div class="text-center me-4">
+                            <div class="rectangle-foto d-flex align-items-center justify-content-center">
+                                <img id="fotoAlumno" alt="Foto del Alumno" class="img-fluid" width="150">
+                            </div>
+                        </div>
+
+                        <!-- Información del alumno -->
+                        <div class="w-80">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Matrícula:</span> 
+                                        <input type="text" class="form-control" id="matricula" name="matricula" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Nombre:</span>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Apellidos:</span>
+                                        <input type="text" class="form-control" name="apellidos" id="apellidos" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Edad:</span>
+                                        <input type="text" class="form-control" name="edad" id="edad" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Facultad:</span>
+                                        <input type="text" class="form-control" name="facultad" id="facultad" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Carrera:</span>
+                                        <input type="text" class="form-control" name="carrera" id="carrera" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Correo Electrónico:</span>
+                                        <input type="email" class="form-control" name="email" id="email" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor de botones -->
+                    <div class="container mt-3">
+                        <div class="row">
+                            <div class="col-4 text-start">
+                                <button type="button" class="btn btn-primary w-75 btn-formularios">Formularios</button>
+                            </div>
+                            <div class="col-4 text-center">
+                                <button type="button" class="btn btn-primary w-75 btn-historial" style="font-size: small;">Antecedentes Heredo-Familiares</button>
+                            </div>
+                            <div class="col-4 text-end">
+                                <button type="button" class="btn  btn-primary w-75 btn-datos-fisicos">Datos Fisicos</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor de cuadros ocultos -->
+                    <br>
+                    <div class="container mt-4">
+                        <!-- Título dinámico -->
+                        <div class="rectangle-formulario mb-2 d-none" id="titulo-formulario">
+                            <div id="titulo-seccion" class="text-center text-color-linear-gradient(90deg, #c7c721, rgba(255, 255, 255, 0.94) 50%, rgba(239, 207, 27, 0.87)) p-3" style="font-size:smaller">
+                            <!-- El título cambiará dinámicamente -->
+                            </div>
+                        </div>
+                        <!-- Contenido de Formularios -->
+                        <div id="formulario-cuadros" class="row g-4 d-none">
+                        <!-- Cuadro Apgar -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded text-center">
+                                <!-- Rectángulo con el nombre "Apgar" -->
+                                <br>
+                                    <div class="rectangle-apgar p-1 text-center mb-1">
+                                    Estilo de Vida
+                                    </div>
+                                    <!-- Status con rectángulo de color dinámico -->
+                                    <label for="status" class="form-label">Status:</label>
+                                    <div id="status-apgar" class="mb-3">
+                                        <div id="status-rectangle-apgar" class="status-rectangle p-3">
+                                            <span id="status-text-apgar" class="text-white">No lo ha realizado</span>
+                                        </div>
+                                    </div>
+                                    <!-- Botón debajo del rectángulo -->
+                                    <button class="btn1-apgar btn-primary w-100">Ver Resultados</button>
+                                </div>
+                            </div>
+                            <!-- Cuadro Sisco -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded text-center">
+                                <!-- Rectángulo con el nombre "Sisco" -->
+                                <br>
+                                    <div class="rectangle-apgar p-1 text-center mb-1 ">
+                                        DASS-21
+                                    </div>
+                                    <!-- Status con rectángulo de color dinámico -->
+                                    <label for="status" class="form-label">Status:</label>
+                                    <div id="status-sisco" class="mb-3">
+                                        <div id="status-rectangle-sisco" class="status-rectangle p-3">
+                                            <span id="status-text-sisco" class="text-white">No lo ha realizado</span>
+                                        </div>
+                                    </div>
+                                    <!-- Botón debajo del rectángulo -->
+                                    <button class="btn1-apgar btn-primary w-100">Ver Resultados</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contenido de Historial Clínico -->
+                        <br>
+                        <div id="historial-cuadro" class="row d-none">
+                            <button type="button" class="btn1Historial btn-primary" data-bs-toggle="modal" data-bs-target="#historialModal">
+                                Historial Heredo-Familiar
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="historialModal" tabindex="-1" aria-labelledby="historialModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title" id="historialModalLabel" style="font-size: 100%;">Historial Heredo-Familiar</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="clipboard text-center">
+                                                <img src="Imagenes/tabla2.png" alt="Clipboard">
+                                                <div class="clipboard-content">
+                                                    <h5 class="titulo mt-2 text-center">Patologías Familiares</h5>
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">SobrePeso(Obesidad)</label>
+                                                                <input type="text" class="form-control" id="sobrepeso" name="Sobrepeso-Obesidad" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Diabetes Mellitus</label>
+                                                                <input type="text" class="form-control" id="diabetes" name="diabetesv" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Hipertensión Arterial</label>
+                                                                <input type="text" class="form-control" id="hipertension" name="hipertension" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Trigliceridos Alto</label>
+                                                                <input type="text" class="form-control" id="trigliceridos" name="trigliceridos" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Colesterol Alto</label>
+                                                                <input type="text" class="form-control" id="colesterol" name="colesterol" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Hepatitis</label>
+                                                                <input type="text" class="form-control" id="hepatitis" name="hepatitis" readonly required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Hígado Graso</label>
+                                                                <input type="text" class="form-control" id="higado" name="higado" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Cardiopatías</label>
+                                                                <input type="text" class="form-control" id="cardiopatias" name="cardiopatias" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Nefropatías</label>
+                                                                <input type="text" class="form-control" id="nefropatias" name="nefropatias" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Estreñimiento</label>
+                                                                <input type="text" class="form-control" id="estreñimiento" name="estreñimiento" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Gastritis</label>
+                                                                <input type="text" class="form-control" id="gastritis" name="gastritis" readonly required>
+                                                            </div>
+                                                            <div class="mb-3 text-center">
+                                                                <label class="form-label">Cáncer</label>
+                                                                <input type="text" class="form-control" id="cancer" name="cancer" readonly required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+            
+                                                    <h5 class="mt-4 text-center">Patologías Personales</h5>
+                                                    <div class="centered-container">
+                                                        <div class="mb-3 text-center wide-input">
+                                                            <label class="form-label">Tienes Alguna Enfermedad</label>
+                                                            <input type="text" class="form-control" id="tienesEnfermedad" name="tienesEnfermedad" readonly required>
+                                                        </div>
+                                                        <div class="mb-3 text-center wide-input">
+                                                            <label class="form-label">Tratamiento</label>
+                                                            <input type="text" class="form-control" id="Tratamiendo" name="Tratamiendo" readonly required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="datos-fisicos-cuadro" class="row d-none">
+                            <div class="col-md-6 offset-md-3 text-center">
+                                <label for="fecha-datos-fisicos" class="form-label">Seleccione la fecha de actualización:</label>
+                                <select id="fecha-datos-fisicos" class="form-select">
+                                    <option value="">Seleccione la Fecha: </option>
+                                </select>
+                                <!-- Modal para mostrar los datos físicos -->
+                                <div class="modal fade" id="datosFisicosModal" tabindex="-1" aria-labelledby="datosFisicosModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="datosFisicosModalLabel">Datos Físicos</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p><strong>Peso:</strong> <span id="modal-peso">-</span> kg</p>
+                                                        <p><strong>Talla:</strong> <span id="modal-talla">-</span> cm</p>
+                                                        <p><strong>IMC:</strong> <span id="modal-imc">-</span></p>
+                                                        <p><strong>Clasificación IMC:</strong> <span id="modal-clasificacion_imc">-</span></p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p><strong>Glucosa:</strong> <span id="modal-glucosa">-</span> mg/dL</p>
+                                                        <p><strong>Colesterol:</strong> <span id="modal-colesterol">-</span> mg/dL</p>
+                                                        <p><strong>Triglicéridos:</strong> <span id="modal-trigliceridos">-</span> mg/dL</p>
+                                                        <p><strong>Tensión Arterial:</strong> <span id="modal-tension_arterial">-</span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </header>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Obtener la matrícula desde la URL
+                const params = new URLSearchParams(window.location.search);
+                const matricula = params.get("matricula_alum");
+        
+                if (matricula) {
+                    // Actualizar el enlace de "Estilo de Vida" con la matrícula
+                    const enlacePuntajes = document.getElementById("enlacePuntajes");
+                    enlacePuntajes.href = `puntajes.html?matricula=${matricula}`;
+                }
+            });
+        </script>
+        
+        <script>
+            function cargarHistorialClinico(matricula) {
+                fetch(`historial.php?matricula_alum=${matricula}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        // Llenar los campos del historial clínico
+                        document.getElementById("sobrepeso").value = data.sobrepeso;
+                        document.getElementById("diabetes").value = data.diabetes;
+                        document.getElementById("hipertension").value = data.hipertension;
+                        document.getElementById("trigliceridos").value = data.trigliceridos;
+                        document.getElementById("colesterol").value = data.colesterol;
+                        document.getElementById("hepatitis").value = data.hepatitis;
+                        document.getElementById("higado").value = data.higado_graso;
+                        document.getElementById("cardiopatias").value = data.cardiopatias;
+                        document.getElementById("nefropatias").value = data.nefropatias;
+                        document.getElementById("estreñimiento").value = data.estreñimiento;
+                        document.getElementById("gastritis").value = data.gastritis;
+                        document.getElementById("cancer").value = data.cancer;
+                        document.getElementById("tienesEnfermedad").value = data.otros;
+                        document.getElementById("Tratamiendo").value = data.tratamiento;
+                    })
+                    .catch(error => console.error("Error al cargar el historial clínico:", error));
+            }
+
+            function cargarPerfil() {
+                const params = new URLSearchParams(window.location.search);
+                const matricula = params.get("matricula_alum");
+
+                if (!matricula) {
+                    alert("No se proporcionó una matrícula.");
+                    return;
+                }
+
+                fetch(`perfil.php?matricula_alum=${matricula}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        document.getElementById("fotoAlumno").src = data.foto;
+                        document.getElementById("matricula").value = data.matricula_alum;
+                        document.getElementById("nombre").value = data.nombres_alum;
+                        document.getElementById("apellidos").value = data.ape_paterno_alum + " " + data.ape_materno_alum;
+                        document.getElementById("edad").value = data.edad_alum;
+                        document.getElementById("facultad").value = data.nombre_facultad;
+                        document.getElementById("carrera").value = data.nombre_carrera;
+                        document.getElementById("email").value = data.correo_alum;
+
+                        // 🟢 Estado del formulario Apgar
+                        const statusRectangleApgar = document.getElementById('status-rectangle-apgar');
+                        const statusTextApgar = document.getElementById('status-text-apgar');
+                        if (data.estilo_vida_realizado) {
+                            statusTextApgar.textContent = 'Ya realizado';
+                            statusRectangleApgar.classList.add('bg-success'); // Color verde
+                        } else {
+                            statusTextApgar.textContent = 'No lo ha realizado';
+                            statusRectangleApgar.classList.add('bg-danger'); // Color rojo
+                        }
+
+                        // 🟢 Estado del formulario Sisco
+                        const statusRectangleSisco = document.getElementById('status-rectangle-sisco');
+                        const statusTextSisco = document.getElementById('status-text-sisco');
+                        if (data.sisco_realizado) {
+                            statusTextSisco.textContent = 'Ya realizado';
+                            statusRectangleSisco.classList.add('bg-success');
+                        } else {
+                            statusTextSisco.textContent = 'No lo ha realizado';
+                            statusRectangleSisco.classList.add('bg-danger');
+                        }
+                        })
+                        .catch(error => console.error("Error al cargar el perfil:", error));
+                            // Cargar el historial clínico
+                         cargarHistorialClinico(matricula);
+
+                        
+                }
+
+                document.addEventListener("DOMContentLoaded", cargarPerfil);
+
+                function cargarFechasDatosFisicos(matricula) {
+                fetch(`perfil.php?matricula_alum=${matricula}`)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById("fecha-datos-fisicos");
+                    select.innerHTML = '<option value="">Seleccione la Fecha: </option>';
+
+                    data.fechas.forEach(fecha => {
+                        const option = document.createElement("option");
+                        option.value = fecha;
+                        option.textContent = fecha;
+                        select.appendChild(option);
+                    });
+
+                    // Evento para cargar datos físicos cuando se selecciona una fecha
+                    select.addEventListener("change", function() {
+                        const fechaSeleccionada = this.value;
+
+                        if (fechaSeleccionada) {
+                            fetch(`datos_fisicos_detalle.php?matricula_alum=${matricula}&fecha=${fechaSeleccionada}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    mostrarDatosFisicosEnModal(data);
+                                })
+                                .catch(error => console.error("Error al cargar los datos físicos:", error));
+                        }
+                    });
+                })
+                .catch(error => console.error("Error al cargar las fechas de datos físicos:", error));
+            }
+
+            function mostrarDatosFisicosEnModal(datos) {
+                // Llenar el modal con los datos físicos
+                document.getElementById("modal-peso").textContent = datos.peso || "-";
+                document.getElementById("modal-talla").textContent = datos.talla || "-";
+                document.getElementById("modal-imc").textContent = datos.imc || "-";
+                document.getElementById("modal-clasificacion_imc").textContent = datos.clasificacion_imc || "-";
+                document.getElementById("modal-glucosa").textContent = datos.glucosa || "-";
+                document.getElementById("modal-colesterol").textContent = datos.colesterol || "-";
+                document.getElementById("modal-trigliceridos").textContent = datos.trigliceridos || "-";
+                document.getElementById("modal-tension_arterial").textContent = datos.tension_arterial || "-";
+
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('datosFisicosModal'));
+                modal.show();
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                const params = new URLSearchParams(window.location.search);
+                const matricula = params.get("matricula_alum");
+
+                if (matricula) {
+                    cargarFechasDatosFisicos(matricula);
+                }
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Obtener botones
+                const btnFormularios = document.querySelector(".btn-formularios");
+                const btnHistorial = document.querySelector(".btn-historial");
+                const btnDatosFisicos = document.querySelector(".btn-datos-fisicos");
+            
+                // Obtener cuadros y título
+                const tituloFormulario = document.getElementById("titulo-formulario");
+                const tituloSeccion = document.getElementById("titulo-seccion");
+                const formularioCuadros = document.getElementById("formulario-cuadros");
+                const historialCuadro = document.getElementById("historial-cuadro");
+                const datosFisicosCuadro = document.getElementById("datos-fisicos-cuadro");
+            
+                // Función para actualizar el título y mostrar contenido
+                function mostrarSeccion(titulo, mostrarFormulario, mostrarHistorial, mostrarDatosFisicos) {
+                    // Cambiar el texto del título
+                    tituloSeccion.innerText = titulo;
+                    // Mostrar el título
+                    tituloFormulario.classList.remove("d-none");
+            
+                    // Controla la visibilidad de los cuadros
+                    formularioCuadros.classList.toggle("d-none", !mostrarFormulario);
+                    historialCuadro.classList.toggle("d-none", !mostrarHistorial);
+                    datosFisicosCuadro.classList.toggle("d-none", !mostrarDatosFisicos);
+                }
+            
+                // Al cargar la página, ocultamos todas las secciones (excepto el título)
+                formularioCuadros.classList.add("d-none");
+                historialCuadro.classList.add("d-none");
+                datosFisicosCuadro.classList.add("d-none");
+            
+                // Evento para mostrar Formularios
+                btnFormularios.addEventListener("click", function() {
+                    mostrarSeccion("Formularios", true, false, false);
+                });
+            
+                // Evento para mostrar Historial Clínico
+                btnHistorial.addEventListener("click", function() {
+                    mostrarSeccion("Historial Heredo-Familiar", false, true, false);
+                });
+            
+                // Evento para mostrar Datos Físicos
+                btnDatosFisicos.addEventListener("click", function() {
+                    mostrarSeccion("Datos Físicos", false, false, true);
+                });
+            });
+        </script>
+    </body>
+</html>

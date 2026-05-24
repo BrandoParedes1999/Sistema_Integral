@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="informacion.css">
+    <title>Ficha de Alumno</title>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Expediente del Alumno</h1>
+            <p>Información general y médica</p>
+            
+            
+        </div>
+
+        <div class="photo-section">
+            <div class="photo-frame">
+                <div class="photo-placeholder">Sin Fotografía</div>
+            </div>
+        </div>
+
+        <form class="form-grid">
+            <div class="section-title full-width">Datos Personales</div>
+            
+            <div class="form-row full-width">
+                <label for="nombre">Nombre(s)</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ingrese el nombre completo" disabled>
+            </div>
+            
+            <div class="form-row">
+                <label for="apellido-paterno">Apellido Paterno</label>
+                <input type="text" id="apellido-paterno" name="apellido-paterno" placeholder="Primer apellido" disabled>
+            </div>
+
+            <div class="form-row">
+                <label for="apellido-materno">Apellido Materno</label>
+                <input type="text" id="apellido-materno" name="apellido-materno" placeholder="Segundo apellido" disabled>
+            </div>
+
+            <div class="form-row">
+                <label for="tipo-sangre">Tipo de Sangre</label>
+                <input type="text" id="tipo-sangre" name="tipo-sangre" placeholder="Ej: O+" disabled>
+            </div>
+            
+            <div class="form-row">
+                <label for="fecha-nacimiento">Fecha de Nacimiento</label>
+                <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" disabled>
+            </div>
+             <div class="form-row">
+                <label for="matricula">Matrícula</label>
+                <input type="text" id="matricula" name="matricula" disabled>
+            </div>
+            
+
+            <hr class="divider full-width">
+
+            <div class="section-title full-width">Información Médica</div>
+
+            <div class="form-row full-width">
+                <label for="alergias">Alergias Conocidas</label>
+                <textarea id="alergias" name="alergias" placeholder="Especifique alergias a medicamentos o alimentos. Si no tiene, escriba 'Ninguna'." disabled></textarea>
+            </div>
+
+            <div class="form-row full-width">
+                <label for="padecimiento">Padecimientos Crónicos</label>
+                <textarea id="padecimiento" name="padecimiento" placeholder="Describa cualquier condición médica relevante." disabled></textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="seguro-social">NSS (Seguro Social)</label>
+                <input type="text" id="seguro-social" name="seguro-social" placeholder="Número de afiliación" disabled>
+            </div>
+
+            <hr class="divider full-width">
+
+            <div class="section-title full-width">Contactos de Emergencia</div>
+
+            <div class="form-row">
+                <label for="telefono1">Teléfono Principal</label>
+                <input type="tel" id="telefono1" name="telefono1" placeholder="(999) 000-0000">
+            </div>
+
+            <div class="form-row">
+                <label for="telefono2">Teléfono Alternativo</label>
+                <input type="tel" id="telefono2" name="telefono2" placeholder="(999) 000-0000">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

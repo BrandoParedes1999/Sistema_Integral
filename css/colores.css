@@ -1,0 +1,351 @@
+body {
+    background: linear-gradient(203deg, rgba(153, 150, 74, 0.98) 8.41%, rgba(219, 217, 146, 0.98) 62.76%, rgba(182, 179, 68, 0.99) 71.82%, rgba(155, 153, 62, 0.99) 80.88%);
+    height: 100%;
+    margin: 0;
+    min-width: 100vh;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.image-13-icon {
+    width: 20%;
+    height: 200px;
+    object-fit:fill;
+}
+
+.rectangle-div {
+    width: 100%;
+    background-color: #515256;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border: #080808 solid;
+}
+
+.rectangle-formulario {
+    position: relative;
+    width: 30%; /* Ajuste automático al contenido */
+    background: linear-gradient(180deg, #7b7676, #7e7e75);
+    height: 60px;
+    display: flex; /* Cambiar a flexbox */
+    justify-content: center; /* Centrar contenido horizontalmente */
+    align-items: center; /* Centrar contenido verticalmente */
+    border-radius: 40px;
+    padding: 0 20px; /* Espaciado interno */
+    margin: 0 auto; /* Centrar el contenedor dentro de su contenedor padre */
+    font-size: 32px;
+    font-family: 'Inria Sans';
+}
+
+#titulo-seccion{
+    font-size: 44px;  /* Puedes ajustar el tamaño de la fuente */
+    font-weight: bold;  /* Opcional: puedes darle más peso a la fuente */
+    background: linear-gradient(90deg, #c7c721, rgba(255, 255, 255, 0.94) 50%, rgba(239, 207, 27, 0.87));
+    -webkit-background-clip: text; /* Especifica que el gradiente debe aplicarse solo al texto */
+    background-clip: text;  /* Para otros navegadores que no soportan el prefijo */
+    color: transparent; /* Hace que el color del texto sea transparente para que se vea el gradiente */
+}
+
+
+h1{
+    font-size: 32px;
+    font-family: 'Inria Sans';
+    background: linear-gradient(90deg, #c7c721, rgba(255, 255, 255, 0.94) 50%, rgba(239, 207, 27, 0.87));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.boton-inicio {
+    width: 150px;
+    border-radius: 10px;
+    background-color: #d9d9d9;
+    height: 40px;
+    border: none;
+    font-weight: bold;
+}
+
+.rectangle-info {
+    border-radius: 28px;
+    background: linear-gradient(180deg, #7b7676, #bfbfae);
+    padding: 20px;
+    border: #0f0f0f solid ;
+    min-width: 125px;
+}
+
+.rectangle-foto {
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    background-color: rgba(255, 0, 0, 0.055);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.datos_alumnos {
+    font-size: 18px;
+    font-family: 'Inria Sans';
+    color: black;
+    text-align: left;
+    font-weight: bold;
+}
+
+.btn1 {
+    width: 15%; /* Aumenta el ancho para mejor visibilidad */
+    min-width: 120px; /* Evita que sean demasiado pequeños en pantallas pequeñas */
+    height: 60px; /* Ajuste de altura */
+    position: relative;
+    box-shadow: 2px 4px 6px rgba(24, 23, 23, 0.3); /* Sombra más suave */
+    border-radius: 12px; /* Bordes más redondeados */
+    background: linear-gradient(180deg, #015c31, #08d151);
+    color: white; /* Texto blanco para mejor contraste */
+    font-size: 18px; /* Tamaño de texto más grande */
+    font-weight: bold; /* Texto en negrita */
+    border: none; /* Elimina borde negro */
+    transition: all 0.3s ease-in-out; /* Animación suave al pasar el mouse */
+}
+
+/* Efecto al pasar el mouse */
+.btn:hover {
+    background-color: #1b5a5f; /* Color más oscuro al pasar el cursor */
+    transform: scale(1.2); /* Hace el botón un poco más grande */
+}
+
+.btn1Historial{
+    width: 100%; /* Aumenta el ancho para mejor visibilidad */
+    min-width: 120px; /* Evita que sean demasiado pequeños en pantallas pequeñas */
+    height: 60px; /* Ajuste de altura */
+    position: relative;
+    box-shadow: 2px 4px 6px rgba(24, 23, 23, 0.3); /* Sombra más suave */
+    border-radius: 12px; /* Bordes más redondeados */
+    background: linear-gradient(180deg, #8c8d8d, #3f4140);
+    color: white; /* Texto blanco para mejor contraste */
+    font-size: 18px; /* Tamaño de texto más grande */
+    font-weight: bold; /* Texto en negrita */
+    border: none; /* Elimina borde negro */
+    transition: all 0.3s ease-in-out; /* Animación suave al pasar el mouse */
+}
+
+.rectangle-apgar {
+    position: center;
+    background-color: #525357;  /* Color de fondo del rectángulo */
+    color: rgb(145, 165, 33);               /* Color del texto */
+    font-size: 20px;            /* Tamaño del texto */
+    font-weight: bold;          /* Estilo en negrita */
+    border-radius: 20px;         /* Bordes redondeados */
+    border: 2px solid #0f0f0f;  /* Borde color dorado */
+    width: 50%;                /* Ocupa el 100% del ancho del cuadro */
+    text-align: center;         /* Centra el texto dentro del rectángulo */
+    justify-content: center; /* Centrar contenido horizontalmente */
+    align-items: center; /* Centrar contenido verticalmente */
+}
+
+.btn1-apgar {
+    margin-top: 15px;  /* Espacio entre el rectángulo y el botón */
+    background-color: #1a626b;  /* Color del botón */
+    border: none;             /* Eliminar borde del botón */
+    color: rgb(193, 219, 75);             /* Color del texto */
+    padding: 10px;            /* Relleno dentro del botón */
+    border-radius: 40px;       /* Bordes redondeados */
+    font-size: 20px;          /* Tamaño del texto en el botón */
+}
+
+.status-rectangle {
+    border-radius: 10px;
+    width: auto; /* Ancho completo */
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Estado 'No lo ha realizado' */
+.status-no-realizado {
+    background-color: #dc3545;  /* Rojo */
+    color: white;
+}
+
+/* Estado 'Ya realizado' */
+.status-realizado {
+    background-color: #28a745;  /* Verde */
+    color: white;
+}
+
+/* Rectángulo de "Apgar" y "Sisco" */
+.rectangle-apgar {
+    background-color: #515256;
+    color: white;
+    width: 50%;
+    margin: 0 auto;
+    border-radius: 40px;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.726); /* Hace el modal semi-transparente */
+    border: none;
+}
+.modal-body {
+    backdrop-filter: blur(10px); /* Aplica un efecto de desenfoque al fondo */
+}
+
+.clipboard {
+    position: absolute;
+    display: inline-block;
+}
+.clipboard img {
+    width: 100%;
+}
+.clipboard-content {
+    position: absolute;
+    top: 13%;
+    left: 5%;
+    width: 90%;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+h5{
+    background:local;
+    font-size: 40px;
+    font-family:'Gill Sans';
+    border-radius: 20px;
+}
+
+.input-group-text{
+    font-family: 'Courier New';
+    font-size: 20px;
+    background: linear-gradient(90deg, #b3b4b4, #eff1ef);
+}
+
+.form-control{
+    text-align: center;
+    background: linear-gradient(180deg, #bdc2c4c4, #8d8d8b94);
+    border-radius: 20px;
+}
+.form-label{
+    font-family: 'Gill Sans';
+    font-size: 20px;
+}
+
+/* From Uiverse.io by nikk7007 */ 
+.button {
+    --color: #90a72d;
+    padding: 0.8em 1.7em;
+    background-color: transparent;
+    border-radius: .3em;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .5s;
+    font-weight: 400;
+    font-size: 17px;
+    border: 1px solid;
+    font-family: inherit;
+    text-transform: uppercase;
+    color: var(--color);
+    z-index: 1;
+   }
+   
+   .button::before, .button::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 50px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    background-color: var(--color);
+    transition: 1s ease;
+   }
+   
+   .button::before {
+    top: -1em;
+    left: -1em;
+   }
+   
+   .button::after {
+    left: calc(100% + 1em);
+    top: calc(100% + 1em);
+   }
+   
+   .button:hover::before, .button:hover::after {
+    height: 410px;
+    width: 410px;
+   }
+   
+   .button:hover {
+    color: rgb(10, 25, 30);
+   }
+   
+   .button:active {
+    filter: brightness(.8);
+   }
+   
+
+   .btn{
+    width: fit-content;
+    height: 45px;
+    background: #ffffff0d;
+    border-radius: 8px;
+    border: 2px solid #334b79;
+    font-size: 15px;
+    font-weight: bold;
+    color: #334b79;
+    -webkit-transition: 0.5s all ease;
+    transition: 0.5s all ease;
+    position: relative;
+    overflow: hidden;
+    padding: 10px 25px;
+    z-index: 1;
+  }
+  
+  .btn:before {
+    width: 50%;
+    height: 100%;
+    content: "";
+    margin: auto;
+    position: absolute;
+    top: 0%;
+    left: -50%;
+    background: #334b79;
+    transition: all 0.5s ease;
+    z-index: -1;
+  }
+  
+  .btn:after {
+    width: 50%;
+    height: 100%;
+    content: "";
+    margin: auto;
+    position: absolute;
+    top: 0%;
+    left: 100%;
+    background: #334b79;
+    transition: all 0.5s ease;
+    z-index: -1;
+  }
+  
+  .btn:hover {
+    color: white;
+    cursor: pointer;
+  }
+  
+  .btn:hover:before {
+    top: 0;
+    left: 0;
+  }
+  
+  .btn:hover:after {
+    top: 0;
+    left: 50%;
+  }
+

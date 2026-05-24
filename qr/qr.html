@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR Simple</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: none;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        /* Ajuste para que la imagen generada no rompa el layout */
+        #qrcode img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4">
+                    <h3 class="text-center mb-4 text-primary">Generador QR</h3>
+                    
+                    <div class="mb-3">
+                        <label for="text-input" class="form-label">Texto o URL</label>
+                        <input type="text" class="form-control" id="text-input" placeholder="Ej: https://miweb.com" autocomplete="off">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="generarQR()">Generar Código</button>
+                        <button class="btn btn-outline-secondary" onclick="limpiar()">Limpiar</button>
+                    </div>
+
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        // Inicializamos la variable global para el objeto QR
+        let qrcodeObj = null;
+
+        function generarQR() {
+            const texto = document.getElementById("text-input").value;
+            const contenedorQR = document.getElementById("qrcode");
+
+            // Validación simple
+            if (texto.trim() === "") {
+                alert("Por favor escribe un texto o URL");
+                return;
+            }
+
+            // Limpiamos el código anterior si existe
+            contenedorQR.innerHTML = "";
+
+            // Generamos el nuevo código
+            qrcodeObj = new QRCode(contenedorQR, {
+                text: texto,
+                width: 200,       // Ancho del QR
+                height: 200,      // Alto del QR
+                colorDark : "#000000", // Color de los módulos
+                colorLight : "#ffffff", // Color de fondo
+                correctLevel : QRCode.CorrectLevel.H // Nivel de corrección de errores (Alto)
+            });
+        }
+
+        function limpiar() {
+            document.getElementById("text-input").value = "";
+            document.getElementById("qrcode").innerHTML = "";
+        }
+    </script>
+</body>
+</html>

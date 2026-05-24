@@ -1,0 +1,433 @@
+/* PASO 1: Se agregaron todas las variables de datos_fisicos.css */
+:root {
+  --azul-rey: #1e40af;
+  --azul-oscuro: #1e3a8a;
+  --azul-claro: #3b82f6;
+  --acento: #f59e0b;
+  --gris-oscuro: #1f2937;
+  --gris-medio: #6b7280;
+  --gris-claro: #f3f4f6;
+  --blanco: #FFFFFF;
+  --sombra-suave: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --sombra-media: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --sombra-profunda: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ------------------------------------------------ */
+/* --- ESTILOS DEL BOTÓN SALIR ACTUALIZADOS --- */
+/* ------------------------------------------------ */
+.salir {
+  display: block;
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  overflow: hidden;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+}
+
+.salir:before,
+.salir:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 7px;
+}
+
+.salir:before {
+  /* CAMBIO: Color de borde para fondo claro */
+  border: 4px solid var(--gris-oscuro);
+  transition: opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.salir:after {
+  /* CAMBIO: Estandarizado al mismo rojo */
+  border: 4px solid #dc2626;
+  transform: scale(1.3);
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+}
+
+.salir:hover:before,
+.salir:focus:before {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.salir:hover:after,
+.salir:focus:after {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.4s cubic-bezier(0.77, 0, 0.175, 1) 80ms,
+    transform 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) 80ms;
+}
+
+.salir-box {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.salir-elem {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 22px 18px 0 18px;
+  transform: rotate(180deg);
+  /* CAMBIO: Color de ícono para fondo claro */
+  fill: var(--gris-oscuro);
+}
+
+.salir:hover .salir-box,
+.salir:focus .salir-box {
+  transition: 0.4s;
+  transform: translateX(-56px);
+}
+
+/* ------------------------------------------------ */
+/* --- ESTILOS DE PÁGINA ACTUALIZADOS --- */
+/* ------------------------------------------------ */
+
+/* PASO 2: Se reemplazó el fondo por el de datos_fisicos */
+body {
+  background: 
+    linear-gradient(
+      180deg, 
+      rgba(30, 64, 175, 0.15), 
+      transparent 50%
+    ),
+    linear-gradient(180deg, #dee2e6 0%, #ced4da 100%);
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  color: var(--gris-oscuro);
+  letter-spacing: -0.01em;
+  padding: 20px 0;
+}
+
+.titulo {
+  display: inline-block;
+  text-align: center;
+  font-size: 2.25rem; /* Ajustado para jerarquía */
+  font-weight: 700;   /* Más parecido a los h1 de menu.css */
+  margin: auto;
+  font-family: 'Inria Sans', sans-serif;
+  /* CAMBIO: Color oscuro para fondo claro */
+  color: var(--gris-oscuro);
+  letter-spacing: -0.02em;
+}
+
+/* PASO 3: Se unificó el estilo de la tarjeta principal */
+.fondogenerales {
+  background-color: var(--blanco);
+  border: 1px solid #e5e7eb;
+  box-shadow: var(--sombra-media);
+  border-radius: 16px; /* Bordes más redondeados */
+}
+
+/* PASO 4: Se usaron variables para los encabezados */
+.seccion-header {
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* PASO 5: Se reemplazó el cuadro de instrucción azul por el amarillo */
+.instruccion-busqueda {
+  background: #fffbeb;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--acento);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instruccion-busqueda strong {
+  color: #b45309;
+}
+
+.icono-info {
+  background-color: var(--acento);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* PASO 6: Se usaron variables para los campos de datos */
+.datos-principales {
+  background-color: var(--gris-claro);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--azul-rey);
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.campo-grupo label {
+  font-weight: 600;
+  color: var(--gris-medio); /* Color de texto más suave */
+  margin-bottom: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Estilo de input unificado */
+.campo-grupo input,
+.campo-grupo select {
+  border: 1px solid #ced4da; /* Borde más sutil */
+  border-radius: 8px; /* Bordes más redondeados */
+  padding: 10px 12px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+/* Foco de input unificado */
+.campo-grupo input:focus,
+.campo-grupo select:focus {
+  border-color: var(--azul-rey);
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15); 
+  outline: none;
+}
+
+.campo-grupo input[readonly] {
+  background-color: var(--gris-claro);
+  cursor: not-allowed;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: 150px 180px 1fr 1fr;
+  gap: 15px;
+  align-items: end;
+}
+
+.fila-campos-secundarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+/* ------------------------------------------------ */
+/* --- ESTILOS DE PATOLOGÍAS RE-TEMATIZADOS --- */
+/* ------------------------------------------------ */
+
+.seccion-patologias {
+  /* CAMBIO: Estilo de tarjeta sutil, como .seccion-mediciones */
+  background-color: var(--blanco);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: var(--sombra-suave);
+  height: 100%;
+}
+
+.titulo-patologia {
+  font-weight: 700;
+  /* CAMBIO: Color con variable */
+  color: var(--azul-rey);
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  /* CAMBIO: Color con variable */
+  border-bottom: 3px solid var(--azul-rey);
+}
+
+.patologia-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--blanco); /* CAMBIO: Variable */
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.patologia-item:hover {
+  background: var(--gris-claro); /* CAMBIO: Variable */
+  transform: translateX(5px);
+}
+
+.patologia-label {
+  font-weight: 600;
+  color: var(--gris-oscuro); /* CAMBIO: Variable */
+  font-size: 14px;
+}
+
+/* Estilo unificado para select */
+.select-patologia {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+/* Foco unificado para select */
+.select-patologia:focus {
+  border-color: var(--azul-rey);
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15);
+  outline: none;
+}
+
+.select-patologia:disabled {
+  background-color: var(--gris-claro);
+  cursor: not-allowed;
+}
+
+.enfermedad-card {
+  background: var(--blanco);
+  border: 1px solid #e5e7eb; /* CAMBIO: Borde más sutil */
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.enfermedad-card:hover {
+  box-shadow: var(--sombra-media); /* CAMBIO: Variable */
+  border-color: #cbd5e0;
+}
+
+/* Estilo unificado para textarea */
+.textarea-tratamiento {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 12px;
+  resize: vertical;
+  min-height: 100px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Foco unificado para textarea */
+.textarea-tratamiento:focus {
+  border-color: var(--azul-rey);
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15);
+  outline: none;
+}
+
+/* Estilos de botones de acción (Agregar/Eliminar) se mantienen */
+.btn-agregar {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+}
+
+.btn-eliminar {
+  background: linear-gradient(135deg, #fc8181, #f56565);
+  border: none;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(252, 129, 129, 0.4);
+}
+
+/* PASO 7: Se reemplazó el botón Guardar por el de datos_fisicos */
+.btn-guardar {
+  background: linear-gradient(135deg, var(--azul-rey), var(--azul-claro));
+  border: none;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: var(--sombra-suave);
+  transition: all 0.3s ease;
+  color: var(--blanco);
+}
+
+.btn-guardar:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-media);
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
+}
+
+/* ------------------------------------------------ */
+/* --- REGLAS RESPONSIVAS (SIN CAMBIOS) --- */
+/* ------------------------------------------------ */
+
+.grid-patologias {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+@media (max-width: 992px) {
+  .fila-campos {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-patologias {
+    grid-template-columns: 1fr;
+  }
+
+  .patologia-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .fila-campos {
+    grid-template-columns: 1fr;
+  }
+}
