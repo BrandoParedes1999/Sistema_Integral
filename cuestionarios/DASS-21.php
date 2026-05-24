@@ -6,7 +6,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 
 if (!isset($_SESSION['alumno']) || !isset($_SESSION['alumno']['matricula'])) {
-    header("Location: registro.php");
+    header("Location: registro.html");
     exit();
 }
 
@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 $sql_verificar = "SELECT id_cuestionario FROM dass WHERE matricula_alum = ?";
 $stmt_verificar = $conn->prepare($sql_verificar);
-$stmt_verificar->bind_param("i", $matricula);
+$stmt_verificar->bind_param("s", $matricula);
 $stmt_verificar->execute();
 $resultado = $stmt_verificar->get_result();
 
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insertar en tabla principal
         $sql_cuestionario = "INSERT INTO dass (matricula_alum, total_depresion, total_ansiedad, total_estres, total_general) VALUES (?, ?, ?, ?, ?)";
         $stmt_cuestionario = $conn->prepare($sql_cuestionario);
-        $stmt_cuestionario->bind_param("iiiii", $matricula, $total_depresion, $total_ansiedad, $total_estres, $total_general);
+        $stmt_cuestionario->bind_param("siiii", $matricula, $total_depresion, $total_ansiedad, $total_estres, $total_general);
 
         if ($stmt_cuestionario->execute()) {
             $id_cuestionario = $conn->insert_id;

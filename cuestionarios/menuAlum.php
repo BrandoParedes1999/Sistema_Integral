@@ -19,7 +19,7 @@ if ($conn->connect_error) {
 $yaRespondioEstilo = false;
 $sqlCheck = "SELECT 1 FROM estilo_de_vida WHERE matricula_alum = ?";
 $stmt = $conn->prepare($sqlCheck);
-$stmt->bind_param("i", $alumno['matricula']);
+$stmt->bind_param("s", $alumno['matricula']);
 $stmt->execute();
 $stmt->store_result();
 $yaRespondioEstilo = $stmt->num_rows > 0;
@@ -29,7 +29,7 @@ $stmt->close();
 $yaRespondioDASS = false;
 $sqlCheckDASS = "SELECT 1 FROM dass WHERE matricula_alum = ?";
 $stmtDASS = $conn->prepare($sqlCheckDASS);
-$stmtDASS->bind_param("i", $alumno['matricula']);
+$stmtDASS->bind_param("s", $alumno['matricula']);
 $stmtDASS->execute();
 $stmtDASS->store_result();
 $yaRespondioDASS = ($stmtDASS->num_rows > 0); // Corrección: num_rows es propiedad, no método
