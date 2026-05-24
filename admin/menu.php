@@ -161,6 +161,11 @@ $chartPendientes = json_encode([
       <i class="bi bi-person-badge-fill"></i> Credenciales
     </a>
 
+    <div class="sb-section">Observatorio</div>
+    <a href="../observatorio/observatorio.html" class="sb-link">
+      <i class="bi bi-telescope-fill"></i> Observatorio
+    </a>
+
     <div class="sb-section">Sistema</div>
     <a href="panel_control.php" class="sb-link">
       <i class="bi bi-shield-lock-fill"></i> Control del Sistema

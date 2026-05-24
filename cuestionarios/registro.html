@@ -76,6 +76,7 @@
                         <label for="matricula">Matrícula</label>
                         <input type="text" name="matricula" id="matricula" placeholder="000000" required maxlength="6"
                             pattern="\d{6}" inputmode="numeric" />
+                        <span class="field-error-msg" id="err-matricula"></span>
                     </div>
                 </div>
             </div>
@@ -86,17 +87,20 @@
                 <div class="form-field">
                     <label for="nombre">Nombre(s)</label>
                     <input type="text" name="nombre" id="nombre" placeholder="Ingresa tus nombres" required />
+                    <span class="field-error-msg" id="err-nombre"></span>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-field">
                         <label for="apepa">Apellido Paterno</label>
                         <input type="text" name="apepa" id="apepa" required />
+                        <span class="field-error-msg" id="err-apepa"></span>
                     </div>
 
                     <div class="form-field">
                         <label for="apema">Apellido Materno</label>
                         <input type="text" name="apema" id="apema" required />
+                        <span class="field-error-msg" id="err-apema"></span>
                     </div>
                 </div>
 
@@ -104,6 +108,7 @@
                     <div class="form-field">
                         <label for="fecha">Fecha de Nacimiento</label>
                         <input type="date" name="fecha" id="fecha" required>
+                        <span class="field-error-msg" id="err-fecha"></span>
                     </div>
 
                     <div class="form-field">
@@ -185,8 +190,9 @@
                 <div class="form-field">
                     <label for="nss">Número de Seguridad Social</label>
                     <input type="tel" name="nss" id="nss"
-                        placeholder="Intruduce tu Numero de Seguridad Social, En caso de no saberlo dejar en blanco y actualizar después" maxlength="11"
+                        placeholder="Introduce tu NSS (11 dígitos). Si no lo sabes, déjalo en blanco y actualízalo después." maxlength="11"
                         pattern="\d{11}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                    <span class="field-error-msg" id="err-nss"></span>
                 </div>
 
                 <div class="mb-3">
@@ -211,8 +217,9 @@
                 <div class="form-field">
                     <label for="emergencia">Contacto de Emergencia</label>
                     <input type="tel" name="emergencia" id="emergencia"
-                        placeholder="Teléfono de alguien que sepas que contestará" required maxlength="10"
+                        placeholder="Teléfono de alguien que sepas que contestará (10 dígitos)" required maxlength="10"
                         pattern="\d{10}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                    <span class="field-error-msg" id="err-emergencia"></span>
                 </div>
             </div>
     </div>
@@ -370,7 +377,15 @@
         });
 
         document.getElementById("enviar").addEventListener("click", function (event) {
-            // El script de envío original se mantiene
+            // Comprobar si hay errores de validación antes de enviar
+            if (document.querySelectorAll('input.field-error, textarea.field-error').length > 0) {
+                event.preventDefault();
+                const firstErr = document.querySelector('input.field-error, textarea.field-error');
+                firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErr.focus();
+                return;
+            }
+
             event.preventDefault();
             let edadInput = document.getElementById("edad");
             let correoInput = document.getElementById("correo");
@@ -397,6 +412,105 @@
                 })
                 .catch(error => console.error("Error:", error));
         });
+    </script>
+
+    <!-- ── Validación dinámica de campos ──────────────────────────── -->
+    <script>
+    (function () {
+        const SOLO_LETRAS = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s'\-]+$/;
+        const CTRL_KEYS   = ['Backspace','Delete','Tab','Enter','ArrowLeft','ArrowRight','Home','End'];
+
+        function mostrarError(input, span, msg) {
+            input.classList.add('field-error');
+            input.classList.remove('field-ok');
+            span.textContent = msg;
+            span.classList.add('visible');
+        }
+
+        function mostrarOk(input, span) {
+            input.classList.remove('field-error');
+            input.classList.add('field-ok');
+            span.textContent = '';
+            span.classList.remove('visible');
+        }
+
+        function limpiar(input, span) {
+            input.classList.remove('field-error', 'field-ok');
+            span.textContent = '';
+            span.classList.remove('visible');
+        }
+
+        /* ── Matrícula: exactamente 6 dígitos ────── */
+        const inpMatricula = document.getElementById('matricula');
+        const errMatricula = document.getElementById('err-matricula');
+        inpMatricula.addEventListener('keydown', function (e) {
+            if (e.ctrlKey || e.metaKey || CTRL_KEYS.includes(e.key)) return;
+            if (!/^\d$/.test(e.key)) e.preventDefault();
+        });
+        inpMatricula.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (!this.value) { limpiar(this, errMatricula); return; }
+            if (this.value.length < 6) mostrarError(this, errMatricula, 'La matrícula debe tener exactamente 6 dígitos.');
+            else mostrarOk(this, errMatricula);
+        });
+
+        /* ── Campos de texto: solo letras ────────── */
+        function configurarCampoLetras(idInput, idErr, etiqueta) {
+            const inp = document.getElementById(idInput);
+            const err = document.getElementById(idErr);
+            inp.addEventListener('keydown', function (e) {
+                if (e.ctrlKey || e.metaKey || CTRL_KEYS.includes(e.key)) return;
+                if (/^\d$/.test(e.key)) { e.preventDefault(); return; }
+            });
+            inp.addEventListener('input', function () {
+                this.value = this.value.replace(/[0-9]/g, '');
+                if (!this.value.trim()) { limpiar(this, err); return; }
+                if (!SOLO_LETRAS.test(this.value.trim())) {
+                    mostrarError(this, err, etiqueta + ' solo debe contener letras.');
+                } else {
+                    mostrarOk(this, err);
+                }
+            });
+        }
+        configurarCampoLetras('nombre', 'err-nombre', 'El nombre');
+        configurarCampoLetras('apepa',  'err-apepa',  'El apellido paterno');
+        configurarCampoLetras('apema',  'err-apema',  'El apellido materno');
+
+        /* ── Fecha de nacimiento: edad entre 14 y 80 años ─── */
+        const inpFecha = document.getElementById('fecha');
+        const errFecha = document.getElementById('err-fecha');
+        inpFecha.addEventListener('change', function () {
+            if (!this.value) { limpiar(this, errFecha); return; }
+            const hoy = new Date();
+            const nac = new Date(this.value + 'T00:00:00');
+            let edad  = hoy.getFullYear() - nac.getFullYear();
+            const m   = hoy.getMonth() - nac.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+            if (edad < 14 || edad > 80) {
+                mostrarError(this, errFecha, 'La fecha indica una edad fuera del rango permitido (14–80 años).');
+            } else {
+                mostrarOk(this, errFecha);
+            }
+        });
+
+        /* ── NSS: 11 dígitos (opcional) ─────────── */
+        const inpNss = document.getElementById('nss');
+        const errNss = document.getElementById('err-nss');
+        inpNss.addEventListener('input', function () {
+            if (!this.value) { limpiar(this, errNss); return; }
+            if (this.value.length < 11) mostrarError(this, errNss, 'El NSS debe tener exactamente 11 dígitos.');
+            else mostrarOk(this, errNss);
+        });
+
+        /* ── Emergencia: 10 dígitos ──────────────── */
+        const inpEmergencia = document.getElementById('emergencia');
+        const errEmergencia = document.getElementById('err-emergencia');
+        inpEmergencia.addEventListener('input', function () {
+            if (!this.value) { limpiar(this, errEmergencia); return; }
+            if (this.value.length < 10) mostrarError(this, errEmergencia, 'El teléfono de emergencia debe tener exactamente 10 dígitos.');
+            else mostrarOk(this, errEmergencia);
+        });
+    })();
     </script>
 </body>
 
