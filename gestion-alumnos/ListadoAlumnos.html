@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <title>Lista de Alumnos</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.3.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="../css/coloreslistas.css">
+    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <nav class="navbar navbar-expand-sm navbar-dark justify-content-between">
+        <div class="banner-foto">
+            <img src="/imagenes/logo_unacar (1).png" alt="Logo UNACAR">
+        </div>
+        <div class="d-flex">
+            <button class="button me-2" onclick="location.href='../admin/menu.php'">
+                <i class="bi bi-house-door me-1"></i> Inicio
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Título principal -->
+    <h1>Listado de Alumnos</h1>
+
+    <div class="container">
+        <!-- Sección de filtros -->
+        <div class="filtros-wrapper">
+            <div class="filtros-header">
+                <i class="bi bi-funnel"></i>
+                Filtros de búsqueda
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="facultad" for="idfacultades">
+                        <i class="bi bi-building me-2"></i>Facultad
+                    </label>
+                    <select id="idfacultades" class="form-select">
+                        <option value="">Todas las facultades</option>
+                    </select>
+                </div>
+        
+                <div class="col-md-6">
+                    <label class="sexo" for="sexoFiltro">
+                        <i class="bi bi-gender-ambiguous me-2"></i>Sexo
+                    </label>
+                    <select id="sexoFiltro" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="MASCULINO">Masculino</option>
+                        <option value="FEMENINO">Femenino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="busqueda" class="form-control" 
+                       placeholder="Buscar por matrícula o nombre..." 
+                       aria-label="Buscar alumno">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Tabla de alumnos -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Matrícula</th>
+                            <th>Nombre</th>
+                            <th>Facultad</th>
+                            <th>Sexo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaAlumnos">
+                        <!-- Los datos se cargarán dinámicamente -->
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                                <p class="mt-2 mb-0">Cargando datos...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination-container">
+            <div id="paginacion"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"></script>
+
+    <!-- Script para cargar facultades -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener facultades al cargar la página
+            fetch("obtener-datos.php?tipo=facultades")
+                .then(response => response.json())
+                .then(data => {
+                    let selectFacultad = document.getElementById("idfacultades");
+                    data.forEach(facultad => {
+                        let option = document.createElement("option");
+                        option.value = facultad.id_facultad;
+                        option.textContent = facultad.nombre_facultad;
+                        selectFacultad.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar facultades:', error);
+                    mostrarMensajeError('No se pudieron cargar las facultades');
+                });
+        });
+    </script>
+
+    <!-- Script principal de gestión de alumnos -->
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalRegistros = 0;
+
+        function cargarAlumnos() {
+            const busqueda = document.getElementById("busqueda").value;
+            const facultad = document.getElementById("idfacultades").value;
+            const sexo = document.getElementById("sexoFiltro").value;
+
+            // Mostrar indicador de carga
+            document.getElementById('tablaAlumnos').innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-2 mb-0">Cargando datos...</p>
+                    </td>
+                </tr>
+            `;
+
+            // Cargar datos de la página actual
+            fetch(`Listado.php?pagina=${currentPage}&busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const tabla = document.getElementById('tablaAlumnos');
+                    
+                    if (data.trim() === '' || data.includes('No se encontraron') || data.includes('empty-state')) {
+                        tabla.innerHTML = `
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p>No se encontraron alumnos con los criterios de búsqueda</p>
+                                </td>
+                            </tr>
+                        `;
+                        totalPages = 0;
+                        actualizarPaginacionHTML();
+                    } else {
+                        tabla.innerHTML = data;
+                        // Obtener el total de páginas después de cargar los datos
+                        actualizarPaginacion(busqueda, facultad, sexo);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar los alumnos:', error);
+                    document.getElementById('tablaAlumnos').innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-danger">
+                                <i class="bi bi-exclamation-triangle fs-2"></i>
+                                <p class="mt-2">Error al cargar los datos. Por favor, intente nuevamente.</p>
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+
+        function actualizarPaginacion(busqueda, facultad, sexo) {
+            // Obtener el total de registros desde el servidor
+            fetch(`Listado.php?total=1&busqueda=${encodeURIComponent(busqueda)}&facultad=${facultad}&sexo=${sexo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+                    
+                    totalRegistros = data.total_registros;
+                    totalPages = data.total_paginas;
+                    
+                    actualizarPaginacionHTML();
+                })
+                .catch(error => {
+                    console.error('Error al obtener total de páginas:', error);
+                });
+        }
+
+        function actualizarPaginacionHTML() {
+            let paginacionHTML = "";
+            
+            if (totalPages > 1) {
+                // Información de registros
+                const inicio = ((currentPage - 1) * 20) + 1;
+                const fin = Math.min(currentPage * 20, totalRegistros);
+                
+                paginacionHTML += `<div class="pagination-info mb-3">
+                    Mostrando <strong>${inicio}</strong> a <strong>${fin}</strong> de <strong>${totalRegistros}</strong> alumnos
+                </div>
+                <div class="pagination-buttons">`;
+                
+                // Botón primera página
+                if (currentPage > 1) {
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(1)" title="Primera página">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </button>`;
+                }
+                
+                // Botón anterior
+                if (currentPage > 1) {
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(${currentPage - 1})" title="Página anterior">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>`;
+                }
+                
+                // Números de página con lógica mejorada
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, currentPage + 2);
+                
+                // Ajustar si estamos cerca del inicio
+                if (currentPage <= 3) {
+                    endPage = Math.min(5, totalPages);
+                }
+                
+                // Ajustar si estamos cerca del final
+                if (currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                }
+                
+                // Primera página si no está en el rango
+                if (startPage > 1) {
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(1)">1</button>`;
+                    if (startPage > 2) {
+                        paginacionHTML += `<span class="btn-pagination pagination-dots">...</span>`;
+                    }
+                }
+                
+                // Páginas en el rango
+                for (let i = startPage; i <= endPage; i++) {
+                    paginacionHTML += `<button class="btn-pagination ${i === currentPage ? 'active' : ''}" 
+                                              onclick="cambiarPagina(${i})">${i}</button>`;
+                }
+                
+                // Última página si no está en el rango
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        paginacionHTML += `<span class="btn-pagination pagination-dots">...</span>`;
+                    }
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(${totalPages})">${totalPages}</button>`;
+                }
+                
+                // Botón siguiente
+                if (currentPage < totalPages) {
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(${currentPage + 1})" title="Página siguiente">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>`;
+                }
+                
+                // Botón última página
+                if (currentPage < totalPages) {
+                    paginacionHTML += `<button class="btn-pagination" onclick="cambiarPagina(${totalPages})" title="Última página">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </button>`;
+                }
+                
+                paginacionHTML += '</div>';
+            } else if (totalRegistros > 0) {
+                paginacionHTML = `<div class="pagination-info">
+                    Mostrando <strong>${totalRegistros}</strong> alumno${totalRegistros !== 1 ? 's' : ''}
+                </div>`;
+            }
+            
+            document.getElementById("paginacion").innerHTML = paginacionHTML;
+        }
+
+        function cambiarPagina(pagina) {
+            if (pagina < 1 || pagina > totalPages) return;
+            
+            currentPage = pagina;
+            cargarAlumnos();
+            
+            // Scroll suave hacia arriba
+            window.scrollTo({ 
+                top: document.querySelector('.table-container').offsetTop - 100, 
+                behavior: 'smooth' 
+            });
+        }
+
+        function mostrarMensajeError(mensaje) {
+            // Puedes implementar una notificación toast aquí
+            console.error(mensaje);
+        }
+
+        // Carga inicial de alumnos al cargar la página
+        document.addEventListener("DOMContentLoaded", cargarAlumnos);
+
+        // Escucha eventos de los filtros con debounce para búsqueda
+        let searchTimeout;
+        document.getElementById("busqueda").addEventListener("keyup", function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentPage = 1;
+                cargarAlumnos();
+            }, 300);
+        });
+
+        document.getElementById("idfacultades").addEventListener("change", function() {
+            currentPage = 1;
+            cargarAlumnos();
+        });
+
+        document.getElementById("sexoFiltro").addEventListener("change", function() {
+            currentPage = 1;
+            cargarAlumnos();
+        });
+    </script>
+</body>
+</html>

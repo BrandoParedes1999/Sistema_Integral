@@ -8,7 +8,7 @@ $contraError = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    require_once 'Config/config.php';
+    require_once 'config/config.php';
     $database = new Database();
     $conn = $database->connect();
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt_update->close();
 
                     $conn->close();
-                    header('Location: Carga.html');
+                    header('Location: admin/Carga.html');
                     exit();
                 } else {
                     // ❌ CONTRASEÑA INCORRECTA

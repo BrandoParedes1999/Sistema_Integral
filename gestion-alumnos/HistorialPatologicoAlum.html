@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historial Patológico Alumnado</title>
+  <link rel="stylesheet" href="../css/expediente.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+  <style>
+    /* Estilos mejorados para los cards de historial */
+    .card-historial {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: var(--sombra-media);
+      background-color: var(--blanco);
+      margin-bottom: 25px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .card-historial:hover {
+      box-shadow: var(--sombra-profunda);
+      transform: translateY(-2px);
+    }
+
+    .card-header-custom {
+      background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
+      color: white;
+      padding: 18px 25px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: none;
+    }
+
+    .card-header-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+    }
+
+    .card-header-warning {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+
+    .card-body-historial {
+      padding: 30px;
+    }
+
+    /* Input groups para historial */
+    .historial-item {
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .historial-item:hover {
+      transform: translateX(5px);
+    }
+
+    .form-label-historial {
+      color: var(--gris-oscuro);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label-historial i {
+      color: var(--azul-rey);
+      font-size: 1rem;
+    }
+
+    .form-control-historial {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      background-color: var(--gris-claro);
+      color: var(--gris-oscuro);
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .form-control-historial:focus {
+      border-color: var(--azul-rey);
+      box-shadow: 0 0 0 0.25rem rgba(30, 64, 175, 0.15);
+      outline: none;
+      background-color: white;
+    }
+
+    .form-control-historial:disabled {
+      background-color: var(--gris-claro);
+      opacity: 1;
+    }
+
+    /* Grid mejorado */
+    .historial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* Iconos de header */
+    .header-icon {
+      font-size: 1.3rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .historial-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-body-historial {
+        padding: 20px;
+      }
+
+      .card-header-custom {
+        padding: 15px 20px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row h-100">
+
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar d-flex flex-column p-3">
+      <h4 class="text-center">Menú</h4>
+      <a id="linkPerfil" href="#"><i class="bi bi-person-circle me-2"></i> Perfil</a>
+      <a id="linkDatos" href="#"><i class="bi bi-clipboard-data me-2"></i> Datos Físicos</a>
+      <div class="dropdown">
+          <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-heart-pulse me-2"></i> Formularios
+          </a>
+          <ul class="dropdown-menu">
+              <li><a class="dropdown-item" id="linkDass" href="#">DASS-21</a></li>
+              <li><a class="dropdown-item" id="linkEstilo" href="#">Estilo de Vida</a></li>
+          </ul>
+      </div>
+      <a id="linkHistorial" href="#"><i class="bi bi-house-heart-fill me-2"></i> Historial Patológico</a>
+      <a href="ListadoAlumnos.html"><i class="bi bi-box-arrow-left me-2"></i> Salir</a>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="col-md-10 p-4">
+      <div class="nav d-flex justify-content-between align-items-center mb-4">
+        <img src="/images/logo_unacar (1).png" alt="logo" class="unacar">
+        <h2>Historial Patológico</h2>
+        <button class="btn btn-primary" disabled></button>
+      </div>
+
+      <!-- Información del Alumno -->
+      <div class="card-historial">
+        <div class="card-header-custom">
+          <i class="bi bi-person-badge header-icon"></i>
+          Información del Alumno
+        </div>
+        <div class="card-body-historial">
+          <div class="historial-grid">
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-credit-card-2-front"></i>
+                Matrícula
+              </label>
+              <input type="text" class="form-control-historial" id="matricula" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-person"></i>
+                Nombre Completo
+              </label>
+              <input type="text" class="form-control-historial" id="nombre" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-gender-ambiguous"></i>
+                Sexo
+              </label>
+              <input type="text" class="form-control-historial" id="sexo" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-calendar3"></i>
+                Edad
+              </label>
+              <input type="text" class="form-control-historial" id="edad" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial Patológico Familiar -->
+      <div class="card-historial">
+        <div class="card-header-custom card-header-success">
+          <i class="bi bi-people-fill header-icon"></i>
+          Historial Patológico Familiar
+        </div>
+        <div class="card-body-historial">
+          <div class="historial-grid">
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-arrow-up-circle"></i>
+                Sobrepeso/Obesidad
+              </label>
+              <input type="text" class="form-control-historial" id="sobrepeso" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-droplet"></i>
+                Diabetes Mellitus
+              </label>
+              <input type="text" class="form-control-historial" id="diabetes" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-heart-pulse"></i>
+                Hipertensión Arterial
+              </label>
+              <input type="text" class="form-control-historial" id="hipertension" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-activity"></i>
+                Triglicéridos Altos
+              </label>
+              <input type="text" class="form-control-historial" id="trigliceridos" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-graph-up-arrow"></i>
+                Colesterol Alto
+              </label>
+              <input type="text" class="form-control-historial" id="colesterol" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-shield-exclamation"></i>
+                Hepatitis
+              </label>
+              <input type="text" class="form-control-historial" id="hepatitis" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-file-medical"></i>
+                Hígado Graso
+              </label>
+              <input type="text" class="form-control-historial" id="higado" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-heart"></i>
+                Cardiopatías
+              </label>
+              <input type="text" class="form-control-historial" id="cardiopatias" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-prescription2"></i>
+                Nefropatías
+              </label>
+              <input type="text" class="form-control-historial" id="nefropatias" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-capsule"></i>
+                Estreñimiento
+              </label>
+              <input type="text" class="form-control-historial" id="estreñimiento" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-bandaid"></i>
+                Gastritis
+              </label>
+              <input type="text" class="form-control-historial" id="gastritis" disabled>
+            </div>
+            <div class="historial-item">
+              <label class="form-label-historial">
+                <i class="bi bi-exclamation-triangle"></i>
+                Cáncer
+              </label>
+              <input type="text" class="form-control-historial" id="cancer" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Historial Patológico Personal -->
+      <div class="card-historial">
+        <div class="card-header-custom card-header-warning">
+          <i class="bi bi-person-heart header-icon"></i>
+          Historial Patológico Personal
+        </div>
+        <div class="card-body-historial">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="historial-item">
+                <label class="form-label-historial">
+                  <i class="bi bi-clipboard-pulse"></i>
+                  ¿Tienes alguna enfermedad?
+                </label>
+                <input type="text" class="form-control-historial" id="tienesEnfermedad" disabled>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="historial-item">
+                <label class="form-label-historial">
+                  <i class="bi bi-capsule-pill"></i>
+                  Tratamiento
+                </label>
+                <input type="text" class="form-control-historial" id="Tratamiendo" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const params = new URLSearchParams(window.location.search);
+        const matricula = params.get("matricula_alum");
+
+        if (!matricula) {
+            alert("No se proporcionó una matrícula.");
+            return;
+        }
+
+        // Actualizar enlaces del sidebar
+        const linkPerfil = document.getElementById("linkPerfil");
+        const linkDatos = document.getElementById("linkDatos");
+        const linkDass = document.getElementById("linkDass");
+        const linkEstilo = document.getElementById("linkEstilo");
+        const linkHistorial = document.getElementById("linkHistorial");
+
+        if (linkPerfil) linkPerfil.href = `expediente.html?matricula_alum=${matricula}`;
+        if (linkDatos) linkDatos.href = `datosfisicosalumnos.html?matricula_alum=${matricula}`;
+        if (linkDass) linkDass.href = `formulariodass.html?matricula_alum=${matricula}`;
+        if (linkEstilo) linkEstilo.href = `formularioestilo.html?matricula_alum=${matricula}`;
+        if (linkHistorial) linkHistorial.href = `HistorialPatologicoAlum.html?matricula_alum=${matricula}`;
+
+        // Cargar datos
+        cargarPerfil();
+    });
+
+    function cargarHistorialClinico(matricula) {
+        fetch(`historial.php?matricula_alum=${matricula}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Llenar los campos del historial clínico
+                document.getElementById("sobrepeso").value = data.sobrepeso;
+                document.getElementById("diabetes").value = data.diabetes;
+                document.getElementById("hipertension").value = data.hipertension;
+                document.getElementById("trigliceridos").value = data.trigliceridos;
+                document.getElementById("colesterol").value = data.colesterol;
+                document.getElementById("hepatitis").value = data.hepatitis;
+                document.getElementById("higado").value = data.higado_graso;
+                document.getElementById("cardiopatias").value = data.cardiopatias;
+                document.getElementById("nefropatias").value = data.nefropatias;
+                document.getElementById("estreñimiento").value = data.estreñimiento;
+                document.getElementById("gastritis").value = data.gastritis;
+                document.getElementById("cancer").value = data.cancer;
+                document.getElementById("tienesEnfermedad").value = data.otros;
+                document.getElementById("Tratamiendo").value = data.tratamiento;
+            })
+            .catch(error => console.error("Error al cargar el historial clínico:", error));
+    }
+
+    function cargarPerfil() {
+        const params = new URLSearchParams(window.location.search);
+        const matricula = params.get("matricula_alum");
+
+        fetch(`perfil.php?matricula_alum=${matricula}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById("matricula").value = data.matricula_alum;
+                document.getElementById("nombre").value = `${data.nombres_alum} ${data.ape_paterno_alum} ${data.ape_materno_alum}`;
+                document.getElementById("sexo").value = data.sexo;
+                document.getElementById("edad").value = data.edad_alum;
+            })
+            .catch(error => console.error("Error al cargar el perfil:", error));
+        
+        // Cargar el historial clínico
+        cargarHistorialClinico(matricula);
+    }
+</script>
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 <?php
+require_once '../config/config.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -6,13 +7,9 @@ ini_set('log_errors', 1);
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-$servername = "pdb1042.awardspace.net";
-$username = "4528622_pisi";
-$password = "sklike5522";
-$database = "4528622_pisi";
 
 try {
-    $conn = new mysqli($servername, $username, $password, $database);
+$conn = getDBConnection();
 
     if ($conn->connect_error) {
         throw new Exception("Error de conexión a la base de datos");
