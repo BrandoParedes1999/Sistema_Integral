@@ -374,25 +374,27 @@ function imcColor($cls) {
             // Mensajes por dimensión según nivel
             $msgs = [];
             $dimensiones = [
-                ['Depresión',  $lDep, $dass['total_depresion'],
-                 'Mod' => 'Tu nivel de depresión es moderado. Puede que te sientas con poca energía o desmotivado/a. Hablar con alguien de confianza o con un profesional puede ayudarte mucho.',
-                 'Sev' => 'Presentas indicadores de depresión severa. Es muy importante que acudas a la Clínica Universitaria o busques apoyo profesional. No estás solo/a.',
-                 'Ext' => 'Tus resultados muestran una depresión extremadamente severa. Por favor, busca ayuda profesional cuanto antes. La Clínica Universitaria puede orientarte.'],
-                ['Ansiedad',   $lAns, $dass['total_ansiedad'],
-                 'Mod' => 'Tu nivel de ansiedad es moderado. Técnicas de respiración, ejercicio y una buena rutina de sueño pueden ayudarte. Considera hablar con un especialista.',
-                 'Sev' => 'Presentas ansiedad severa. Estos niveles pueden afectar tu día a día. Te recomendamos acudir a la Clínica Universitaria para recibir orientación.',
-                 'Ext' => 'Tu nivel de ansiedad es extremadamente severo. Es importante que busques atención profesional pronto. No tienes que manejarlo solo/a.'],
-                ['Estrés',     $lEst, $dass['total_estres'],
-                 'Mod' => 'Tu nivel de estrés es moderado. Organizar tus tiempos, descansar bien y hacer actividad física puede ayudarte a manejarlo.',
-                 'Sev' => 'Presentas estrés severo. Es recomendable que hables con un orientador o profesional de salud. La Clínica Universitaria tiene apoyo disponible para ti.',
-                 'Ext' => 'Tu nivel de estrés es extremadamente severo. Te recomendamos buscar apoyo profesional lo antes posible para que recibas la ayuda que mereces.'],
+                ['dim'=>'Depresión',  'lbl'=>$lDep, 'val'=>$dass['total_depresion'],
+                 'Mod'=>'Tu nivel de depresión es moderado. Puede que te sientas con poca energía o desmotivado/a. Hablar con alguien de confianza o con un profesional puede ayudarte mucho.',
+                 'Sev'=>'Presentas indicadores de depresión severa. Es muy importante que acudas a la Clínica Universitaria o busques apoyo profesional. No estás solo/a.',
+                 'Ext'=>'Tus resultados muestran una depresión extremadamente severa. Por favor, busca ayuda profesional cuanto antes. La Clínica Universitaria puede orientarte.'],
+                ['dim'=>'Ansiedad',   'lbl'=>$lAns, 'val'=>$dass['total_ansiedad'],
+                 'Mod'=>'Tu nivel de ansiedad es moderado. Técnicas de respiración, ejercicio y una buena rutina de sueño pueden ayudarte. Considera hablar con un especialista.',
+                 'Sev'=>'Presentas ansiedad severa. Estos niveles pueden afectar tu día a día. Te recomendamos acudir a la Clínica Universitaria para recibir orientación.',
+                 'Ext'=>'Tu nivel de ansiedad es extremadamente severo. Es importante que busques atención profesional pronto. No tienes que manejarlo solo/a.'],
+                ['dim'=>'Estrés',     'lbl'=>$lEst, 'val'=>$dass['total_estres'],
+                 'Mod'=>'Tu nivel de estrés es moderado. Organizar tus tiempos, descansar bien y hacer actividad física puede ayudarte a manejarlo.',
+                 'Sev'=>'Presentas estrés severo. Es recomendable que hables con un orientador o profesional de salud. La Clínica Universitaria tiene apoyo disponible para ti.',
+                 'Ext'=>'Tu nivel de estrés es extremadamente severo. Te recomendamos buscar apoyo profesional lo antes posible para que recibas la ayuda que mereces.'],
             ];
 
-            foreach($dimensiones as [$dim, $lbl, $val, 'Mod' => $mMod, 'Sev' => $mSev, 'Ext' => $mExt]) {
+            foreach($dimensiones as $d) {
+                $dim = $d['dim']; $lbl = $d['lbl'];
+                $mMod = $d['Mod']; $mSev = $d['Sev']; $mExt = $d['Ext'];
                 $n = $sevOrder[$lbl] ?? 0;
-                if ($n === 2) $msgs[] = ['warn',  $dim, $mMod];
+                if ($n === 2) $msgs[] = ['warn',   $dim, $mMod];
                 if ($n === 3) $msgs[] = ['urgent', $dim, $mSev];
-                if ($n >= 4) $msgs[] = ['urgent', $dim, $mExt];
+                if ($n >= 4)  $msgs[] = ['urgent', $dim, $mExt];
             }
         ?>
         <div class="res-card">
