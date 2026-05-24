@@ -1,69 +1,51 @@
 <?php
-require_once '../config/config.php';
-// Conexión a la base de datos
-$conn = getDBConnection();
-
-// Verificar conexión
-if ($conn->connect_error) {
+session_start();
+if (!isset($_SESSION['usuario'])) {
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'Error de conexión', 'total' => 0]);
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'No autorizado', 'total' => 0]);
     exit();
 }
 
-// Establecer charset
-$conn->set_charset("utf8");
+require_once '../config/config.php';
+header('Content-Type: application/json');
 
-// Obtener filtros desde JavaScript
-$filtroFacultad = isset($_GET['facultad']) ? (int)$_GET['facultad'] : "";
-$filtroSexo = isset($_GET['sexo']) ? $_GET['sexo'] : "";
-$filtroTexto = isset($_GET['busqueda']) ? $_GET['busqueda'] : "";
+$conn = getDBConnection();
+$conn->set_charset("utf8mb4");
 
-// Construir la consulta de conteo
-$sql = "SELECT COUNT(*) as total 
-        FROM alumnos a 
-        JOIN facultad f ON a.id_facultad = f.id_facultad 
-        WHERE 1=1";
+$filtroFacultad = isset($_GET['facultad']) ? (int)$_GET['facultad'] : 0;
+$filtroSexo     = isset($_GET['sexo'])     ? trim($_GET['sexo'])     : '';
+$filtroTexto    = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
 
-// Aplicar filtros dinámicamente
-if (!empty($filtroFacultad)) {
-    $sql .= " AND a.id_facultad = " . intval($filtroFacultad);
+$sql    = "SELECT COUNT(*) AS total FROM alumnos a JOIN facultad f ON a.id_facultad = f.id_facultad WHERE 1=1";
+$params = [];
+$types  = '';
+
+if ($filtroFacultad > 0) {
+    $sql    .= " AND a.id_facultad = ?";
+    $params[] = $filtroFacultad;
+    $types   .= 'i';
+}
+if ($filtroSexo !== '') {
+    $sql    .= " AND a.sexo = ?";
+    $params[] = $filtroSexo;
+    $types   .= 's';
+}
+if ($filtroTexto !== '') {
+    $like     = '%' . $filtroTexto . '%';
+    $sql     .= " AND (a.matricula_alum LIKE ? OR a.nombres_alum LIKE ? OR a.ape_paterno_alum LIKE ? OR a.ape_materno_alum LIKE ?)";
+    $params[] = $like; $params[] = $like; $params[] = $like; $params[] = $like;
+    $types   .= 'ssss';
 }
 
-if (!empty($filtroSexo)) {
-    $filtroSexo = $conn->real_escape_string($filtroSexo);
-    $sql .= " AND a.sexo = '$filtroSexo'";
+$stmt = $conn->prepare($sql);
+if ($params) {
+    $stmt->bind_param($types, ...$params);
 }
-
-if (!empty($filtroTexto)) {
-    $filtroTexto = $conn->real_escape_string($filtroTexto);
-    $sql .= " AND (a.matricula_alum LIKE '%$filtroTexto%' 
-              OR a.nombres_alum LIKE '%$filtroTexto%' 
-              OR a.ape_paterno_alum LIKE '%$filtroTexto%' 
-              OR a.ape_materno_alum LIKE '%$filtroTexto%')";
-}
-
-// Ejecutar la consulta
-$result = $conn->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
-    $total = $row['total'];
-    
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => true,
-        'total' => $total,
-        'paginas' => ceil($total / 20) // 20 registros por página
-    ]);
-} else {
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => false,
-        'error' => 'Error al contar registros',
-        'total' => 0
-    ]);
-}
-
-// Cerrar conexión
+$stmt->execute();
+$total = (int)$stmt->get_result()->fetch_assoc()['total'];
+$stmt->close();
 $conn->close();
+
+echo json_encode(['success' => true, 'total' => $total, 'paginas' => ceil($total / 20)]);
 ?>

@@ -1,50 +1,47 @@
 <?php
-require_once '../config/config.php';
 session_start();
-
-
-$conn = getDBConnection();
-
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+if (!isset($_SESSION['usuario'])) {
+    header('Location: ../login.php');
+    exit();
 }
 
+require_once '../config/config.php';
+$conn = getDBConnection();
 $conn->set_charset("utf8mb4");
 
-// Obtener filtros
 $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
-$facultad = isset($_GET['facultad']) ? trim($_GET['facultad']) : '';
-$sexo = isset($_GET['sexo']) ? trim($_GET['sexo']) : '';
+$facultad = isset($_GET['facultad']) ? (int)$_GET['facultad'] : 0;
+$sexo     = isset($_GET['sexo'])     ? trim($_GET['sexo'])     : '';
 
-$sql = "SELECT 
-            a.matricula_alum,
-            CONCAT(a.nombres_alum, ' ', a.ape_paterno_alum, ' ', a.ape_materno_alum) AS nombre_completo,
-            f.nombre_facultad
-        FROM alumnos a
-        INNER JOIN facultad f ON a.id_facultad = f.id_facultad
-        WHERE 1=1";
+$sql    = "SELECT a.matricula_alum,
+                  CONCAT(a.nombres_alum, ' ', a.ape_paterno_alum, ' ', a.ape_materno_alum) AS nombre_completo,
+                  f.nombre_facultad
+           FROM alumnos a
+           INNER JOIN facultad f ON a.id_facultad = f.id_facultad
+           WHERE 1=1";
+$params = []; $types = '';
 
-if (!empty($busqueda)) {
-    $busqueda_escape = $conn->real_escape_string($busqueda);
-    $sql .= " AND (a.matricula_alum LIKE '%$busqueda_escape%' 
-              OR a.nombres_alum LIKE '%$busqueda_escape%'
-              OR a.ape_paterno_alum LIKE '%$busqueda_escape%'
-              OR a.ape_materno_alum LIKE '%$busqueda_escape%')";
+if ($busqueda !== '') {
+    $like = '%' . $busqueda . '%';
+    $sql .= " AND (a.matricula_alum LIKE ? OR a.nombres_alum LIKE ? OR a.ape_paterno_alum LIKE ? OR a.ape_materno_alum LIKE ?)";
+    $params[] = $like; $params[] = $like; $params[] = $like; $params[] = $like;
+    $types .= 'ssss';
 }
-
-if (!empty($facultad)) {
-    $facultad_escape = $conn->real_escape_string($facultad);
-    $sql .= " AND a.id_facultad = '$facultad_escape'";
+if ($facultad > 0) {
+    $sql .= " AND a.id_facultad = ?";
+    $params[] = $facultad; $types .= 'i';
 }
-
-if (!empty($sexo)) {
-    $sexo_escape = $conn->real_escape_string($sexo);
-    $sql .= " AND a.sexo = '$sexo_escape'";
+if ($sexo !== '') {
+    $sql .= " AND a.sexo = ?";
+    $params[] = $sexo; $types .= 's';
 }
-
 $sql .= " ORDER BY a.matricula_alum ASC";
 
-$resultado = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+if ($params) { $stmt->bind_param($types, ...$params); }
+$stmt->execute();
+$resultado = $stmt->get_result();
+$stmt->close();
 $fecha_expiracion = date('d/m/Y', strtotime('+4 years'));
 
 
@@ -58,7 +55,7 @@ $host = $_SERVER['HTTP_HOST'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
     <title>Credenciales - Impresión Masiva</title>
     <style>
         :root {

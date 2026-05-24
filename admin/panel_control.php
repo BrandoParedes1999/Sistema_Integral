@@ -96,7 +96,7 @@ $result = $conn->query($sql);
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../css/panel_control.css">
     <link rel="stylesheet" href="../css/menu.css" />
-    <link rel="icon" type="image/x-icon" href="/ico/logo_pequeno.ico">
+    <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 

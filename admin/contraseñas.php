@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['usuario']) || ($_SESSION['rol'] ?? '') !== 'Administrador') {
+    header('Location: ../login.php');
+    exit();
+}
+
 require_once '../config/config.php';
 
 // 1. AUMENTAR EL TIEMPO DE EJECUCIÓN

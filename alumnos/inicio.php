@@ -85,7 +85,7 @@ function imcColor($cls) {
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Mi Portal · UNACAR</title>
+    <title>UniSalud · Mi Portal</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -200,6 +200,15 @@ function imcColor($cls) {
         .dass-val  { font-size:.78rem; font-weight:600; width:20px; text-align:right; flex-shrink:0; }
         .dass-sev  { font-size:.72rem; font-weight:600; padding:.15rem .5rem;
                      border-radius:99px; white-space:nowrap; flex-shrink:0; }
+
+        /* DASS message block */
+        .dass-msg { margin-top:1rem; padding:.85rem 1rem; border-radius:10px; font-size:.8rem; line-height:1.55; }
+        .dass-msg.urgent { background:#fef2f2; border-left:3px solid #ef4444; color:#991b1b; }
+        .dass-msg.warn   { background:#fffbeb; border-left:3px solid #f59e0b; color:#92400e; }
+        .dass-msg.ok     { background:#ecfdf5; border-left:3px solid #10b981; color:#065f46; }
+        .dass-msg strong { display:block; margin-bottom:.25rem; }
+        .dass-contact { margin-top:.55rem; font-size:.76rem; font-weight:600;
+                        display:flex; align-items:center; gap:.3rem; }
 
         /* PEPS result */
         .peps-big  { text-align:center; padding:.75rem 0; }
@@ -343,7 +352,38 @@ function imcColor($cls) {
             [$lDep, $cDep] = sevLabel($dass['total_depresion'], 'dep');
             [$lAns, $cAns] = sevLabel($dass['total_ansiedad'],  'ans');
             [$lEst, $cEst] = sevLabel($dass['total_estres'],    'est');
-            $maxDass = 42;
+
+            // Determinar el nivel de alerta más alto para el mensaje general
+            $nivelMax = 0; // 0=normal,1=leve,2=mod,3=sev,4=ext.sev
+            $sevOrder = ['Normal'=>0,'Leve'=>1,'Moderado'=>2,'Severo'=>3,'Extremadamente Severo'=>4];
+            foreach([$lDep,$lAns,$lEst] as $lbl) {
+                $n = $sevOrder[$lbl] ?? 0;
+                if ($n > $nivelMax) $nivelMax = $n;
+            }
+
+            // Mensajes por dimensión según nivel
+            $msgs = [];
+            $dimensiones = [
+                ['Depresión',  $lDep, $dass['total_depresion'],
+                 'Mod' => 'Tu nivel de depresión es moderado. Puede que te sientas con poca energía o desmotivado/a. Hablar con alguien de confianza o con un profesional puede ayudarte mucho.',
+                 'Sev' => 'Presentas indicadores de depresión severa. Es muy importante que acudas a la Clínica Universitaria o busques apoyo profesional. No estás solo/a.',
+                 'Ext' => 'Tus resultados muestran una depresión extremadamente severa. Por favor, busca ayuda profesional cuanto antes. La Clínica Universitaria puede orientarte.'],
+                ['Ansiedad',   $lAns, $dass['total_ansiedad'],
+                 'Mod' => 'Tu nivel de ansiedad es moderado. Técnicas de respiración, ejercicio y una buena rutina de sueño pueden ayudarte. Considera hablar con un especialista.',
+                 'Sev' => 'Presentas ansiedad severa. Estos niveles pueden afectar tu día a día. Te recomendamos acudir a la Clínica Universitaria para recibir orientación.',
+                 'Ext' => 'Tu nivel de ansiedad es extremadamente severo. Es importante que busques atención profesional pronto. No tienes que manejarlo solo/a.'],
+                ['Estrés',     $lEst, $dass['total_estres'],
+                 'Mod' => 'Tu nivel de estrés es moderado. Organizar tus tiempos, descansar bien y hacer actividad física puede ayudarte a manejarlo.',
+                 'Sev' => 'Presentas estrés severo. Es recomendable que hables con un orientador o profesional de salud. La Clínica Universitaria tiene apoyo disponible para ti.',
+                 'Ext' => 'Tu nivel de estrés es extremadamente severo. Te recomendamos buscar apoyo profesional lo antes posible para que recibas la ayuda que mereces.'],
+            ];
+
+            foreach($dimensiones as [$dim, $lbl, $val, 'Mod' => $mMod, 'Sev' => $mSev, 'Ext' => $mExt]) {
+                $n = $sevOrder[$lbl] ?? 0;
+                if ($n === 2) $msgs[] = ['warn',  $dim, $mMod];
+                if ($n === 3) $msgs[] = ['urgent', $dim, $mSev];
+                if ($n >= 4) $msgs[] = ['urgent', $dim, $mExt];
+            }
         ?>
         <div class="res-card">
             <div class="res-body">
@@ -367,6 +407,28 @@ function imcColor($cls) {
                     </div>
                     <?php endforeach; ?>
                 </div>
+
+                <?php if (!empty($msgs)): ?>
+                <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.55rem;">
+                    <?php foreach($msgs as [$tipo,$dim,$texto]): ?>
+                    <div class="dass-msg <?= $tipo ?>">
+                        <strong><i class="bi bi-<?= $tipo==='urgent'?'exclamation-triangle-fill':'info-circle-fill' ?>" style="margin-right:.3rem;"></i><?= $dim ?></strong>
+                        <?= $texto ?>
+                        <?php if($tipo === 'urgent'): ?>
+                        <div class="dass-contact">
+                            <i class="bi bi-telephone-fill"></i> Clínica Universitaria UNACAR &mdash; acude en horario escolar o habla con tu tutor.
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php elseif($nivelMax <= 1): ?>
+                <div class="dass-msg ok" style="margin-top:.9rem;">
+                    <strong><i class="bi bi-check-circle-fill" style="margin-right:.3rem;"></i>¡Buen estado emocional!</strong>
+                    Tus resultados están dentro del rango normal. Sigue cuidando tu bienestar con buenos hábitos de sueño, actividad física y momentos de descanso.
+                </div>
+                <?php endif; ?>
+
             </div>
         </div>
         <?php endif; ?>

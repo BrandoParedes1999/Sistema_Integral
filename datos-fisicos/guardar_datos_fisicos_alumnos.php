@@ -1,4 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header('Content-Type: application/json; charset=UTF-8');
+    http_response_code(401);
+    echo json_encode(['error' => 'No autorizado']);
+    exit();
+}
+
 require_once '../config/config.php';
 // Configuración de errores y output buffering
 error_reporting(E_ALL);

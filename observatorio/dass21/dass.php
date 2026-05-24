@@ -204,41 +204,25 @@ function getDassStats($conn) {
         $result = $conn->query($sql);
     }
     
-    // Obtener total general
-    $sqlTotal = "SELECT COUNT(*) as total
-                 FROM {$tabla} d
-                 INNER JOIN dass da ON d.id_cuestionario = da.id_cuestionario
-                 INNER JOIN alumnos a ON da.matricula_alum = a.matricula_alum
-                 WHERE 1=1";
-    
-    // Aplicar los mismos filtros para el total
-    if ($facultad !== null) {
-        $sqlTotal .= " AND a.id_facultad = " . intval($facultad);
-    }
-    
-    if ($carrera !== null) {
-        $sqlTotal .= " AND a.id_carrera = " . intval($carrera);
-    }
-    
-    if ($sexo !== null) {
-        $sqlTotal .= " AND a.sexo = '" . $conn->real_escape_string($sexo) . "'";
-    }
-    
-    if ($nacimiento !== null) {
-        $sqlTotal .= " AND YEAR(a.fe_nacimiento_alum) = " . intval($nacimiento);
-    }
-    
-    if ($severidad !== null) {
-        $sqlTotal .= " AND d.severidad = '" . $conn->real_escape_string($severidad) . "'";
-    }
-    
-    $resultTotal = $conn->query($sqlTotal);
-    $totalGeneral = 0;
-    
-    if ($resultTotal) {
-        $rowTotal = $resultTotal->fetch_assoc();
-        $totalGeneral = $rowTotal['total'];
-    }
+    // Obtener total general (prepared statement)
+    $sqlTotal    = "SELECT COUNT(*) as total
+                    FROM {$tabla} d
+                    INNER JOIN dass da ON d.id_cuestionario = da.id_cuestionario
+                    INNER JOIN alumnos a ON da.matricula_alum = a.matricula_alum
+                    WHERE 1=1";
+    $tParams = []; $tTypes = '';
+    if ($facultad  !== null) { $sqlTotal .= " AND a.id_facultad = ?";                   $tParams[] = (int)$facultad;  $tTypes .= 'i'; }
+    if ($carrera   !== null) { $sqlTotal .= " AND a.id_carrera = ?";                    $tParams[] = (int)$carrera;   $tTypes .= 'i'; }
+    if ($sexo      !== null) { $sqlTotal .= " AND a.sexo = ?";                          $tParams[] = $sexo;           $tTypes .= 's'; }
+    if ($nacimiento !== null){ $sqlTotal .= " AND YEAR(a.fe_nacimiento_alum) = ?";      $tParams[] = (int)$nacimiento;$tTypes .= 'i'; }
+    if ($severidad !== null) { $sqlTotal .= " AND d.severidad = ?";                     $tParams[] = $severidad;      $tTypes .= 's'; }
+
+    $stmtT = $conn->prepare($sqlTotal);
+    if ($tParams) { $stmtT->bind_param($tTypes, ...$tParams); }
+    $stmtT->execute();
+    $rowT        = $stmtT->get_result()->fetch_assoc();
+    $totalGeneral = (int)($rowT['total'] ?? 0);
+    $stmtT->close();
     
     // Formatear respuesta con todos los niveles de severidad
     $conteos = [
