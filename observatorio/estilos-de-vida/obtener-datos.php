@@ -1,4 +1,7 @@
 <?php
+session_start();
+if (!isset($_SESSION['usuario'])) { http_response_code(401); echo json_encode(['error' => 'No autorizado']); exit(); }
+
 require_once '../../config/config.php';
 header('Content-Type: application/json; charset=utf-8');
 
@@ -20,8 +23,17 @@ if ($tipo == "facultad") {
 
 // --- CARRERAS POR FACULTAD ---
 elseif ($tipo == "carrera" && isset($_GET["idfacultad"])) {
-    $idfacultad = intval($_GET["idfacultad"]);
-    $sql = "SELECT id_carrera, nombre_carrera FROM carrera WHERE id_facultad = $idfacultad ORDER BY nombre_carrera ASC";
+    $idfacultad = (int)$_GET["idfacultad"];
+    $stmt = $conn->prepare("SELECT id_carrera, nombre_carrera FROM carrera WHERE id_facultad = ? ORDER BY nombre_carrera ASC");
+    $stmt->bind_param('i', $idfacultad);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $datos  = [];
+    while ($fila = $result->fetch_assoc()) { $datos[] = $fila; }
+    $stmt->close();
+    $conn->close();
+    echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
 // --- AÑOS DE NACIMIENTO DISPONIBLES ---

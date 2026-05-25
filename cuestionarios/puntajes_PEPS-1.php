@@ -1,4 +1,6 @@
 <?php
+session_start();
+if (!isset($_SESSION['alumno'])) { http_response_code(401); echo json_encode(['error' => 'No autorizado']); exit(); }
 require_once '../config/config.php';
 header("Content-Type: application/json");
 
