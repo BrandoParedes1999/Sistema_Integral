@@ -65,13 +65,21 @@
             <span class="titulo">REGISTRO DE DATOS FÍSICOS</span>
         </div>
 
-        <div class="row mb-3">
+        <div class="row mb-3 align-items-end">
             <div class="col-md-4">
                 <label class="mb-2">¿A quién va dirigido?</label>
                 <select id="ambos" class="form-select" onchange="mostrarFormulario()">
                     <option selected disabled>Escoge una opción</option>
                     <option value="alumnos">Alumnos</option>
                 </select>
+            </div>
+            <div class="col-md-8 d-flex justify-content-end">
+                <a href="exportar-excel.php" target="_blank"
+                   style="display:inline-flex;align-items:center;gap:.4rem;background:#16a34a;color:#fff;
+                          padding:.45rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;
+                          text-decoration:none;">
+                    <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar Excel
+                </a>
             </div>
         </div>
 

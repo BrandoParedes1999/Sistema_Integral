@@ -82,6 +82,16 @@
             </div>
         </div>
 
+        <!-- Exportar -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:.75rem;">
+            <a id="btn-exportar" href="exportar-excel.php" target="_blank"
+               style="display:inline-flex;align-items:center;gap:.4rem;background:#16a34a;color:#fff;
+                      padding:.45rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;
+                      text-decoration:none;transition:opacity .2s;">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar Excel
+            </a>
+        </div>
+
         <!-- Tabla de alumnos -->
         <div class="table-container">
             <div class="table-responsive">
@@ -153,10 +163,19 @@
         let totalPages = 1;
         let totalRegistros = 0;
 
+        function actualizarExportUrl() {
+            const b = encodeURIComponent(document.getElementById("busqueda").value);
+            const f = document.getElementById("idfacultades").value;
+            const s = document.getElementById("sexoFiltro").value;
+            document.getElementById("btn-exportar").href =
+                `exportar-excel.php?busqueda=${b}&facultad=${f}&sexo=${s}`;
+        }
+
         function cargarAlumnos() {
             const busqueda = document.getElementById("busqueda").value;
             const facultad = document.getElementById("idfacultades").value;
             const sexo = document.getElementById("sexoFiltro").value;
+            actualizarExportUrl();
 
             // Mostrar indicador de carga
             document.getElementById('tablaAlumnos').innerHTML = `

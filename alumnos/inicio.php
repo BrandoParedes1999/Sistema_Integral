@@ -290,6 +290,16 @@ function imcColor($cls) {
                 <i class="bi bi-envelope"></i>
                 <?= htmlspecialchars($alumno['correo'] ?? '') ?>
             </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalPerfil"
+                        style="border-radius:8px;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:.35rem;">
+                    <i class="bi bi-pencil-square"></i> Editar perfil
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalPassword"
+                        style="border-radius:8px;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:.35rem;">
+                    <i class="bi bi-shield-lock"></i> Cambiar contraseña
+                </button>
+            </div>
             <div class="info-grid">
                 <div>
                     <div class="info-label"><i class="bi bi-building"></i> Facultad</div>
@@ -364,25 +374,27 @@ function imcColor($cls) {
             // Mensajes por dimensión según nivel
             $msgs = [];
             $dimensiones = [
-                ['Depresión',  $lDep, $dass['total_depresion'],
-                 'Mod' => 'Tu nivel de depresión es moderado. Puede que te sientas con poca energía o desmotivado/a. Hablar con alguien de confianza o con un profesional puede ayudarte mucho.',
-                 'Sev' => 'Presentas indicadores de depresión severa. Es muy importante que acudas a la Clínica Universitaria o busques apoyo profesional. No estás solo/a.',
-                 'Ext' => 'Tus resultados muestran una depresión extremadamente severa. Por favor, busca ayuda profesional cuanto antes. La Clínica Universitaria puede orientarte.'],
-                ['Ansiedad',   $lAns, $dass['total_ansiedad'],
-                 'Mod' => 'Tu nivel de ansiedad es moderado. Técnicas de respiración, ejercicio y una buena rutina de sueño pueden ayudarte. Considera hablar con un especialista.',
-                 'Sev' => 'Presentas ansiedad severa. Estos niveles pueden afectar tu día a día. Te recomendamos acudir a la Clínica Universitaria para recibir orientación.',
-                 'Ext' => 'Tu nivel de ansiedad es extremadamente severo. Es importante que busques atención profesional pronto. No tienes que manejarlo solo/a.'],
-                ['Estrés',     $lEst, $dass['total_estres'],
-                 'Mod' => 'Tu nivel de estrés es moderado. Organizar tus tiempos, descansar bien y hacer actividad física puede ayudarte a manejarlo.',
-                 'Sev' => 'Presentas estrés severo. Es recomendable que hables con un orientador o profesional de salud. La Clínica Universitaria tiene apoyo disponible para ti.',
-                 'Ext' => 'Tu nivel de estrés es extremadamente severo. Te recomendamos buscar apoyo profesional lo antes posible para que recibas la ayuda que mereces.'],
+                ['dim'=>'Depresión',  'lbl'=>$lDep, 'val'=>$dass['total_depresion'],
+                 'Mod'=>'Tu nivel de depresión es moderado. Puede que te sientas con poca energía o desmotivado/a. Hablar con alguien de confianza o con un profesional puede ayudarte mucho.',
+                 'Sev'=>'Presentas indicadores de depresión severa. Es muy importante que acudas a la Clínica Universitaria o busques apoyo profesional. No estás solo/a.',
+                 'Ext'=>'Tus resultados muestran una depresión extremadamente severa. Por favor, busca ayuda profesional cuanto antes. La Clínica Universitaria puede orientarte.'],
+                ['dim'=>'Ansiedad',   'lbl'=>$lAns, 'val'=>$dass['total_ansiedad'],
+                 'Mod'=>'Tu nivel de ansiedad es moderado. Técnicas de respiración, ejercicio y una buena rutina de sueño pueden ayudarte. Considera hablar con un especialista.',
+                 'Sev'=>'Presentas ansiedad severa. Estos niveles pueden afectar tu día a día. Te recomendamos acudir a la Clínica Universitaria para recibir orientación.',
+                 'Ext'=>'Tu nivel de ansiedad es extremadamente severo. Es importante que busques atención profesional pronto. No tienes que manejarlo solo/a.'],
+                ['dim'=>'Estrés',     'lbl'=>$lEst, 'val'=>$dass['total_estres'],
+                 'Mod'=>'Tu nivel de estrés es moderado. Organizar tus tiempos, descansar bien y hacer actividad física puede ayudarte a manejarlo.',
+                 'Sev'=>'Presentas estrés severo. Es recomendable que hables con un orientador o profesional de salud. La Clínica Universitaria tiene apoyo disponible para ti.',
+                 'Ext'=>'Tu nivel de estrés es extremadamente severo. Te recomendamos buscar apoyo profesional lo antes posible para que recibas la ayuda que mereces.'],
             ];
 
-            foreach($dimensiones as [$dim, $lbl, $val, 'Mod' => $mMod, 'Sev' => $mSev, 'Ext' => $mExt]) {
+            foreach($dimensiones as $d) {
+                $dim = $d['dim']; $lbl = $d['lbl'];
+                $mMod = $d['Mod']; $mSev = $d['Sev']; $mExt = $d['Ext'];
                 $n = $sevOrder[$lbl] ?? 0;
-                if ($n === 2) $msgs[] = ['warn',  $dim, $mMod];
+                if ($n === 2) $msgs[] = ['warn',   $dim, $mMod];
                 if ($n === 3) $msgs[] = ['urgent', $dim, $mSev];
-                if ($n >= 4) $msgs[] = ['urgent', $dim, $mExt];
+                if ($n >= 4)  $msgs[] = ['urgent', $dim, $mExt];
             }
         ?>
         <div class="res-card">
@@ -547,5 +559,166 @@ function imcColor($cls) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
+<!-- Modal: Editar Perfil -->
+<div class="modal fade" id="modalPerfil" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2 text-primary"></i>Editar perfil</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 py-3">
+                <div id="perfilAlert" class="alert d-none"></div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">Correo electrónico</label>
+                    <input type="email" id="perfilCorreo" class="form-control"
+                           value="<?= htmlspecialchars($alumno['correo'] ?? '') ?>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">Teléfono de emergencia</label>
+                    <input type="text" id="perfilEmergencia" class="form-control" placeholder="10 dígitos"
+                           value="<?= htmlspecialchars($alumno['emergencia'] ?? '') ?>">
+                </div>
+                <div class="mb-1">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">NSS <span class="text-muted fw-normal">(opcional)</span></label>
+                    <input type="text" id="perfilNss" class="form-control" placeholder="11 dígitos"
+                           value="<?= htmlspecialchars($alumno['nss'] ?? '') ?>">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnGuardarPerfil" class="btn btn-primary" style="border-radius:8px;font-weight:600;">
+                    <i class="bi bi-check-lg me-1"></i> Guardar cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Cambiar Contraseña -->
+<div class="modal fade" id="modalPassword" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title fw-bold"><i class="bi bi-shield-lock me-2 text-secondary"></i>Cambiar contraseña</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 py-3">
+                <div id="pwAlert" class="alert d-none"></div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">Contraseña actual</label>
+                    <input type="password" id="pwActual" class="form-control" placeholder="••••••••">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">Nueva contraseña</label>
+                    <input type="password" id="pwNueva" class="form-control" placeholder="Mínimo 8 caracteres">
+                </div>
+                <div class="mb-1">
+                    <label class="form-label fw-semibold" style="font-size:.85rem;">Confirmar nueva contraseña</label>
+                    <input type="password" id="pwConfirmar" class="form-control" placeholder="Repetir contraseña">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnGuardarPassword" class="btn btn-primary" style="border-radius:8px;font-weight:600;">
+                    <i class="bi bi-check-lg me-1"></i> Cambiar contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Editar perfil
+document.getElementById('btnGuardarPerfil').addEventListener('click', function () {
+    const btn = this;
+    const alerta = document.getElementById('perfilAlert');
+    alerta.className = 'alert d-none';
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+    fetch('actualizar-perfil.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            correo:     document.getElementById('perfilCorreo').value,
+            emergencia: document.getElementById('perfilEmergencia').value,
+            nss:        document.getElementById('perfilNss').value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alerta.className = 'alert alert-success';
+            alerta.textContent = data.message;
+            setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('modalPerfil')).hide(), 1200);
+        } else {
+            alerta.className = 'alert alert-danger';
+            alerta.textContent = data.error || 'Error al guardar.';
+        }
+    })
+    .catch(() => {
+        alerta.className = 'alert alert-danger';
+        alerta.textContent = 'Error de conexión. Intente de nuevo.';
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Guardar cambios';
+    });
+});
+
+// Cambiar contraseña
+document.getElementById('btnGuardarPassword').addEventListener('click', function () {
+    const btn = this;
+    const alerta = document.getElementById('pwAlert');
+    alerta.className = 'alert d-none';
+
+    const nueva    = document.getElementById('pwNueva').value;
+    const confirmar = document.getElementById('pwConfirmar').value;
+
+    if (nueva !== confirmar) {
+        alerta.className = 'alert alert-danger';
+        alerta.textContent = 'Las contraseñas nuevas no coinciden.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+    fetch('cambiar-password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            actual:    document.getElementById('pwActual').value,
+            nueva:     nueva,
+            confirmar: confirmar
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alerta.className = 'alert alert-success';
+            alerta.textContent = data.message;
+            document.getElementById('pwActual').value    = '';
+            document.getElementById('pwNueva').value     = '';
+            document.getElementById('pwConfirmar').value = '';
+            setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('modalPassword')).hide(), 1500);
+        } else {
+            alerta.className = 'alert alert-danger';
+            alerta.textContent = data.error || 'Error al cambiar contraseña.';
+        }
+    })
+    .catch(() => {
+        alerta.className = 'alert alert-danger';
+        alerta.textContent = 'Error de conexión. Intente de nuevo.';
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Cambiar contraseña';
+    });
+});
+</script>
 </body>
 </html>
