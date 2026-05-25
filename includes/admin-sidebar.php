@@ -1,17 +1,14 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../config/config.php';
 
-$nombre_admi = isset($_SESSION['nombre_admi']) ? $_SESSION['nombre_admi'] : '';
-$rol         = isset($_SESSION['rol'])         ? $_SESSION['rol']         : '';
+$nombre_admi = $_SESSION['nombre_admi'] ?? '';
+$rol         = $_SESSION['rol']         ?? '';
 
 $partes    = explode(' ', trim($nombre_admi));
-$iniciales = strtoupper(
-    substr($partes[0], 0, 1) . (isset($partes[1]) ? substr($partes[1], 0, 1) : '')
-);
+$iniciales = strtoupper(substr($partes[0], 0, 1) . (isset($partes[1]) ? substr($partes[1], 0, 1) : ''));
+
+$esAdmin = $rol === 'Administrador';
 ?>
 <nav id="sidebar">
   <div class="sb-brand">
@@ -20,11 +17,12 @@ $iniciales = strtoupper(
     </div>
     <div class="sb-brand-text">
       <div class="b-name">UniSalud</div>
-      <div class="b-sub">UNACAR &middot; Administración</div>
+      <div class="b-sub">UNACAR &middot; <?php echo $esAdmin ? 'Administración' : 'Capturista'; ?></div>
     </div>
   </div>
 
   <div class="sb-nav">
+    <?php if ($esAdmin): ?>
     <div class="sb-section">Principal</div>
     <a href="../admin/menu.php" class="sb-link">
       <i class="bi bi-grid-1x2-fill"></i> Dashboard
@@ -64,13 +62,34 @@ $iniciales = strtoupper(
     <a href="../admin/panel_control.php" class="sb-link">
       <i class="bi bi-shield-lock-fill"></i> Control del Sistema
     </a>
+    <a href="../admin/cuentas.php" class="sb-link">
+      <i class="bi bi-person-plus-fill"></i> Cuentas
+    </a>
+
+    <?php else: ?>
+    <div class="sb-section">Captura</div>
+    <a href="../admin/capturista.php" class="sb-link">
+      <i class="bi bi-house-fill"></i> Inicio
+    </a>
+    <a href="../datos-fisicos/datos_fisicos.html" class="sb-link">
+      <i class="bi bi-activity"></i> Datos Físicos
+    </a>
+    <a href="../historial/historial_clinico.html" class="sb-link">
+      <i class="bi bi-folder2-open"></i> Historial Clínico
+    </a>
+    <?php endif; ?>
+
+    <div class="sb-section">Cuenta</div>
+    <a href="../auth/cerrar_sesion.php" class="sb-link" style="color:#ef4444;">
+      <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+    </a>
   </div>
 
   <div class="sb-footer">
     <div class="sb-user-card">
       <div class="sb-av"><?php echo htmlspecialchars($iniciales ?: '?'); ?></div>
       <div>
-        <div class="sb-u-name"><?php echo htmlspecialchars($nombre_admi ?: 'Administrador'); ?></div>
+        <div class="sb-u-name"><?php echo htmlspecialchars($nombre_admi ?: 'Usuario'); ?></div>
         <div class="sb-u-role"><?php echo htmlspecialchars($rol ?: ''); ?></div>
       </div>
     </div>

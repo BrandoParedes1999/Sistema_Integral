@@ -6,6 +6,10 @@ if (!isset($_SESSION['usuario'])) {
     header('Location: ../login.php');
     exit();
 }
+if (($_SESSION['rol'] ?? '') !== 'Administrador') {
+    header('Location: capturista.php');
+    exit();
+}
 
 require_once '../config/config.php';
 $database = new Database();

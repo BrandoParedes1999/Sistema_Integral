@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt_update->close();
 
                     $conn->close();
-                    header('Location: admin/Carga.html');
+                    header('Location: admin/bienvenido.php');
                     exit();
                 } else {
                     // ❌ CONTRASEÑA INCORRECTA
