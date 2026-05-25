@@ -12,14 +12,14 @@ $msg = ''; $msgType = '';
 
 // ── DELETE ─────────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_action']) && $_POST['_action'] === 'delete') {
-    $delId = (int)($_POST['id'] ?? 0);
-    if ($delId && $delId !== (int)$_SESSION['usuario']) {
-        $d = $conn->prepare("DELETE FROM administradores WHERE id = ?");
-        $d->bind_param('i', $delId);
-        $msg     = $d->execute() ? 'Cuenta eliminada.' : 'Error al eliminar.';
-        $msgType = $d->execute() ? 'ok' : 'err';
+    $delUsuario = trim($_POST['del_usuario'] ?? '');
+    if ($delUsuario && $delUsuario !== (string)$_SESSION['usuario']) {
+        $d = $conn->prepare("DELETE FROM administradores WHERE usuario = ?");
+        $d->bind_param('s', $delUsuario);
+        $d->execute();
+        $msg     = $d->affected_rows > 0 ? 'Cuenta eliminada correctamente.' : 'No se encontró la cuenta.';
+        $msgType = $d->affected_rows > 0 ? 'ok' : 'err';
         $d->close();
-        $msg = 'Cuenta eliminada correctamente.'; $msgType = 'ok';
     } else {
         $msg = 'No puedes eliminar tu propia cuenta.'; $msgType = 'err';
     }
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_action']) && $_POST[
 
 // ── LIST ────────────────────────────────────────────────────────────────────
 $cuentas = [];
-$res = $conn->query("SELECT id, usuario, nombre_admi, apellidos_admi, rol, intentos_fallidos FROM administradores ORDER BY rol ASC, nombre_admi ASC");
+$res = $conn->query("SELECT usuario, nombre_admi, apellidos_admi, rol, intentos_fallidos FROM administradores ORDER BY rol ASC, nombre_admi ASC");
 while ($r = $res->fetch_assoc()) { $cuentas[] = $r; }
 $conn->close();
 ?>
@@ -124,7 +124,7 @@ $conn->close();
       <tbody>
         <?php foreach ($cuentas as $c):
           $ini = strtoupper(substr($c['nombre_admi'],0,1).substr($c['apellidos_admi'],0,1));
-          $esMiCuenta = ($c['usuario'] == $_SESSION['usuario']);
+          $esMiCuenta = ((string)$c['usuario'] === (string)$_SESSION['usuario']);
         ?>
         <tr>
           <td><div class="av"><?= htmlspecialchars($ini) ?></div></td>
@@ -138,9 +138,9 @@ $conn->close();
           <td><?= (int)$c['intentos_fallidos'] ?></td>
           <td>
             <?php if (!$esMiCuenta): ?>
-            <form method="POST" onsubmit="return confirm('¿Eliminar la cuenta de <?= htmlspecialchars($c['nombre_admi']) ?>?')">
+            <form method="POST" onsubmit="return confirm('¿Eliminar la cuenta de <?= htmlspecialchars(addslashes($c['nombre_admi'])) ?>?')">
               <input type="hidden" name="_action" value="delete">
-              <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
+              <input type="hidden" name="del_usuario" value="<?= htmlspecialchars($c['usuario']) ?>">
               <button type="submit" class="btn-del"><i class="bi bi-trash"></i> Eliminar</button>
             </form>
             <?php else: ?>
