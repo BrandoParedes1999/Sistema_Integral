@@ -18,6 +18,10 @@ $resultado = $stmt->get_result();
 $alumno = $resultado->fetch_assoc();
 
 if(!$alumno) die("Alumno no encontrado.");
+
+$iniciales = strtoupper(
+    substr($alumno['nombres_alum'], 0, 1) . substr($alumno['ape_paterno_alum'], 0, 1)
+);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -46,16 +50,18 @@ if(!$alumno) die("Alumno no encontrado.");
             height: 120px;
             border-radius: 50%;
             border: 5px solid white;
-            background-color: #ddd;
+            background: linear-gradient(135deg, #003da5, #1a6bdd);
             position: absolute;
             bottom: -60px;
             left: 50%;
             transform: translateX(-50%);
-            object-fit: cover;
-            display: flex; /* Para centrar el emoji si no hay foto */
+            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .05em;
         }
         .content {
             padding-top: 70px;
@@ -85,7 +91,7 @@ if(!$alumno) die("Alumno no encontrado.");
     <div class="container">
         <div class="card card-profile">
             <div class="header-bg">
-                <div class="avatar">👤</div>
+                <div class="avatar"><?php echo htmlspecialchars($iniciales); ?></div>
             </div>
             <div class="content">
                 <h3><?php echo htmlspecialchars($alumno['nombres_alum'] . " " . $alumno['ape_paterno_alum']); ?></h3>

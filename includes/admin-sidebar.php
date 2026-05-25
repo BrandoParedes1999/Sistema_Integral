@@ -48,6 +48,9 @@ $iniciales = strtoupper(
     <a href="../reportes/resultadoalumnos.html" class="sb-link">
       <i class="bi bi-graph-up-arrow"></i> Resultados
     </a>
+    <a href="../reportes/descargar_datos.php" class="sb-link">
+      <i class="bi bi-download"></i> Descargar Datos
+    </a>
     <a href="../credenciales/credencialesalumnos.html" class="sb-link">
       <i class="bi bi-person-badge-fill"></i> Credenciales
     </a>
