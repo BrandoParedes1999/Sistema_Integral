@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_action']) && $_POST[
         $msg = 'El nombre y apellidos son obligatorios.'; $msgType = 'err';
     } else {
         $contrasena = password_hash($pw_raw, PASSWORD_BCRYPT);
-        $chk = $conn->prepare("SELECT id FROM administradores WHERE usuario = ?");
+        $chk = $conn->prepare("SELECT usuario FROM administradores WHERE usuario = ?");
         $chk->bind_param('s', $usuario_n);
         $chk->execute();
         if ($chk->get_result()->num_rows > 0) {
@@ -50,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_action']) && $_POST[
         } else {
             $ins = $conn->prepare("INSERT INTO administradores (usuario, contraseña, nombre_admi, apellidos_admi, rol) VALUES (?,?,?,?,?)");
             $ins->bind_param('sssss', $usuario_n, $contrasena, $nombre_admi, $apellidos_admi, $rol_n);
-            $msg     = $ins->execute() ? 'Cuenta creada correctamente.' : 'Error al crear la cuenta: '.$conn->error;
-            $msgType = $ins->execute() ? 'ok' : 'err';
-            if ($ins->affected_rows > 0 || $ins->insert_id > 0) { $msg = 'Cuenta creada correctamente.'; $msgType = 'ok'; }
+            $ok      = $ins->execute();
+            $msg     = $ok ? 'Cuenta creada correctamente.' : 'Error al crear la cuenta: '.$conn->error;
+            $msgType = $ok ? 'ok' : 'err';
             $ins->close();
         }
         $chk->close();
