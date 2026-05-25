@@ -19,6 +19,19 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* Panel de alertas clínicas */
+        #panel-alertas { display:none; margin:1rem 0 .5rem; }
+        .alerta-clinica {
+            display:flex; align-items:flex-start; gap:.65rem;
+            padding:.7rem 1rem; border-radius:10px; margin-bottom:.45rem;
+            font-size:.83rem; line-height:1.45;
+        }
+        .alerta-clinica.danger { background:#fef2f2; border-left:4px solid #ef4444; color:#991b1b; }
+        .alerta-clinica.warning { background:#fffbeb; border-left:4px solid #f59e0b; color:#92400e; }
+        .alerta-clinica.info  { background:#eff6ff; border-left:4px solid #3b82f6; color:#1e40af; }
+        .alerta-clinica i { font-size:1.1rem; margin-top:.05rem; flex-shrink:0; }
+        .alerta-clinica strong { display:block; margin-bottom:.1rem; }
+
         /* Estilos adicionales para el modal */
         .modal-header.bg-warning {
             background-color: #ffc107 !important;
@@ -347,6 +360,9 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Panel de alertas clínicas -->
+                    <div id="panel-alertas"></div>
 
                     <div class="text-center mt-2">
                         <button type="submit" class="btn btn-primary btn-guardar" title="Guardar datos">
@@ -939,6 +955,96 @@
                 document.getElementById("clasificacionice").value = "";
             }
         }
+    </script>
+
+    <!-- Panel de alertas clínicas: se actualiza cada vez que cambia un valor calculado -->
+    <script>
+    function verificarAlertas() {
+        const alertas = [];
+
+        const imc          = parseFloat(document.getElementById('imc1').value);
+        const clsImc       = document.getElementById('clasificacionimc1').value;
+        const glucosa      = parseFloat(document.getElementById('glucosa1').value);
+        const colesterol   = parseFloat(document.getElementById('colesterol1').value);
+        const tri          = parseFloat(document.getElementById('trigliceridos1').value);
+        const clsTA        = document.getElementById('clasificacionta1').value;
+        const clsICC       = document.getElementById('clasificacioncadcin1').value;
+        const clsICE       = document.getElementById('clasificacionice').value;
+        const pGrasa       = parseFloat(document.getElementById('pormasagrasa1').value);
+        const clsGrasa     = document.getElementById('clasificaciongrasa1').value;
+
+        // IMC
+        if (!isNaN(imc)) {
+            if (imc < 18.5) alertas.push({tipo:'warning', titulo:'Peso insuficiente (IMC '+imc.toFixed(1)+')', texto:'El alumno presenta bajo peso. Se recomienda evaluación nutricional.'});
+            else if (imc >= 25 && imc < 30) alertas.push({tipo:'warning', titulo:'Sobrepeso (IMC '+imc.toFixed(1)+')', texto:'IMC en rango de sobrepeso. Recomendar ajustes en alimentación y actividad física.'});
+            else if (imc >= 30 && imc < 35) alertas.push({tipo:'danger', titulo:'Obesidad Grado 1 (IMC '+imc.toFixed(1)+')', texto:'Se recomienda referir a nutrición y evaluación médica.'});
+            else if (imc >= 35) alertas.push({tipo:'danger', titulo:'Obesidad Grado 2-3 (IMC '+imc.toFixed(1)+')', texto:'Obesidad severa. Requiere atención médica y nutricional especializada.'});
+        }
+
+        // Glucosa
+        if (!isNaN(glucosa) && glucosa > 0) {
+            if (glucosa < 70) alertas.push({tipo:'warning', titulo:'Hipoglucemia (Glucosa: '+glucosa+' mg/dL)', texto:'Glucosa baja. Verificar ayuno y estado general del alumno.'});
+            else if (glucosa >= 100 && glucosa <= 125) alertas.push({tipo:'warning', titulo:'Pre-diabetes (Glucosa: '+glucosa+' mg/dL)', texto:'Glucosa en rango de alteración. Recomendar seguimiento médico y cambios en estilo de vida.'});
+            else if (glucosa > 125) alertas.push({tipo:'danger', titulo:'Posible Diabetes Mellitus (Glucosa: '+glucosa+' mg/dL)', texto:'Valores compatibles con DM. Referir a médico para diagnóstico formal y seguimiento.'});
+        }
+
+        // Colesterol
+        if (!isNaN(colesterol) && colesterol > 0) {
+            if (colesterol < 160) alertas.push({tipo:'info', titulo:'Colesterol bajo ('+colesterol+' mg/dL)', texto:'Valores por debajo del rango óptimo. Verificar estado nutricional.'});
+            else if (colesterol >= 200 && colesterol < 240) alertas.push({tipo:'warning', titulo:'Colesterol límite alto ('+colesterol+' mg/dL)', texto:'Valores en límite. Recomendar dieta baja en grasas saturadas y actividad física.'});
+            else if (colesterol >= 240) alertas.push({tipo:'danger', titulo:'Colesterol alto ('+colesterol+' mg/dL)', texto:'Hipercolesterolemia. Referir a médico para evaluación cardiovascular.'});
+        }
+
+        // Triglicéridos
+        if (!isNaN(tri) && tri > 0) {
+            if (tri < 50) alertas.push({tipo:'info', titulo:'Triglicéridos bajos ('+tri+' mg/dL)', texto:'Valores por debajo del rango normal. Revisar estado nutricional.'});
+            else if (tri >= 150 && tri < 200) alertas.push({tipo:'warning', titulo:'Triglicéridos límite alto ('+tri+' mg/dL)', texto:'Recomendar reducir consumo de azúcares e incrementar actividad física.'});
+            else if (tri >= 200 && tri < 500) alertas.push({tipo:'danger', titulo:'Triglicéridos altos ('+tri+' mg/dL)', texto:'Hipertrigliceridemia. Se recomienda evaluación médica y cambios dietéticos.'});
+            else if (tri >= 500) alertas.push({tipo:'danger', titulo:'Triglicéridos muy altos ('+tri+' mg/dL)', texto:'Riesgo de pancreatitis. Referir urgentemente a médico.'});
+        }
+
+        // Tensión arterial
+        if (clsTA === 'Hipotensión') alertas.push({tipo:'warning', titulo:'Hipotensión arterial', texto:'Presión arterial baja. Verificar hidratación y estado general del alumno.'});
+        else if (clsTA === 'Elevada') alertas.push({tipo:'warning', titulo:'Presión arterial elevada', texto:'Valores elevados. Recomendar seguimiento y cambios en estilo de vida.'});
+        else if (clsTA === 'Hipertensión Grado 1') alertas.push({tipo:'danger', titulo:'Hipertensión Grado 1', texto:'Se recomienda evaluación médica y monitoreo continuo de la presión arterial.'});
+        else if (clsTA === 'Hipertensión Grado 2' || clsTA === 'Crisis Hipertensiva') alertas.push({tipo:'danger', titulo:clsTA, texto:'Requiere atención médica inmediata. No dejar al alumno sin asistencia.'});
+
+        // ICC (cintura-cadera)
+        if (clsICC === 'Riesgo Moderado') alertas.push({tipo:'warning', titulo:'Riesgo cardiovascular moderado (Cintura-Cadera)', texto:'Distribución de grasa abdominal en riesgo moderado. Recomendar actividad física y alimentación saludable.'});
+        else if (clsICC === 'Riesgo Alto') alertas.push({tipo:'danger', titulo:'Riesgo cardiovascular alto (Cintura-Cadera)', texto:'Distribución de grasa abdominal con riesgo alto. Referir a nutrición y seguimiento médico.'});
+
+        // ICE (cintura-estatura)
+        if (clsICE === 'Riesgo Elevado') alertas.push({tipo:'warning', titulo:'Índice Cintura-Estatura: Riesgo Elevado', texto:'Relación cintura-estatura elevada. Asociado a mayor riesgo metabólico y cardiovascular.'});
+
+        // % Masa grasa
+        if (clsGrasa === 'Arriba Recomendado') alertas.push({tipo:'warning', titulo:'Exceso de masa grasa ('+(!isNaN(pGrasa)?pGrasa.toFixed(1)+'%':'')+')', texto:'Porcentaje de grasa corporal por encima del rango recomendado. Promover actividad física regular.'});
+        else if (clsGrasa === 'Debajo Recomendado') alertas.push({tipo:'info', titulo:'Masa grasa por debajo del rango recomendado', texto:'Bajo porcentaje de grasa corporal. Evaluar estado nutricional.'});
+
+        const panel = document.getElementById('panel-alertas');
+        if (alertas.length === 0) { panel.style.display = 'none'; panel.innerHTML = ''; return; }
+
+        const iconMap = { danger:'exclamation-triangle-fill', warning:'exclamation-circle-fill', info:'info-circle-fill' };
+        panel.style.display = 'block';
+        panel.innerHTML = `<div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;margin-bottom:.5rem;">
+            <i class="bi bi-clipboard-pulse me-1"></i> Alertas clínicas detectadas
+        </div>` + alertas.map(a =>
+            `<div class="alerta-clinica ${a.tipo}">
+                <i class="bi bi-${iconMap[a.tipo]}"></i>
+                <div><strong>${a.titulo}</strong>${a.texto}</div>
+            </div>`
+        ).join('');
+    }
+
+    // Enganchar verificarAlertas a todos los eventos de cálculo
+    ['imc1','glucosa1','colesterol1','trigliceridos1','tensionarterial1',
+     'cintura1','cadera1','ice','pormasagrasa1'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', verificarAlertas);
+    });
+    ['sexo1'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', verificarAlertas);
+    });
     </script>
 
     <!-- REEMPLAZAR EL SCRIPT DE ENVÍO DEL FORMULARIO (el último script en datos_fisicos.html) -->

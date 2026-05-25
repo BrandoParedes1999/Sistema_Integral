@@ -86,7 +86,10 @@ if ($result && $result->num_rows > 0) {
                 <td>{$nombre}</td>
                 <td>{$facultad}</td>
                 <td>{$sexo}</td>
-                <td><a href='expediente.html?matricula_alum={$matricula}' class='btn-accion btn-ver'><i class='bi bi-eye'></i> Ver Perfil</a></td>
+                <td style='display:flex;gap:.4rem;flex-wrap:wrap;'>
+                  <a href='expediente.html?matricula_alum={$matricula}' class='btn-accion btn-ver'><i class='bi bi-eye'></i> Ver</a>
+                  <button class='btn-accion btn-editar' onclick='abrirEditar(\"{$matricula}\")'><i class='bi bi-pencil'></i> Editar</button>
+                </td>
               </tr>";
         $contador++;
     }
