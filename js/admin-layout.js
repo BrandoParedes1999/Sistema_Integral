@@ -1,4 +1,12 @@
 (function () {
+  // Inject session-guard.js
+  var sgLoaded = !!document.querySelector('script[src*="session-guard"]');
+  if (!sgLoaded) {
+    var sg = document.createElement('script');
+    sg.src = '../js/session-guard.js';
+    document.head.appendChild(sg);
+  }
+
   // Inject sidebar CSS if not already loaded
   var cssHref = '../css/menu.css';
   var alreadyLoaded = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))

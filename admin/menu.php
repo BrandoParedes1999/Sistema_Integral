@@ -709,6 +709,7 @@ $chartPendientes = json_encode([
 </div><!-- #main-wrapper -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/session-guard.js"></script>
 <script>
 // ── BAR CHART ──
 new Chart(document.getElementById('barChart'), {
