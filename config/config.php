@@ -14,7 +14,8 @@ class Database {
     public function connect() {
         $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if ($this->conn->connect_error) {
-            die("Error de conexión: " . $this->conn->connect_error);
+            error_log("DB connection error: " . $this->conn->connect_error);
+            die("Error de conexión a la base de datos. Contacte al administrador.");
         }
         $this->conn->set_charset("utf8mb4");
         return $this->conn;

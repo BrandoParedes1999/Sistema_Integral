@@ -1,785 +1,1311 @@
 <!doctype html>
 <html lang="es">
-
 <head>
+  <title>Expediente del Alumno · UniSalud</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Perfil Alumno</title>
-  <link rel="stylesheet" href="../css/expediente.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/menu.css">
   <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
 
   <style>
-    /* Estilos mejorados para datos físicos */
-    .datos-fisicos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
+    :root {
+      --primary:      #003da5;
+      --primary-dark: #002a70;
+      --success:      #10b981;
+      --success-bg:   #ecfdf5;
+      --warning:      #f59e0b;
+      --warning-bg:   #fffbeb;
+      --danger:       #ef4444;
+      --danger-bg:    #fef2f2;
+      --blue-bg:      #eff6ff;
+      --blue:         #3b82f6;
+      --bg:           #f1f5f9;
+      --white:        #ffffff;
+      --border:       #e2e8f0;
+      --text:         #111827;
+      --muted:        #6b7280;
+      --shadow:       0 4px 14px rgba(0,0,0,.07);
+      --shadow-md:    0 8px 24px rgba(0,0,0,.1);
     }
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); }
 
-    .dato-fisico-item {
-      background: linear-gradient(135deg, rgba(30, 64, 175, 0.05), rgba(59, 130, 246, 0.05));
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 15px;
-      transition: all 0.3s ease;
-      text-align: center;
-      box-shadow: var(--sombra-suave);
+    /* ── Layout ── */
+    .page { max-width:1040px; margin:0 auto; padding:1.75rem 1.25rem 3rem; }
+
+    /* ── Profile card ── */
+    .profile-card {
+      background:var(--white); border-radius:18px; box-shadow:var(--shadow);
+      overflow:hidden; margin-bottom:1.5rem;
     }
-
-    .dato-fisico-item:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--sombra-media);
-      border-color: var(--azul-claro);
+    .profile-banner {
+      height:72px;
+      background:linear-gradient(135deg,var(--primary) 0%,#1a6bdd 100%);
+      position:relative;
     }
-
-    .dato-fisico-icon {
-      font-size: 2rem;
-      color: var(--azul-rey);
-      margin-bottom: 10px;
-      display: block;
+    .profile-banner::after {
+      content:''; position:absolute; bottom:-1px; left:0; right:0;
+      height:22px; background:var(--white);
+      border-radius:60% 60% 0 0/100% 100% 0 0;
     }
-
-    .dato-fisico-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gris-medio);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
+    .profile-body { padding:0 1.75rem 1.5rem; }
+    .profile-avatar {
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg,var(--primary),#1a6bdd);
+      color:#fff; font-size:1.55rem; font-weight:700;
+      display:flex; align-items:center; justify-content:center;
+      border:4px solid var(--white); box-shadow:var(--shadow);
+      margin-top:-36px; margin-bottom:.6rem; position:relative; z-index:1;
     }
+    .profile-name  { font-size:1.15rem; font-weight:700; margin-bottom:.2rem; }
+    .profile-sub   { font-size:.8rem; color:var(--muted); display:flex;
+                     align-items:center; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
 
-    .dato-fisico-value {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--azul-oscuro);
-      margin-bottom: 3px;
+    /* status chips */
+    .status-chips  { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.1rem; }
+    .chip {
+      display:inline-flex; align-items:center; gap:.3rem;
+      font-size:.73rem; font-weight:600; padding:.3rem .75rem;
+      border-radius:99px; white-space:nowrap;
     }
+    .chip.done   { background:var(--success-bg); color:#065f46; }
+    .chip.pend   { background:var(--danger-bg);  color:#991b1b; }
+    .chip.warn   { background:var(--warning-bg); color:#92400e; }
 
-    .dato-fisico-unit {
-      font-size: 0.85rem;
-      color: var(--gris-medio);
-      font-weight: 500;
+    .info-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:.85rem; padding-top:1rem; border-top:1px solid var(--border);
     }
-
-    .fecha-badge-fisicos {
-      background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-rey));
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: var(--sombra-suave);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .info-label {
+      font-size:.67rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.06em; color:var(--muted);
+      display:flex; align-items:center; gap:.3rem; margin-bottom:.2rem;
     }
+    .info-value { font-size:.88rem; font-weight:500; }
 
-    @media (max-width: 768px) {
-      .datos-fisicos-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 12px;
-      }
+    /* ── Tabs ── */
+    .tab-wrapper {
+      background:var(--white); border-radius:14px; box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .nav-tabs-exp {
+      display:flex; gap:0; border-bottom:2px solid var(--border);
+      overflow-x:auto; scrollbar-width:none; padding:0 1.25rem;
+    }
+    .nav-tabs-exp::-webkit-scrollbar { display:none; }
+    .nav-tab {
+      display:flex; align-items:center; gap:.4rem;
+      font-size:.82rem; font-weight:600; color:var(--muted);
+      padding:.85rem 1rem; border:none; background:none;
+      border-bottom:3px solid transparent; margin-bottom:-2px;
+      cursor:pointer; white-space:nowrap; transition:color .2s;
+    }
+    .nav-tab:hover { color:var(--primary); }
+    .nav-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tab-badge {
+      font-size:.62rem; font-weight:700; padding:.1rem .45rem;
+      border-radius:99px; line-height:1.4;
+    }
+    .tab-pane-exp { display:none; padding:1.5rem 1.75rem 2rem; }
+    .tab-pane-exp.active { display:block; }
 
-      .dato-fisico-item {
-        padding: 12px;
-      }
+    /* ── Section heading ── */
+    .sec-hd {
+      font-size:.72rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--muted); margin-bottom:1rem;
+      display:flex; align-items:center; gap:.6rem;
+    }
+    .sec-hd::after { content:''; flex:1; height:1px; background:var(--border); }
 
-      .dato-fisico-value {
-        font-size: 1.2rem;
-      }
+    /* ── Metric cards grid ── */
+    .metrics-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+      gap:.85rem; margin-bottom:1.5rem;
+    }
+    .metric-card {
+      background:var(--bg); border-radius:12px; padding:.9rem 1rem;
+      text-align:center; border:1px solid var(--border);
+    }
+    .metric-icon { font-size:1.35rem; margin-bottom:.35rem; }
+    .metric-label {
+      font-size:.65rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.05em; color:var(--muted); margin-bottom:.3rem;
+    }
+    .metric-value { font-size:1.3rem; font-weight:700; line-height:1; }
+    .metric-unit  { font-size:.72rem; color:var(--muted); margin-top:.15rem; }
+    .metric-cls   { font-size:.7rem; font-weight:600; margin-top:.25rem;
+                    padding:.15rem .5rem; border-radius:99px; }
+
+    /* ── DASS bars ── */
+    .dass-rows { display:flex; flex-direction:column; gap:.65rem; }
+    .dass-row  { display:flex; align-items:center; gap:.75rem; }
+    .dass-lbl  { font-size:.8rem; color:var(--muted); width:90px; flex-shrink:0; }
+    .dass-bar-wrap { flex:1; height:8px; background:var(--border); border-radius:99px; overflow:hidden; }
+    .dass-bar  { height:100%; border-radius:99px; transition:width .7s ease; }
+    .dass-num  { font-size:.8rem; font-weight:700; width:24px; text-align:right; flex-shrink:0; }
+    .dass-sev  { font-size:.7rem; font-weight:700; padding:.18rem .55rem;
+                 border-radius:99px; white-space:nowrap; flex-shrink:0; min-width:90px; text-align:center; }
+
+    /* ── PEPS dimension bars ── */
+    .peps-dim { display:flex; flex-direction:column; gap:.5rem; }
+    .peps-row { display:flex; align-items:center; gap:.75rem; margin-bottom:.1rem; }
+    .peps-lbl { font-size:.78rem; color:var(--muted); width:170px; flex-shrink:0; }
+    .peps-bar-wrap { flex:1; height:8px; background:var(--border); border-radius:99px; overflow:hidden; }
+    .peps-bar { height:100%; border-radius:99px; transition:width .7s ease; }
+    .peps-num { font-size:.78rem; font-weight:700; width:50px; text-align:right; flex-shrink:0; }
+    .peps-badge { font-size:.68rem; font-weight:700; padding:.15rem .5rem;
+                  border-radius:99px; white-space:nowrap; flex-shrink:0; min-width:80px; text-align:center; }
+
+    /* ── Historial ── */
+    .hx-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:.6rem;
+    }
+    .hx-item {
+      display:flex; align-items:center; gap:.6rem;
+      padding:.55rem .85rem; border-radius:9px;
+      font-size:.82rem; font-weight:500;
+    }
+    .hx-item.yes { background:var(--danger-bg); color:#991b1b; }
+    .hx-item.no  { background:var(--success-bg); color:#065f46; }
+    .hx-item i   { font-size:1rem; flex-shrink:0; }
+
+    /* ── Reporte section ── */
+    .reporte-check {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1rem 1.1rem; border-radius:10px; background:var(--bg);
+      border:1px solid var(--border); margin-bottom:.6rem; font-size:.88rem;
+    }
+    .reporte-check strong { font-weight:600; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align:center; padding:2.5rem 1rem; color:var(--muted);
+    }
+    .empty-state i { font-size:2.5rem; display:block; margin-bottom:.75rem; }
+    .empty-state p { font-size:.88rem; }
+
+    /* ── Action buttons ── */
+    .btn-back {
+      display:inline-flex; align-items:center; gap:.4rem;
+      background:var(--white); border:1px solid var(--border);
+      color:var(--text); padding:.45rem .9rem; border-radius:9px;
+      font-size:.82rem; font-weight:600; text-decoration:none;
+      cursor:pointer; transition:box-shadow .2s;
+    }
+    .btn-back:hover { box-shadow:var(--shadow); color:var(--primary); }
+    .btn-edit {
+      display:inline-flex; align-items:center; gap:.4rem;
+      background:var(--primary); color:#fff;
+      padding:.45rem .9rem; border-radius:9px; border:none;
+      font-size:.82rem; font-weight:600; cursor:pointer;
+      transition:opacity .2s;
+    }
+    .btn-edit:hover { opacity:.88; }
+
+    /* ── Navbar override ── */
+    .top-bar {
+      background:linear-gradient(135deg,var(--primary),#0052cc);
+      padding:.8rem 2rem; display:flex; align-items:center;
+      justify-content:space-between; gap:1rem;
+      position:sticky; top:0; z-index:100;
+      box-shadow:0 2px 10px rgba(0,61,165,.3);
+    }
+    .top-bar-brand { display:flex; align-items:center; gap:.65rem; }
+    .top-bar-logo {
+      width:34px; height:34px; background:#fff; border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      padding:3px; flex-shrink:0;
+    }
+    .top-bar-logo img { width:100%; height:100%; object-fit:contain; }
+    .top-bar-title { font-size:.92rem; font-weight:700; color:#fff; }
+    .top-bar-sub   { font-size:.7rem; color:rgba(255,255,255,.7); }
+
+    @media(max-width:640px) {
+      .top-bar { padding:.75rem 1rem; }
+      .metrics-grid { grid-template-columns:repeat(2,1fr); }
+      .tab-pane-exp { padding:1rem 1rem 1.5rem; }
     }
   </style>
-
 </head>
-
 <body>
 
-  <div class="container-fluid">
-    <div class="row h-100">
+<!-- ── Topbar ── -->
+<header class="top-bar">
+  <div class="top-bar-brand">
+    <div class="top-bar-logo">
+      <img src="../alumnos/imagenes/unisalud-sf.png" alt="UniSalud">
+    </div>
+    <div>
+      <div class="top-bar-title">UniSalud</div>
+      <div class="top-bar-sub">Expediente del Alumno</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:.5rem;">
+    <a href="ListadoAlumnos.html" class="btn-back">
+      <i class="bi bi-arrow-left"></i> Listado
+    </a>
+    <button id="btnTopEditar" class="btn-edit">
+      <i class="bi bi-pencil-square"></i> Editar datos
+    </button>
+  </div>
+</header>
 
-      <!-- Sidebar -->
-      <div class="col-md-2 sidebar d-flex flex-column p-3">
-        <h4 class="text-center">Menú</h4>
-        <a id="linkPerfil" href="#"><i class="bi bi-person-circle me-2"></i> Perfil</a>
-        <a id="linkDatos" href="#"><i class="bi bi-clipboard-data me-2"></i> Datos Físicos</a>
-        <div class="dropdown">
-          <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-heart-pulse me-2"></i> Formularios
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" id="linkDass" href="#">DASS-21</a></li>
-            <li><a class="dropdown-item" id="linkEstilo" href="#">Estilo de Vida</a></li>
-          </ul>
-        </div>
-        <a id="linkHistorial" href="#"><i class="bi bi-house-heart-fill me-2"></i> Historial Patológico</a>
-        <a href="ListadoAlumnos.html"><i class="bi bi-box-arrow-left me-2"></i> Salir</a>
+<div class="page">
+
+  <!-- ── Profile Card ── -->
+  <div class="profile-card">
+    <div class="profile-banner"></div>
+    <div class="profile-body">
+      <div class="profile-avatar" id="avatarInicial">--</div>
+      <div class="profile-name" id="perfNombre">Cargando...</div>
+      <div class="profile-sub">
+        <span><i class="bi bi-person-badge"></i> <span id="perfMatricula">—</span></span>
+        <span>·</span>
+        <span><i class="bi bi-envelope"></i> <span id="perfCorreo">—</span></span>
+        <span>·</span>
+        <span><i class="bi bi-gender-ambiguous"></i> <span id="perfSexo">—</span></span>
+        <span>·</span>
+        <span><i class="bi bi-calendar3"></i> <span id="perfEdad">—</span> años</span>
       </div>
 
-      <!-- Main Content -->
-      <div class="col-md-10 p-4">
-        <div class="nav d-flex justify-content-between align-items-center mb-4">
-          <img src="/images/logo_unacar (1).png" alt="logo" class="unacar">
-          <h2>Perfil del Alumno</h2>
-          <button class="btn btn-primary" disabled></button>
+      <!-- Status chips -->
+      <div class="status-chips">
+        <span class="chip pend" id="chipDass"><i class="bi bi-clipboard-pulse"></i> DASS-21: verificando…</span>
+        <span class="chip pend" id="chipPeps"><i class="bi bi-heart-pulse"></i> PEPS-1: verificando…</span>
+        <span class="chip pend" id="chipFisicos"><i class="bi bi-activity"></i> Datos Físicos: verificando…</span>
+        <span class="chip pend" id="chipHistorial"><i class="bi bi-clipboard2-heart"></i> Historial: verificando…</span>
+      </div>
+
+      <div class="info-grid">
+        <div>
+          <div class="info-label"><i class="bi bi-building"></i> Facultad</div>
+          <div class="info-value" id="perfFacultad">—</div>
         </div>
-
-        <!-- Datos del alumno -->
-        <div class="card card-custom mb-4">
-          <div class="card-body d-flex">
-            <div class="left-section">
-              <img src="/imagenes/usuario.png" alt="Foto Alumno" class="profile-img mb-3">
-            </div>
-            <div class="right-section">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Nombre:</span>
-                    <input type="text" class="form-control" id="nombre" name="nombre" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Edad:</span>
-                    <input type="text" class="form-control" id="edad" name="edad" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Sexo:</span>
-                    <input type="text" class="form-control" id="sexo" name="sexo" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Matrícula:</span>
-                    <input type="text" class="form-control" id="matricula" name="matricula" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Carrera:</span>
-                    <input type="text" class="form-control" name="carrera" id="carrera" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Facultad:</span>
-                    <input type="text" class="form-control" name="facultad" id="facultad" disabled>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Correo Electrónico:</span>
-                    <input type="email" class="form-control" name="email" id="email" disabled>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div>
+          <div class="info-label"><i class="bi bi-mortarboard"></i> Carrera</div>
+          <div class="info-value" id="perfCarrera">—</div>
         </div>
-
-        <!-- Datos Físicos Mejorados -->
-        <div class="card card-custom mb-4">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5><i class="bi bi-clipboard-pulse"></i> Datos Físicos Recientes</h5>
-              <span class="fecha-badge-fisicos">
-                <i class="bi bi-calendar2-date-fill"></i>
-                <span id="fecha-datos-fisicos">Sin datos</span>
-              </span>
-            </div>
-
-            <div class="datos-fisicos-grid">
-              <div class="dato-fisico-item">
-                <i class="bi bi-person-fill-up dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Talla</div>
-                <div class="dato-fisico-value"><span id="modal-talla">-</span></div>
-                <div class="dato-fisico-unit">cm</div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-bar-chart-fill dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Peso</div>
-                <div class="dato-fisico-value"><span id="peso">-</span></div>
-                <div class="dato-fisico-unit">kg</div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-calculator dato-fisico-icon"></i>
-                <div class="dato-fisico-label">IMC</div>
-                <div class="dato-fisico-value"><span id="modal-imc">-</span></div>
-                <div class="dato-fisico-unit"><span id="modal-clasificacion_imc">-</span></div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-droplet-fill dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Glucosa</div>
-                <div class="dato-fisico-value"><span id="modal-glucosa">-</span></div>
-                <div class="dato-fisico-unit">mg/dL</div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-heart-pulse dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Colesterol</div>
-                <div class="dato-fisico-value"><span id="modal-colesterol">-</span></div>
-                <div class="dato-fisico-unit">mg/dL</div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-activity dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Triglicéridos</div>
-                <div class="dato-fisico-value"><span id="modal-trigliceridos">-</span></div>
-                <div class="dato-fisico-unit">mg/dL</div>
-              </div>
-
-              <div class="dato-fisico-item">
-                <i class="bi bi-heart dato-fisico-icon"></i>
-                <div class="dato-fisico-label">Tensión Arterial</div>
-                <div class="dato-fisico-value"><span id="modal-tension_arterial">-</span></div>
-                <div class="dato-fisico-unit">mmHg</div>
-              </div>
-            </div>
-          </div>
+        <div>
+          <div class="info-label"><i class="bi bi-droplet-half"></i> Tipo sangre</div>
+          <div class="info-value" id="perfSangre">—</div>
         </div>
-
-        <!-- Enviar Resultados -->
-        <div class="card card-custom mb-4">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 style="font-size: 1.4rem;"><i class="bi bi-send-fill me-2"></i>Enviar Resultados al Alumno</h5>
-            </div>
-
-            <div class="alert alert-info" role="alert" style="font-size: 1rem;">
-              <i class="bi bi-info-circle-fill me-2"></i>
-              <strong>Antes de enviar:</strong> Verifica que el alumno haya completado todos los cuestionarios y datos
-              físicos.
-            </div>
-
-            <ul class="list-group list-group-flush mb-3">
-              <li class="list-group-item d-flex justify-content-between align-items-center" style="padding: 18px 15px;">
-                <div style="font-size: 1.05rem;">
-                  <i class="bi bi-clipboard-check me-2" style="font-size: 1.2rem;"></i>
-                  <strong>Estilo de Vida:</strong>
-                </div>
-                <span id="check-estilo-vida" class="badge bg-secondary" style="font-size: 0.95rem; padding: 10px 18px;">Verificando...</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center" style="padding: 18px 15px;">
-                <div style="font-size: 1.05rem;">
-                  <i class="bi bi-clipboard-check me-2" style="font-size: 1.2rem;"></i>
-                  <strong>DASS-21:</strong>
-                </div>
-                <span id="check-dass" class="badge bg-secondary" style="font-size: 0.95rem; padding: 10px 18px;">Verificando...</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center" style="padding: 18px 15px;">
-                <div style="font-size: 1.05rem;">
-                  <i class="bi bi-clipboard-data me-2" style="font-size: 1.2rem;"></i>
-                  <strong>Datos Físicos:</strong>
-                </div>
-                <span id="check-datos-fisicos" class="badge bg-secondary" style="font-size: 0.95rem; padding: 10px 18px;">Verificando...</span>
-              </li>
-            </ul>
-
-            <div class="d-grid gap-2">
-              <button id="btnEnviarResultados" class="btn btn-primary btn-lg" disabled style="font-size: 1.15rem; padding: 16px 32px;">
-                <i class="bi bi-send-fill me-2" style="font-size: 1.3rem;"></i>
-                <span id="textoBotonEnviar">Verificando datos...</span>
-              </button>
-            </div>
-
-            <div id="mensajeEstado" class="mt-3" style="display: none;"></div>
-          </div>
+        <div>
+          <div class="info-label"><i class="bi bi-telephone"></i> Emergencia</div>
+          <div class="info-value" id="perfEmergencia">—</div>
         </div>
-
-        <!-- Modal de Confirmación -->
-        <div class="modal fade" id="modalConfirmarEnvio" tabindex="-1" aria-labelledby="modalConfirmarEnvioLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalConfirmarEnvioLabel">
-                  <i class="bi bi-send-check-fill me-2"></i>Confirmar Envío de Resultados
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="alert alert-success" role="alert">
-                  <i class="bi bi-check-circle-fill me-2"></i>
-                  <strong>¡Todos los datos están completos!</strong>
-                </div>
-
-                <p><strong>Se enviará el reporte de salud integral a:</strong></p>
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <p class="mb-1"><strong>Alumno:</strong> <span id="confirm-nombre"></span></p>
-                    <p class="mb-1"><strong>Matrícula:</strong> <span id="confirm-matricula"></span></p>
-                    <p class="mb-0"><strong>Correo:</strong> <span id="confirm-email"></span></p>
-                  </div>
-                </div>
-
-                <div class="alert alert-warning" role="alert">
-                  <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                  <small><strong>Nota:</strong> Se generará un PDF con todos los datos consolidados y se enviará al
-                    correo del alumno.</small>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmarEnvio">
-                  <i class="bi bi-send-fill me-2"></i>Enviar Ahora
-                </button>
-              </div>
-            </div>
-          </div>
+        <div>
+          <div class="info-label"><i class="bi bi-card-list"></i> NSS</div>
+          <div class="info-value" id="perfNss">—</div>
         </div>
-
-        <!-- Modal de Datos Incompletos -->
-        <div class="modal fade" id="modalDatosIncompletos" tabindex="-1" aria-labelledby="modalDatosIncompletosLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title" id="modalDatosIncompletosLabel">
-                  <i class="bi bi-exclamation-triangle-fill me-2"></i>Datos Incompletos
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p><strong>El alumno aún no ha completado:</strong></p>
-                <ul class="list-group list-group-flush" id="listaDatosIncompletos">
-                  <!-- Se llenará dinámicamente -->
-                </ul>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-            </div>
-          </div>
+        <div>
+          <div class="info-label"><i class="bi bi-calendar2"></i> Generación</div>
+          <div class="info-value" id="perfGeneracion">—</div>
         </div>
-
-        <!-- Modal de Progreso -->
-        <div class="modal fade" id="modalProgreso" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-body text-center p-5">
-                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                  <span class="visually-hidden">Cargando...</span>
-                </div>
-                <h5>Generando y enviando reporte...</h5>
-                <p class="text-muted">Por favor espera, esto puede tomar unos momentos.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Modal de Éxito -->
-        <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalExitoLabel">
-                  <i class="bi bi-check-circle-fill me-2"></i>¡Enviado Exitosamente!
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p id="mensajeExito"></p>
-                <div id="enlaceDescarga" style="display: none;">
-                  <a id="linkDescargaPDF" href="#" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-download me-2"></i>Descargar PDF
-                  </a>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ── Tab wrapper ── -->
+  <div class="tab-wrapper">
 
-  <!-- SCRIPT UNIFICADO -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const params = new URLSearchParams(window.location.search);
-      const matricula = params.get("matricula_alum");
+    <!-- Tab buttons -->
+    <div class="nav-tabs-exp" role="tablist">
+      <button class="nav-tab active" data-tab="resumen">
+        <i class="bi bi-grid-1x2"></i> Resumen
+      </button>
+      <button class="nav-tab" data-tab="fisicos">
+        <i class="bi bi-activity"></i> Datos Físicos
+        <span id="tabBadgeFisicos" class="tab-badge" style="display:none"></span>
+      </button>
+      <button class="nav-tab" data-tab="dass">
+        <i class="bi bi-clipboard-pulse"></i> DASS-21
+        <span id="tabBadgeDass" class="tab-badge" style="display:none"></span>
+      </button>
+      <button class="nav-tab" data-tab="peps">
+        <i class="bi bi-heart-pulse"></i> Estilo de Vida
+        <span id="tabBadgePeps" class="tab-badge" style="display:none"></span>
+      </button>
+      <button class="nav-tab" data-tab="historial">
+        <i class="bi bi-clipboard2-heart"></i> Historial Clínico
+      </button>
+      <button class="nav-tab" data-tab="reporte">
+        <i class="bi bi-send"></i> Reporte
+      </button>
+    </div>
 
-      if (!matricula) {
-        alert("No se proporcionó una matrícula.");
-        return;
-      }
+    <!-- ════ TAB: RESUMEN ════ -->
+    <div class="tab-pane-exp active" id="tab-resumen">
+      <div class="sec-hd">Estado del expediente</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem;">
 
-      // Configurar enlaces del sidebar
-      const linkPerfil = document.getElementById("linkPerfil");
-      const linkDatos = document.getElementById("linkDatos");
-      const linkDass = document.getElementById("linkDass");
-      const linkEstilo = document.getElementById("linkEstilo");
-      const linkHistorial = document.getElementById("linkHistorial");
+        <!-- DASS card -->
+        <div style="background:var(--bg);border-radius:13px;border:1px solid var(--border);padding:1.1rem;" id="resumenDass">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;">
+            <div style="width:36px;height:36px;background:var(--blue-bg);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1rem;flex-shrink:0;">
+              <i class="bi bi-clipboard-pulse-fill"></i>
+            </div>
+            <div style="font-size:.88rem;font-weight:700;">DASS-21</div>
+          </div>
+          <div id="resumenDassBody">
+            <div style="color:var(--muted);font-size:.8rem;">Cargando…</div>
+          </div>
+        </div>
 
-      if (linkPerfil) linkPerfil.href = `expediente.html?matricula_alum=${matricula}`;
-      if (linkDatos) linkDatos.href = `datosfisicosalumnos.html?matricula_alum=${matricula}`;
-      if (linkDass) linkDass.href = `formulariodass.html?matricula_alum=${matricula}`;
-      if (linkEstilo) linkEstilo.href = `formularioestilo.html?matricula_alum=${matricula}`;
-      if (linkHistorial) linkHistorial.href = `HistorialPatologicoAlum.html?matricula_alum=${matricula}`;
+        <!-- PEPS card -->
+        <div style="background:var(--bg);border-radius:13px;border:1px solid var(--border);padding:1.1rem;" id="resumenPeps">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;">
+            <div style="width:36px;height:36px;background:var(--success-bg);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--success);font-size:1rem;flex-shrink:0;">
+              <i class="bi bi-heart-pulse-fill"></i>
+            </div>
+            <div style="font-size:.88rem;font-weight:700;">Estilo de Vida (PEPS-1)</div>
+          </div>
+          <div id="resumenPepsBody">
+            <div style="color:var(--muted);font-size:.8rem;">Cargando…</div>
+          </div>
+        </div>
 
-      // Variables globales
-      let datosAlumno = {};
-      let estadoCompleto = {
-        estiloVida: false,
-        dass: false,
-        datosFisicos: false
-      };
+        <!-- Físicos card -->
+        <div style="background:var(--bg);border-radius:13px;border:1px solid var(--border);padding:1.1rem;" id="resumenFisicosCard">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;">
+            <div style="width:36px;height:36px;background:#f0fdf4;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#16a34a;font-size:1rem;flex-shrink:0;">
+              <i class="bi bi-activity"></i>
+            </div>
+            <div style="font-size:.88rem;font-weight:700;">Datos Físicos</div>
+          </div>
+          <div id="resumenFisicosBody">
+            <div style="color:var(--muted);font-size:.8rem;">Cargando…</div>
+          </div>
+        </div>
 
-      // Cargar perfil del alumno
-      function cargarPerfil() {
-        fetch(`perfil.php?matricula_alum=${matricula}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.error) {
-              alert(data.error);
-              return;
-            }
+      </div>
 
-            datosAlumno = data;
+      <!-- Quick metrics overview -->
+      <div class="sec-hd" id="secMetricsHd" style="display:none;">Mediciones más recientes</div>
+      <div class="metrics-grid" id="quickMetrics"></div>
+    </div>
 
-            // Llenar datos básicos
-            document.getElementById("matricula").value = data.matricula_alum;
-            document.getElementById("nombre").value = `${data.nombres_alum} ${data.ape_paterno_alum} ${data.ape_materno_alum}`;
-            document.getElementById("sexo").value = data.sexo;
-            document.getElementById("edad").value = data.edad_alum;
-            document.getElementById("facultad").value = data.nombre_facultad;
-            document.getElementById("carrera").value = data.nombre_carrera;
-            document.getElementById("email").value = data.correo_alum;
+    <!-- ════ TAB: DATOS FÍSICOS ════ -->
+    <div class="tab-pane-exp" id="tab-fisicos">
+      <div id="fisicosContent">
+        <div class="empty-state"><div class="spinner-border text-primary mb-3"></div><p>Cargando datos físicos…</p></div>
+      </div>
+    </div>
 
-            // Verificar estado del expediente
-            verificarEstadoDatos();
-          })
-          .catch(error => console.error("Error al cargar el perfil:", error));
-      }
+    <!-- ════ TAB: DASS-21 ════ -->
+    <div class="tab-pane-exp" id="tab-dass">
+      <div id="dassContent">
+        <div class="empty-state"><div class="spinner-border text-primary mb-3"></div><p>Cargando DASS-21…</p></div>
+      </div>
+    </div>
 
-      // Cargar datos físicos recientes
-      function cargarDatosFisicosRecientes() {
-        fetch(`perfil.php?matricula_alum=${matricula}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.fechas && data.fechas.length > 0) {
-              const ultimaFecha = data.fechas[data.fechas.length - 1];
-              const fechaElement = document.getElementById("fecha-datos-fisicos");
-              if (fechaElement) {
-                fechaElement.textContent = ultimaFecha;
-              }
+    <!-- ════ TAB: PEPS-1 ════ -->
+    <div class="tab-pane-exp" id="tab-peps">
+      <div id="pepsContent">
+        <div class="empty-state"><div class="spinner-border text-primary mb-3"></div><p>Cargando estilo de vida…</p></div>
+      </div>
+    </div>
 
-              fetch(`datos_fisicos_detalle.php?matricula_alum=${matricula}&fecha=${ultimaFecha}`)
-                .then(response => response.json())
-                .then(datos => {
-                  const elementos = {
-                    peso: document.getElementById("peso"),
-                    talla: document.getElementById("modal-talla"),
-                    imc: document.getElementById("modal-imc"),
-                    clasificacion_imc: document.getElementById("modal-clasificacion_imc"),
-                    glucosa: document.getElementById("modal-glucosa"),
-                    colesterol: document.getElementById("modal-colesterol"),
-                    trigliceridos: document.getElementById("modal-trigliceridos"),
-                    tension_arterial: document.getElementById("modal-tension_arterial")
-                  };
+    <!-- ════ TAB: HISTORIAL ════ -->
+    <div class="tab-pane-exp" id="tab-historial">
+      <div id="historialContent">
+        <div class="empty-state"><div class="spinner-border text-primary mb-3"></div><p>Cargando historial…</p></div>
+      </div>
+    </div>
 
-                  if (elementos.peso) elementos.peso.textContent = datos.peso || "-";
-                  if (elementos.talla) elementos.talla.textContent = datos.talla || "-";
-                  if (elementos.imc) elementos.imc.textContent = datos.imc || "-";
-                  if (elementos.clasificacion_imc) elementos.clasificacion_imc.textContent = datos.clasificacion_imc || "-";
-                  if (elementos.glucosa) elementos.glucosa.textContent = datos.glucosa || "-";
-                  if (elementos.colesterol) elementos.colesterol.textContent = datos.colesterol || "-";
-                  if (elementos.trigliceridos) elementos.trigliceridos.textContent = datos.trigliceridos || "-";
-                  if (elementos.tension_arterial) elementos.tension_arterial.textContent = datos.tension_arterial || "-";
-                })
-                .catch(error => console.error("Error al cargar los datos físicos:", error));
-            } else {
-              const fechaElement = document.getElementById("fecha-datos-fisicos");
-              if (fechaElement) {
-                fechaElement.textContent = "Sin datos";
-              }
-            }
-          })
-          .catch(error => console.error("Error al cargar fechas:", error));
-      }
+    <!-- ════ TAB: REPORTE ════ -->
+    <div class="tab-pane-exp" id="tab-reporte">
+      <div class="sec-hd">Estado del expediente</div>
 
-      // Función para verificar el estado de los datos
-      function verificarEstadoDatos() {
-        fetch(`perfil.php?matricula_alum=${matricula}`)
-          .then(response => response.json())
-          .then(data => {
-            // Verificar Estilo de Vida
-            const checkEstiloVida = document.getElementById('check-estilo-vida');
-            if (checkEstiloVida) {
-              if (data.estilo_vida_realizado) {
-                checkEstiloVida.textContent = 'Completado';
-                checkEstiloVida.className = 'badge bg-success';
-                estadoCompleto.estiloVida = true;
-              } else {
-                checkEstiloVida.textContent = 'Pendiente';
-                checkEstiloVida.className = 'badge bg-danger';
-                estadoCompleto.estiloVida = false;
-              }
-            }
+      <div id="reporteChecks" style="margin-bottom:1.25rem;"></div>
 
-            // Verificar DASS
-            const checkDass = document.getElementById('check-dass');
-            if (checkDass) {
-              if (data.dass_realizado) {
-                checkDass.textContent = 'Completado';
-                checkDass.className = 'badge bg-success';
-                estadoCompleto.dass = true;
-              } else {
-                checkDass.textContent = 'Pendiente';
-                checkDass.className = 'badge bg-danger';
-                estadoCompleto.dass = false;
-              }
-            }
+      <div class="alert alert-info d-flex align-items-start gap-2" style="border-radius:10px;font-size:.85rem;">
+        <i class="bi bi-info-circle-fill mt-1"></i>
+        <div><strong>Se generará un PDF con todos los datos consolidados</strong> y se enviará automáticamente al correo del alumno.</div>
+      </div>
 
-            // Verificar Datos Físicos
-            const checkDatosFisicos = document.getElementById('check-datos-fisicos');
-            if (checkDatosFisicos) {
-              const tieneDatosFisicos = data.fechas && data.fechas.length > 0;
-              if (tieneDatosFisicos) {
-                checkDatosFisicos.textContent = 'Completado';
-                checkDatosFisicos.className = 'badge bg-success';
-                estadoCompleto.datosFisicos = true;
-              } else {
-                checkDatosFisicos.textContent = 'Pendiente';
-                checkDatosFisicos.className = 'badge bg-danger';
-                estadoCompleto.datosFisicos = false;
-              }
-            }
+      <div class="d-grid mt-3">
+        <button id="btnEnviarResultados" class="btn btn-primary btn-lg" disabled style="border-radius:10px;font-weight:700;font-size:.95rem;padding:.85rem;">
+          <i class="bi bi-send-fill me-2"></i><span id="textoBotonEnviar">Verificando datos…</span>
+        </button>
+      </div>
+      <div id="mensajeEstadoReporte" class="mt-3"></div>
+    </div>
 
-            // Actualizar estado del botón
-            actualizarBotonEnvio();
-          })
-          .catch(error => {
-            console.error('Error al verificar datos:', error);
-            const textoBoton = document.getElementById('textoBotonEnviar');
-            if (textoBoton) {
-              textoBoton.textContent = 'Error al verificar datos';
-            }
-          });
-      }
+  </div><!-- /tab-wrapper -->
+</div><!-- /page -->
 
-      // Función para actualizar el botón de envío
-      function actualizarBotonEnvio() {
-        const btnEnviar = document.getElementById('btnEnviarResultados');
-        const textoBoton = document.getElementById('textoBotonEnviar');
+<!-- ── Edit modal ── -->
+<div class="modal fade" id="modalEditarAlumno" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px;border:none;box-shadow:0 12px 30px rgba(0,0,0,.12);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2 text-primary"></i>Editar datos del alumno</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4">
+        <div id="editAlert" class="alert d-none"></div>
+        <div class="row g-3">
+          <input type="hidden" id="editMat">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Nombre(s) <span class="text-danger">*</span></label>
+            <input type="text" id="editNombres" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Apellido Paterno <span class="text-danger">*</span></label>
+            <input type="text" id="editApepa" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Apellido Materno <span class="text-danger">*</span></label>
+            <input type="text" id="editApema" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Correo</label>
+            <input type="email" id="editCorreo" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Sexo</label>
+            <select id="editSexo" class="form-select">
+              <option value="">Seleccionar</option>
+              <option value="MASCULINO">Masculino</option>
+              <option value="FEMENINO">Femenino</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Generación</label>
+            <input type="text" id="editGeneracion" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Tipo de sangre</label>
+            <select id="editTipoSangre" class="form-select">
+              <option value="">Seleccionar</option>
+              <option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option>
+              <option>O+</option><option>O-</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">Tel. Emergencia</label>
+            <input type="text" id="editEmergencia" class="form-control" maxlength="10">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:.83rem;">NSS <span class="text-muted fw-normal">(opcional)</span></label>
+            <input type="text" id="editNss" class="form-control" maxlength="11">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 pt-1">
+        <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnSaveEdit" class="btn btn-primary" style="border-radius:8px;font-weight:600;">
+          <i class="bi bi-check-lg me-1"></i> Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        if (!btnEnviar || !textoBoton) return;
+<!-- ── Confirm send modal ── -->
+<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px;border:none;">
+      <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--primary),#1a6bdd);border-radius:14px 14px 0 0;">
+        <h5 class="modal-title text-white fw-bold"><i class="bi bi-send-check-fill me-2"></i>Confirmar envío</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 py-3">
+        <div class="alert alert-success mb-3" style="border-radius:9px;">
+          <i class="bi bi-check-circle-fill me-2"></i><strong>¡Expediente completo!</strong>
+        </div>
+        <p class="mb-2" style="font-size:.88rem;">Se enviará el reporte de salud integral a:</p>
+        <div style="background:var(--bg);border-radius:10px;padding:.9rem 1rem;font-size:.85rem;margin-bottom:.75rem;">
+          <div><strong>Alumno:</strong> <span id="cnfNombre"></span></div>
+          <div><strong>Matrícula:</strong> <span id="cnfMatricula"></span></div>
+          <div><strong>Correo:</strong> <span id="cnfCorreo"></span></div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary fw-bold" id="btnConfirmarEnvio">
+          <i class="bi bi-send-fill me-1"></i> Enviar ahora
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        const todosCompletos = estadoCompleto.estiloVida &&
-          estadoCompleto.dass &&
-          estadoCompleto.datosFisicos;
+<!-- ── Progress modal ── -->
+<div class="modal fade" id="modalProgreso" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="border-radius:14px;border:none;text-align:center;">
+      <div class="modal-body p-5">
+        <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div>
+        <h6 class="fw-bold mb-1">Generando reporte…</h6>
+        <p class="text-muted small mb-0">Esto puede tomar unos momentos.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-        if (todosCompletos) {
-          btnEnviar.disabled = false;
-          btnEnviar.className = 'btn btn-success btn-lg';
-          textoBoton.textContent = 'Enviar Resultados por Correo';
-        } else {
-          btnEnviar.disabled = true;
-          btnEnviar.className = 'btn btn-secondary btn-lg';
-          textoBoton.textContent = 'Complete todos los datos para enviar';
-        }
-      }
+<!-- ── Success modal ── -->
+<div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px;border:none;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-success"><i class="bi bi-check-circle-fill me-2"></i>¡Enviado!</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4" id="mensajeExitoBody"></div>
+      <div class="modal-footer border-0">
+        <a id="linkDescargaPDF" href="#" target="_blank" class="btn btn-outline-primary" style="display:none;border-radius:8px;">
+          <i class="bi bi-download me-1"></i> Descargar PDF
+        </a>
+        <button class="btn btn-success" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      // Event listener para el botón de enviar
-      const btnEnviar = document.getElementById('btnEnviarResultados');
-      if (btnEnviar) {
-        btnEnviar.addEventListener('click', function () {
-          if (estadoCompleto.estiloVida && estadoCompleto.dass && estadoCompleto.datosFisicos) {
-            mostrarModalConfirmacion();
-          } else {
-            mostrarModalDatosIncompletos();
-          }
-        });
-      }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-      // Mostrar modal de confirmación
-      function mostrarModalConfirmacion() {
-        const confirmNombre = document.getElementById('confirm-nombre');
-        const confirmMatricula = document.getElementById('confirm-matricula');
-        const confirmEmail = document.getElementById('confirm-email');
+<script>
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+const params     = new URLSearchParams(window.location.search);
+const matricula  = params.get('matricula_alum') || '';
 
-        if (confirmNombre && confirmMatricula && confirmEmail) {
-          confirmNombre.textContent = `${datosAlumno.nombres_alum} ${datosAlumno.ape_paterno_alum} ${datosAlumno.ape_materno_alum}`;
-          confirmMatricula.textContent = datosAlumno.matricula_alum;
-          confirmEmail.textContent = datosAlumno.correo_alum;
+const SEV_COLOR = {
+  'Normal':                 { bg:'#ecfdf5', text:'#065f46' },
+  'Leve':                   { bg:'#eff6ff', text:'#1e40af' },
+  'Moderado':               { bg:'#fffbeb', text:'#92400e' },
+  'Severo':                 { bg:'#fef2f2', text:'#991b1b' },
+  'Extremadamente Severo':  { bg:'#fce7f3', text:'#9d174d' },
+};
 
-          const modalElement = document.getElementById('modalConfirmarEnvio');
-          if (modalElement) {
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-          }
-        }
-      }
+function sevStyle(sev) {
+  const s = SEV_COLOR[sev] || { bg:'#f3f4f6', text:'#374151' };
+  return `background:${s.bg};color:${s.text}`;
+}
 
-      // Mostrar modal de datos incompletos
-      function mostrarModalDatosIncompletos() {
-        const lista = document.getElementById('listaDatosIncompletos');
-        if (!lista) return;
+function clsColor(cls) {
+  cls = (cls || '').toLowerCase();
+  if (/normal|óptimo|optimo|recomendado|bajo riesgo|ginecoide/.test(cls)) return '#10b981';
+  if (/límite|limite|elevad|moderado|sobrepeso|insuficiente|grado\s*1|pre-diabetes|alterada/.test(cls)) return '#f59e0b';
+  if (/alto|severo|obesidad|dm\b|crisis|hipertensión|hipotensión|arriba|riesgo alto|riesgo elevado/.test(cls)) return '#ef4444';
+  return '#6b7280';
+}
 
-        lista.innerHTML = '';
+function clsChip(cls, small = false) {
+  const c = clsColor(cls);
+  const sz = small ? 'font-size:.65rem;' : 'font-size:.7rem;';
+  return `<span style="${sz}font-weight:700;padding:.15rem .5rem;border-radius:99px;background:${c}22;color:${c}">${cls || '—'}</span>`;
+}
 
-        if (!estadoCompleto.estiloVida) {
-          lista.innerHTML += `
-                <li class="list-group-item list-group-item-warning">
-                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
-                    Formulario Estilo de Vida
-                </li>`;
-        }
+function saludChip(val) {
+  const ok = val === 'Saludable' || val === '1' || val === 1;
+  return ok
+    ? `<span style="font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:99px;background:var(--success-bg);color:#065f46;">${val}</span>`
+    : `<span style="font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:99px;background:var(--warning-bg);color:#92400e;">${val || 'No saludable'}</span>`;
+}
 
-        if (!estadoCompleto.dass) {
-          lista.innerHTML += `
-                <li class="list-group-item list-group-item-warning">
-                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
-                    Cuestionario DASS-21
-                </li>`;
-        }
+function dassBar(val, max, color) {
+  const pct = Math.min(100, Math.round((val / max) * 100));
+  return `<div class="dass-bar-wrap"><div class="dass-bar" style="width:${pct}%;background:${color}"></div></div>`;
+}
 
-        if (!estadoCompleto.datosFisicos) {
-          lista.innerHTML += `
-                <li class="list-group-item list-group-item-warning">
-                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
-                    Datos Físicos
-                </li>`;
-        }
+if (!matricula) {
+  document.body.innerHTML = '<div class="empty-state" style="padding:4rem;"><i class="bi bi-exclamation-triangle fs-1"></i><p>No se proporcionó una matrícula válida.</p></div>';
+}
 
-        const modalElement = document.getElementById('modalDatosIncompletos');
-        if (modalElement) {
-          const modal = new bootstrap.Modal(modalElement);
-          modal.show();
-        }
-      }
+/* ═══════════════════════════════════════════════════════
+   DATA STATE
+═══════════════════════════════════════════════════════ */
+let alumnoData   = {};
+let dassData     = null;
+let pepsData     = null;
+let fisicosData  = null;
+let historialData= null;
+let estadoCompleto = { dass:false, peps:false, fisicos:false };
 
-      // Confirmar y enviar
-      const btnConfirmarEnvio = document.getElementById('btnConfirmarEnvio');
-      if (btnConfirmarEnvio) {
-        btnConfirmarEnvio.addEventListener('click', function () {
-          // Cerrar modal de confirmación
-          const modalConfirmar = document.getElementById('modalConfirmarEnvio');
-          if (modalConfirmar) {
-            const instance = bootstrap.Modal.getInstance(modalConfirmar);
-            if (instance) instance.hide();
-          }
+/* ═══════════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════════ */
+document.querySelectorAll('.nav-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane-exp').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
 
-          // Mostrar modal de progreso
-          const modalProgresoElement = document.getElementById('modalProgreso');
-          if (modalProgresoElement) {
-            const modalProgreso = new bootstrap.Modal(modalProgresoElement);
-            modalProgreso.show();
-          }
+/* ═══════════════════════════════════════════════════════
+   LOAD PROFILE
+═══════════════════════════════════════════════════════ */
+async function cargarPerfil() {
+  try {
+    const res  = await fetch(`obtener-alumno.php?matricula=${matricula}`);
+    const data = await res.json();
+    if (data.error) { console.error(data.error); return; }
+    alumnoData = data;
 
-          // Llamar al endpoint para generar y enviar
-          enviarResultados(matricula);
-        });
-      }
+    const nombre = `${data.nombres_alum} ${data.ape_paterno_alum} ${data.ape_materno_alum}`;
+    const ini    = (data.nombres_alum[0] + data.ape_paterno_alum[0]).toUpperCase();
 
-      // Función para enviar resultados
-      function enviarResultados(matricula) {
-        const formData = new FormData();
-        formData.append('matricula', matricula);
-        formData.append('correo1', datosAlumno.correo_alum);
+    document.getElementById('avatarInicial').textContent  = ini;
+    document.getElementById('perfNombre').textContent     = nombre;
+    document.getElementById('perfMatricula').textContent  = data.matricula_alum;
+    document.getElementById('perfCorreo').textContent     = data.correo_alum     || '—';
+    document.getElementById('perfSexo').textContent       = data.sexo            || '—';
+    document.getElementById('perfFacultad').textContent   = data.nombre_facultad || '—';
+    document.getElementById('perfCarrera').textContent    = data.nombre_carrera  || '—';
+    document.getElementById('perfSangre').textContent     = data.tipo_sangre     || '—';
+    document.getElementById('perfEmergencia').textContent = data.emergencia      || '—';
+    document.getElementById('perfNss').textContent        = data.nss             || '—';
+    document.getElementById('perfGeneracion').textContent = data.generacion      || '—';
 
-        console.log('Enviando solicitud de generación de reporte...');
-        console.log('Matrícula:', matricula);
-        console.log('Correo:', datosAlumno.correo_alum);
+    // Fill edit modal defaults
+    document.getElementById('editMat').value        = data.matricula_alum;
+    document.getElementById('editNombres').value    = data.nombres_alum     || '';
+    document.getElementById('editApepa').value      = data.ape_paterno_alum || '';
+    document.getElementById('editApema').value      = data.ape_materno_alum || '';
+    document.getElementById('editCorreo').value     = data.correo_alum      || '';
+    document.getElementById('editSexo').value       = data.sexo             || '';
+    document.getElementById('editGeneracion').value = data.generacion       || '';
+    document.getElementById('editTipoSangre').value = data.tipo_sangre      || '';
+    document.getElementById('editEmergencia').value = data.emergencia       || '';
+    document.getElementById('editNss').value        = data.nss              || '';
 
-        fetch('generar_y_enviar_reporte.php', {
-          method: 'POST',
-          body: formData
-        })
-          .then(response => {
-            console.log('Respuesta recibida, status:', response.status);
-            return response.json();
-          })
-          .then(data => {
-            console.log('Datos recibidos:', data);
+    // Confirm modal
+    document.getElementById('cnfNombre').textContent   = nombre;
+    document.getElementById('cnfMatricula').textContent= data.matricula_alum;
+    document.getElementById('cnfCorreo').textContent   = data.correo_alum || '—';
 
-            // Cerrar modal de progreso
-            const modalProgresoElement = document.getElementById('modalProgreso');
-            if (modalProgresoElement) {
-              const modalProgresoInstance = bootstrap.Modal.getInstance(modalProgresoElement);
-              if (modalProgresoInstance) modalProgresoInstance.hide();
-            }
+  } catch(e) { console.error('Error perfil:', e); }
+}
 
-            if (data.success) {
-              mostrarModalExito(data);
-            } else if (data.warning) {
-              let mensaje = data.mensaje || 'Datos incompletos';
-              if (data.cuestionarios_faltantes && data.cuestionarios_faltantes.length > 0) {
-                mensaje += ':\n\n' + data.cuestionarios_faltantes.join('\n');
-              }
-              alert(mensaje);
-            } else {
-              alert('Error: ' + (data.error || 'Error desconocido'));
-            }
-          })
-          .catch(error => {
-            console.error('Error en la petición:', error);
-            
-            const modalProgresoElement = document.getElementById('modalProgreso');
-            if (modalProgresoElement) {
-              const modalProgresoInstance = bootstrap.Modal.getInstance(modalProgresoElement);
-              if (modalProgresoInstance) modalProgresoInstance.hide();
-            }
-            
-            alert('Error al enviar los resultados: ' + error.message);
-          });
-      }
+/* ═══════════════════════════════════════════════════════
+   LOAD PHYSICAL DATA
+═══════════════════════════════════════════════════════ */
+async function cargarFisicos() {
+  try {
+    const res  = await fetch(`perfil.php?matricula_alum=${matricula}`);
+    const data = await res.json();
 
-      // Mostrar modal de éxito
-      function mostrarModalExito(data) {
-        let mensaje = 'El reporte de salud integral ha sido generado exitosamente.';
+    if (!data.fechas || data.fechas.length === 0) {
+      chipUpdate('chipFisicos', false, 'Datos Físicos');
+      renderFisicosEmpty();
+      updateResumenFisicos(null);
+      return;
+    }
 
-        if (data.correo_enviado) {
-          mensaje += '\n\n✅ El correo se envió exitosamente al alumno.';
-        } else if (data.error_correo) {
-          mensaje += '\n\n⚠️ El PDF se generó correctamente, pero hubo un problema al enviar el correo:\n' + data.error_correo;
-        } else {
-          mensaje += '\n\nEl PDF está disponible para descarga.';
-        }
+    estadoCompleto.fisicos = true;
+    chipUpdate('chipFisicos', true, 'Datos Físicos');
 
-        const mensajeExito = document.getElementById('mensajeExito');
-        if (mensajeExito) {
-          mensajeExito.textContent = mensaje;
-        }
+    // Use the most recent date (first in DESC order)
+    const ultimaFecha = data.fechas[0];
 
-        // Mostrar enlace de descarga si está disponible
-        if (data.pdf_url) {
-          const enlaceDescarga = document.getElementById('enlaceDescarga');
-          const linkDescargaPDF = document.getElementById('linkDescargaPDF');
-          
-          if (enlaceDescarga && linkDescargaPDF) {
-            enlaceDescarga.style.display = 'block';
-            linkDescargaPDF.href = data.pdf_url;
-          }
-        }
+    const res2  = await fetch(`datos_fisicos_detalle.php?matricula_alum=${matricula}&fecha=${encodeURIComponent(ultimaFecha)}`);
+    fisicosData = await res2.json();
 
-        const modalExitoElement = document.getElementById('modalExito');
-        if (modalExitoElement) {
-          const modal = new bootstrap.Modal(modalExitoElement);
-          modal.show();
-        }
-      }
+    if (fisicosData.error) { renderFisicosEmpty(); return; }
 
-      // Inicializar
-      cargarPerfil();
-      cargarDatosFisicosRecientes();
+    renderFisicosTab(fisicosData, ultimaFecha);
+    renderFisicosResumen(fisicosData, ultimaFecha);
+    updateResumenFisicos(fisicosData);
+    actualizarBoton();
+
+    // Tab badge
+    const badgeFisicos = document.getElementById('tabBadgeFisicos');
+    badgeFisicos.textContent = '✓';
+    badgeFisicos.style.cssText = 'display:inline;background:#ecfdf5;color:#065f46;';
+
+  } catch(e) { console.error('Error físicos:', e); }
+}
+
+function chipUpdate(id, done, label) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (done) {
+    el.className = 'chip done';
+    el.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${label}: Completado`;
+  } else {
+    el.className = 'chip pend';
+    el.innerHTML = `<i class="bi bi-x-circle"></i> ${label}: Pendiente`;
+  }
+}
+
+function renderFisicosEmpty() {
+  document.getElementById('fisicosContent').innerHTML = `
+    <div class="empty-state">
+      <i class="bi bi-clipboard-x text-muted"></i>
+      <p>No hay datos físicos registrados para este alumno.</p>
+    </div>`;
+}
+
+function renderFisicosTab(d, fecha) {
+  const fmtFecha = fecha ? new Date(fecha).toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'}) : '—';
+
+  const sections = [
+    {
+      title:'Peso y Talla', icon:'bi-person-fill-up', items:[
+        { label:'Peso',            val: d.peso,    unit:'kg',    cls: null },
+        { label:'Talla',           val: d.talla,   unit:'cm',    cls: null },
+        { label:'IMC',             val: d.imc,     unit:'',      cls: d.clasificacion_imc },
+        { label:'Masa Magra',      val: d.masa_magra, unit:'kg', cls: null },
+      ]
+    },
+    {
+      title:'Cintura y Cadera', icon:'bi-rulers', items:[
+        { label:'Cintura',         val: d.cintura, unit:'cm',   cls: null },
+        { label:'Cadera',          val: d.cadera,  unit:'cm',   cls: null },
+        { label:'ICC',             val: d.icc,     unit:'',     cls: d.clasificacion_cintura_cadera },
+        { label:'ICE',             val: d.ice,     unit:'',     cls: d.clasificacionice || d.ice_clasificacion },
+      ]
+    },
+    {
+      title:'Composición Corporal', icon:'bi-bar-chart-fill', items:[
+        { label:'% Masa Grasa',    val: d.porcentaje_masa_grasa ? d.porcentaje_masa_grasa+'%' : '—', unit:'', cls: d.clasificacion_porcentaje_grasa },
+        { label:'Agua Total',      val: d.agua_total, unit:'L',  cls: null },
+        { label:'% Agua Total',    val: d.porcentaje_agua_total ? d.porcentaje_agua_total+'%' : '—', unit:'', cls: null },
+        { label:'MB (kcal)',       val: d.mb,      unit:'kcal', cls: null },
+        { label:'GET (kcal)',      val: d.get1,    unit:'kcal', cls: null },
+      ]
+    },
+    {
+      title:'Laboratorio', icon:'bi-droplet-fill', items:[
+        { label:'Glucosa',         val: d.glucosa,      unit:'mg/dL', cls: d.clasificacion_glucosa },
+        { label:'Colesterol',      val: d.colesterol,   unit:'mg/dL', cls: d.clasificacion_colesterol },
+        { label:'Triglicéridos',   val: d.trigliceridos,unit:'mg/dL', cls: d.clasificacion_trigliceridos },
+        { label:'Tensión Arterial',val: d.tension_arterial, unit:'mmHg', cls: d.clasificacion_tension_arterial },
+      ]
+    },
+  ];
+
+  let html = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem;">
+      <div class="sec-hd" style="margin:0;flex:1;">Registro del ${fmtFecha}</div>
+    </div>`;
+
+  sections.forEach(sec => {
+    html += `<div class="sec-hd">${sec.title}</div>
+    <div class="metrics-grid" style="margin-bottom:1.5rem;">`;
+    sec.items.forEach(item => {
+      const val   = item.val != null && item.val !== '' ? item.val : '—';
+      const color = item.cls ? clsColor(item.cls) : 'var(--primary)';
+      html += `
+        <div class="metric-card">
+          <i class="bi ${sec.icon} metric-icon" style="color:${color}"></i>
+          <div class="metric-label">${item.label}</div>
+          <div class="metric-value" style="color:${color}">${val}</div>
+          ${item.unit ? `<div class="metric-unit">${item.unit}</div>` : ''}
+          ${item.cls ? `<div class="metric-cls" style="background:${color}22;color:${color}">${item.cls}</div>` : ''}
+        </div>`;
     });
-  </script>
+    html += `</div>`;
+  });
 
+  document.getElementById('fisicosContent').innerHTML = html;
+}
+
+function renderFisicosResumen(d, fecha) {
+  const fmtFecha = fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+  document.getElementById('resumenFisicosBody').innerHTML = `
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem;">Última medición: ${fmtFecha}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;font-size:.82rem;">
+      <div><span style="color:var(--muted);">IMC</span> <strong style="color:${clsColor(d.clasificacion_imc)}">${d.imc||'—'}</strong></div>
+      <div style="color:${clsColor(d.clasificacion_imc)};font-size:.7rem;">${d.clasificacion_imc||''}</div>
+      <div><span style="color:var(--muted);">Glucosa</span> <strong>${d.glucosa||'—'}</strong></div>
+      <div style="font-size:.7rem;">${clsChip(d.clasificacion_glucosa)}</div>
+      <div><span style="color:var(--muted);">T.A.</span> <strong>${d.tension_arterial||'—'}</strong></div>
+      <div style="font-size:.7rem;">${clsChip(d.clasificacion_tension_arterial)}</div>
+    </div>`;
+}
+
+function updateResumenFisicos(d) {
+  if (!d) {
+    document.getElementById('resumenFisicosBody').innerHTML = `<div class="empty-state" style="padding:.5rem;"><p>Sin datos físicos.</p></div>`;
+    return;
+  }
+
+  // Quick metrics overview
+  const metrics = [
+    { icon:'bi-person-fill-up', label:'Peso',   val:d.peso,    unit:'kg',   color:'var(--primary)' },
+    { icon:'bi-bar-chart',      label:'Talla',  val:d.talla,   unit:'cm',   color:'var(--primary)' },
+    { icon:'bi-calculator',     label:'IMC',    val:d.imc,     unit:'',     color:clsColor(d.clasificacion_imc) },
+    { icon:'bi-droplet-fill',   label:'Glucosa',val:d.glucosa, unit:'mg/dL',color:clsColor(d.clasificacion_glucosa) },
+    { icon:'bi-heart-pulse',    label:'Colesterol',val:d.colesterol,unit:'mg/dL',color:clsColor(d.clasificacion_colesterol)},
+    { icon:'bi-activity',       label:'T.Arterial',val:d.tension_arterial,unit:'mmHg',color:clsColor(d.clasificacion_tension_arterial)},
+  ];
+
+  document.getElementById('secMetricsHd').style.display = '';
+  document.getElementById('quickMetrics').innerHTML = metrics.map(m => `
+    <div class="metric-card">
+      <i class="bi ${m.icon} metric-icon" style="color:${m.color}"></i>
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-value" style="color:${m.color}">${m.val||'—'}</div>
+      ${m.unit ? `<div class="metric-unit">${m.unit}</div>` : ''}
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOAD DASS-21
+═══════════════════════════════════════════════════════ */
+async function cargarDass() {
+  try {
+    const res = await fetch(`datosdass.php?matricula_alum=${matricula}`);
+    if (res.status === 404) {
+      chipUpdate('chipDass', false, 'DASS-21');
+      dassEmptyState();
+      updateResumenDass(null);
+      return;
+    }
+    dassData = await res.json();
+    if (dassData.error) {
+      chipUpdate('chipDass', false, 'DASS-21');
+      dassEmptyState();
+      updateResumenDass(null);
+      return;
+    }
+    estadoCompleto.dass = true;
+    chipUpdate('chipDass', true, 'DASS-21');
+    renderDassTab(dassData);
+    updateResumenDass(dassData);
+    actualizarBoton();
+
+    const badge = document.getElementById('tabBadgeDass');
+    badge.textContent = '✓'; badge.style.cssText = 'display:inline;background:#ecfdf5;color:#065f46;';
+  } catch(e) { console.error('Error DASS:', e); }
+}
+
+function dassEmptyState() {
+  document.getElementById('dassContent').innerHTML = `
+    <div class="empty-state"><i class="bi bi-clipboard-x"></i><p>Este alumno aún no ha completado el DASS-21.</p></div>`;
+}
+
+const DASS_MAX = { dep: 21, ans: 21, est: 21 };
+function dassColorFor(sev) {
+  const m = { Normal:'#10b981', Leve:'#3b82f6', Moderado:'#f59e0b', Severo:'#ef4444', 'Extremadamente Severo':'#dc2626' };
+  return m[sev] || '#6b7280';
+}
+
+function renderDassTab(d) {
+  const dep = parseInt(d.total_depresion); const ans = parseInt(d.total_ansiedad); const est = parseInt(d.total_estres);
+  const sD = d.severidad_depresion; const sA = d.severidad_ansiedad; const sE = d.severidad_estres;
+  const cD = dassColorFor(sD); const cA = dassColorFor(sA); const cE = dassColorFor(sE);
+
+  const rows = [
+    ['Depresión', dep, sD, cD],
+    ['Ansiedad',  ans, sA, cA],
+    ['Estrés',    est, sE, cE],
+  ];
+
+  let html = `
+    <div class="sec-hd">Puntuaciones</div>
+    <div style="max-width:620px;margin-bottom:1.75rem;">
+      <div class="dass-rows">`;
+
+  rows.forEach(([lbl, val, sev, col]) => {
+    const pct = Math.min(100, Math.round((val / 21) * 100));
+    html += `
+      <div class="dass-row">
+        <div class="dass-lbl">${lbl}</div>
+        <div class="dass-bar-wrap"><div class="dass-bar" style="width:${pct}%;background:${col}"></div></div>
+        <div class="dass-num" style="color:${col}">${val}</div>
+        <div class="dass-sev" style="${sevStyle(sev)}">${sev}</div>
+      </div>`;
+  });
+
+  html += `</div></div>
+    <div class="sec-hd">Interpretación</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;">`;
+
+  const tips = {
+    Normal:   'Dentro del rango normal. Sin indicadores clínicos relevantes.',
+    Leve:     'Nivel leve. Monitorear hábitos de bienestar y autocuidado.',
+    Moderado: 'Nivel moderado. Recomendar seguimiento y técnicas de manejo.',
+    Severo:   'Nivel severo. Se recomienda orientación profesional. Derivar a Clínica Universitaria.',
+    'Extremadamente Severo': 'Nivel extremadamente severo. Requiere atención profesional urgente.',
+  };
+
+  rows.forEach(([lbl, val, sev, col]) => {
+    html += `
+      <div style="border-radius:12px;padding:1rem;background:${col}11;border:1px solid ${col}33;">
+        <div style="font-size:.82rem;font-weight:700;color:${col};margin-bottom:.35rem;">${lbl} — <span style="${sevStyle(sev)};padding:.1rem .4rem;border-radius:99px;">${sev}</span></div>
+        <div style="font-size:.78rem;color:var(--text);">${tips[sev] || ''}</div>
+        <div style="margin-top:.5rem;font-size:.72rem;color:var(--muted);">Puntaje: <strong style="color:${col}">${val}</strong> / 21</div>
+      </div>`;
+  });
+
+  html += `</div>
+    <div class="sec-hd">Total general</div>
+    <div style="display:inline-flex;align-items:center;gap:.75rem;background:var(--bg);border-radius:12px;padding:.85rem 1.25rem;border:1px solid var(--border);">
+      <div style="font-size:2rem;font-weight:700;color:var(--primary);">${d.total_general}</div>
+      <div><div style="font-size:.72rem;color:var(--muted);">Puntaje total DASS-21</div><div style="font-size:.75rem;color:var(--muted);">Suma de las tres dimensiones</div></div>
+    </div>`;
+
+  document.getElementById('dassContent').innerHTML = html;
+}
+
+function updateResumenDass(d) {
+  if (!d) {
+    document.getElementById('resumenDassBody').innerHTML = `<div style="color:var(--muted);font-size:.8rem;">No ha completado el DASS-21.</div>`;
+    return;
+  }
+  const rows = [['Depresión',d.severidad_depresion,d.total_depresion],['Ansiedad',d.severidad_ansiedad,d.total_ansiedad],['Estrés',d.severidad_estres,d.total_estres]];
+  let html = '<div class="dass-rows">';
+  rows.forEach(([lbl,sev,val]) => {
+    const col = dassColorFor(sev);
+    const pct = Math.min(100,Math.round((val/21)*100));
+    html += `<div class="dass-row" style="gap:.5rem;">
+      <div style="font-size:.75rem;color:var(--muted);width:72px;flex-shrink:0;">${lbl}</div>
+      <div class="dass-bar-wrap"><div class="dass-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div style="font-size:.75rem;font-weight:700;color:${col};width:20px;text-align:right;">${val}</div>
+      <div style="font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:99px;background:${col}22;color:${col};min-width:65px;text-align:center;">${sev}</div>
+    </div>`;
+  });
+  document.getElementById('resumenDassBody').innerHTML = html + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOAD PEPS-1
+═══════════════════════════════════════════════════════ */
+async function cargarPeps() {
+  try {
+    const res = await fetch(`datosestilo.php?matricula_alum=${matricula}`);
+    if (res.status === 404) {
+      chipUpdate('chipPeps', false, 'PEPS-1');
+      pepsEmptyState();
+      updateResumenPeps(null);
+      return;
+    }
+    pepsData = await res.json();
+    if (pepsData.error) {
+      chipUpdate('chipPeps', false, 'PEPS-1');
+      pepsEmptyState();
+      updateResumenPeps(null);
+      return;
+    }
+    estadoCompleto.peps = true;
+    chipUpdate('chipPeps', true, 'PEPS-1');
+    renderPepsTab(pepsData);
+    updateResumenPeps(pepsData);
+    actualizarBoton();
+
+    const badge = document.getElementById('tabBadgePeps');
+    badge.textContent = '✓'; badge.style.cssText = 'display:inline;background:#ecfdf5;color:#065f46;';
+  } catch(e) { console.error('Error PEPS:', e); }
+}
+
+function pepsEmptyState() {
+  document.getElementById('pepsContent').innerHTML = `
+    <div class="empty-state"><i class="bi bi-clipboard-x"></i><p>Este alumno aún no ha completado el cuestionario PEPS-1.</p></div>`;
+}
+
+function renderPepsTab(d) {
+  const total = parseInt(d.total_general);
+  const pct   = Math.round((total / 192) * 100);
+  const ok    = d.estado_saludable === 'Saludable';
+  const col   = ok ? '#10b981' : '#f59e0b';
+
+  const dims = [
+    { label:'Nutrición',           val: parseInt(d.total_nutricion),       max:36, sld: d.saludable_nutricion },
+    { label:'Ejercicio',           val: parseInt(d.total_ejercicio),        max:25, sld: d.saludable_ejercicio },
+    { label:'Responsabilidad Salud',val: parseInt(d.total_salud),          max:50, sld: d.saludable_salud },
+    { label:'Soporte Interpersonal',val: parseInt(d.total_soporte),        max:35, sld: d.saludable_soporte },
+    { label:'Manejo de Estrés',    val: parseInt(d.total_manejoestres),    max:35, sld: d.saludable_manejo },
+    { label:'Autoactualizacion',   val: parseInt(d.total_autoactualizacion),max:65, sld: d.saludable_autoactualizacion },
+  ];
+
+  let html = `
+    <div class="sec-hd">Resultado global</div>
+    <div style="display:flex;align-items:center;gap:1.5rem;background:var(--bg);border-radius:14px;padding:1.25rem 1.5rem;border:1px solid var(--border);margin-bottom:1.75rem;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-size:3rem;font-weight:800;color:${col};line-height:1;">${total}</div>
+        <div style="font-size:.75rem;color:var(--muted);">de 192 puntos</div>
+        <div style="margin-top:.4rem;font-size:.78rem;font-weight:700;padding:.25rem .7rem;border-radius:99px;background:${col}22;color:${col};">${d.estado_saludable}</div>
+      </div>
+      <div style="flex:1;min-width:180px;">
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:.35rem;">
+          <span>Progreso total</span><span>${pct}%</span>
+        </div>
+        <div style="height:10px;background:var(--border);border-radius:99px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${col};border-radius:99px;transition:width .7s;"></div>
+        </div>
+        <div style="margin-top:.75rem;font-size:.78rem;color:var(--muted);">
+          ${ok ? '✅ El alumno presenta un estilo de vida saludable.' : '⚠️ El alumno tiene áreas de mejora en hábitos de vida.'}
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-hd">Por dimensión</div>
+    <div style="display:flex;flex-direction:column;gap:.55rem;max-width:680px;margin-bottom:1.5rem;">`;
+
+  dims.forEach(dim => {
+    const pctD = Math.min(100, Math.round((dim.val / dim.max) * 100));
+    const sld  = dim.sld;
+    const okD  = sld === 'Saludable' || sld === '1' || sld === 1;
+    const colD = okD ? '#10b981' : '#f59e0b';
+
+    html += `<div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="font-size:.78rem;color:var(--muted);width:185px;flex-shrink:0;">${dim.label}</div>
+      <div style="flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;">
+        <div style="width:${pctD}%;height:100%;background:${colD};border-radius:99px;transition:width .7s;"></div>
+      </div>
+      <div style="font-size:.78rem;font-weight:700;color:${colD};width:50px;text-align:right;">${dim.val}/${dim.max}</div>
+      <div style="font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:99px;background:${colD}22;color:${colD};min-width:80px;text-align:center;">${okD?'Saludable':'No saludable'}</div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('pepsContent').innerHTML = html;
+}
+
+function updateResumenPeps(d) {
+  if (!d) {
+    document.getElementById('resumenPepsBody').innerHTML = `<div style="color:var(--muted);font-size:.8rem;">No ha completado el PEPS-1.</div>`;
+    return;
+  }
+  const total = parseInt(d.total_general);
+  const pct   = Math.round((total / 192) * 100);
+  const ok    = d.estado_saludable === 'Saludable';
+  const col   = ok ? '#10b981' : '#f59e0b';
+  document.getElementById('resumenPepsBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="font-size:2.2rem;font-weight:800;color:${col};line-height:1;">${total}</div>
+      <div>
+        <div style="font-size:.7rem;color:var(--muted);">de 192 pts</div>
+        <div style="font-size:.7rem;font-weight:700;padding:.1rem .45rem;border-radius:99px;background:${col}22;color:${col};margin-top:.2rem;">${d.estado_saludable}</div>
+      </div>
+    </div>
+    <div style="margin-top:.6rem;height:7px;background:var(--border);border-radius:99px;overflow:hidden;">
+      <div style="width:${pct}%;height:100%;background:${col};border-radius:99px;"></div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOAD HISTORIAL
+═══════════════════════════════════════════════════════ */
+async function cargarHistorial() {
+  try {
+    const res = await fetch(`historial.php?matricula_alum=${matricula}`);
+    historialData = await res.json();
+
+    const tieneDatos = historialData && Object.keys(historialData).length > 0 && historialData.matricula_alum;
+    chipUpdate('chipHistorial', tieneDatos, 'Historial');
+    tieneDatos ? renderHistorialTab(historialData) : historialEmptyState();
+  } catch(e) { console.error('Error historial:', e); historialEmptyState(); }
+}
+
+function historialEmptyState() {
+  document.getElementById('historialContent').innerHTML = `
+    <div class="empty-state"><i class="bi bi-clipboard-x"></i><p>No hay historial clínico registrado para este alumno.</p></div>`;
+}
+
+function renderHistorialTab(d) {
+  const enfs = [
+    ['sobrepeso_obesidad','Sobrepeso / Obesidad'],
+    ['diabetes_mellitus','Diabetes Mellitus'],
+    ['hipertension_arterial','Hipertensión Arterial'],
+    ['trigliceridos_altos','Triglicéridos Altos'],
+    ['colesterol_alto','Colesterol Alto'],
+    ['hepatitis','Hepatitis'],
+    ['higado_graso','Hígado Graso'],
+    ['cardiopatias','Cardiopatías'],
+    ['nefropatias','Nefropatías'],
+    ['estreñimiento','Estreñimiento'],
+    ['gastritis','Gastritis'],
+    ['cancer','Cáncer'],
+  ];
+
+  const falsa = ['no','no presenta','ninguno','ninguna','0','false','',null,undefined];
+  const positivos = enfs.filter(([key]) => !falsa.includes(String(d[key] || '').toLowerCase().trim()));
+  const negativos = enfs.filter(([key]) =>  falsa.includes(String(d[key] || '').toLowerCase().trim()));
+
+  let html = `
+    <div class="sec-hd">Antecedentes heredo-familiares</div>
+    <div class="hx-grid" style="margin-bottom:1.5rem;">`;
+
+  if (positivos.length === 0) {
+    html += `<div style="grid-column:1/-1;color:var(--muted);font-size:.85rem;">Sin antecedentes familiares positivos reportados.</div>`;
+  }
+  positivos.forEach(([,lbl]) => {
+    html += `<div class="hx-item yes"><i class="bi bi-exclamation-circle-fill"></i>${lbl}</div>`;
+  });
+  negativos.forEach(([,lbl]) => {
+    html += `<div class="hx-item no"><i class="bi bi-check-circle-fill"></i>${lbl}</div>`;
+  });
+
+  html += `</div>`;
+
+  if (d.otros || d.tratamiento) {
+    html += `<div class="sec-hd">Antecedentes personales</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:640px;">`;
+    if (d.otros) html += `
+      <div>
+        <div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem;">Padecimiento</div>
+        <div style="background:var(--danger-bg);border-radius:9px;padding:.7rem .9rem;font-size:.85rem;color:#991b1b;">${d.otros}</div>
+      </div>`;
+    if (d.tratamiento) html += `
+      <div>
+        <div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem;">Tratamiento</div>
+        <div style="background:var(--blue-bg);border-radius:9px;padding:.7rem .9rem;font-size:.85rem;color:#1e40af;">${d.tratamiento}</div>
+      </div>`;
+    html += `</div>`;
+  }
+
+  document.getElementById('historialContent').innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════
+   REPORTE / SEND
+═══════════════════════════════════════════════════════ */
+function actualizarBoton() {
+  const { dass, peps, fisicos } = estadoCompleto;
+  const items = [
+    { ok: dass,    label:'DASS-21' },
+    { ok: peps,    label:'Estilo de Vida (PEPS-1)' },
+    { ok: fisicos, label:'Datos Físicos' },
+  ];
+
+  let html = '';
+  items.forEach(it => {
+    html += `<div class="reporte-check">
+      <div><i class="bi bi-clipboard-check me-2 text-muted"></i><strong>${it.label}</strong></div>
+      ${it.ok
+        ? `<span class="badge" style="background:var(--success-bg);color:#065f46;font-size:.75rem;padding:.35rem .75rem;">✓ Completado</span>`
+        : `<span class="badge" style="background:var(--danger-bg);color:#991b1b;font-size:.75rem;padding:.35rem .75rem;">Pendiente</span>`}
+    </div>`;
+  });
+  document.getElementById('reporteChecks').innerHTML = html;
+
+  const btn  = document.getElementById('btnEnviarResultados');
+  const txt  = document.getElementById('textoBotonEnviar');
+  const todo = dass && peps && fisicos;
+
+  if (todo) {
+    btn.disabled  = false;
+    btn.className = 'btn btn-success btn-lg';
+    txt.textContent = 'Enviar reporte por correo';
+  } else {
+    btn.disabled  = true;
+    btn.className = 'btn btn-secondary btn-lg';
+    txt.textContent = 'Complete todos los datos para enviar';
+  }
+}
+
+document.getElementById('btnEnviarResultados').addEventListener('click', () => {
+  const { dass, peps, fisicos } = estadoCompleto;
+  if (dass && peps && fisicos) {
+    new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
+  }
+});
+
+document.getElementById('btnConfirmarEnvio').addEventListener('click', async () => {
+  bootstrap.Modal.getInstance(document.getElementById('modalConfirmar')).hide();
+  const modalProg = new bootstrap.Modal(document.getElementById('modalProgreso'));
+  modalProg.show();
+
+  try {
+    const fd = new FormData();
+    fd.append('matricula', matricula);
+    fd.append('correo1', alumnoData.correo_alum || '');
+
+    const res  = await fetch('generar_y_enviar_reporte.php', { method:'POST', body:fd });
+    const data = await res.json();
+    modalProg.hide();
+
+    if (data.success) {
+      let msg = 'El reporte de salud integral fue generado exitosamente.';
+      if (data.correo_enviado) msg += ' El correo fue enviado al alumno.';
+      else if (data.error_correo) msg += ` ⚠️ Error al enviar correo: ${data.error_correo}`;
+
+      document.getElementById('mensajeExitoBody').innerHTML = `<p style="font-size:.88rem;">${msg}</p>`;
+      const lnk = document.getElementById('linkDescargaPDF');
+      if (data.pdf_url) { lnk.href = data.pdf_url; lnk.style.display = ''; }
+      new bootstrap.Modal(document.getElementById('modalExito')).show();
+    } else {
+      alert('Error: ' + (data.error || data.mensaje || 'Error desconocido'));
+    }
+  } catch(e) {
+    bootstrap.Modal.getInstance(document.getElementById('modalProgreso'))?.hide();
+    alert('Error al generar el reporte: ' + e.message);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   EDIT MODAL
+═══════════════════════════════════════════════════════ */
+function abrirEditarAlumno() {
+  document.getElementById('editAlert').className = 'alert d-none';
+  new bootstrap.Modal(document.getElementById('modalEditarAlumno')).show();
+}
+
+document.getElementById('btnTopEditar').addEventListener('click', abrirEditarAlumno);
+
+document.getElementById('btnSaveEdit').addEventListener('click', async function () {
+  const btn    = this;
+  const alerta = document.getElementById('editAlert');
+  alerta.className = 'alert d-none';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+  try {
+    const res = await fetch('actualizar-alumno.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        matricula:   document.getElementById('editMat').value,
+        nombres:     document.getElementById('editNombres').value,
+        ape_paterno: document.getElementById('editApepa').value,
+        ape_materno: document.getElementById('editApema').value,
+        correo:      document.getElementById('editCorreo').value,
+        sexo:        document.getElementById('editSexo').value,
+        generacion:  document.getElementById('editGeneracion').value,
+        tipo_sangre: document.getElementById('editTipoSangre').value,
+        emergencia:  document.getElementById('editEmergencia').value,
+        nss:         document.getElementById('editNss').value,
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alerta.className = 'alert alert-success';
+      alerta.textContent = data.message;
+      setTimeout(() => {
+        bootstrap.Modal.getInstance(document.getElementById('modalEditarAlumno')).hide();
+        cargarPerfil();
+      }, 1100);
+    } else {
+      alerta.className = 'alert alert-danger';
+      alerta.textContent = data.error || 'Error al guardar.';
+    }
+  } catch(e) {
+    alerta.className = 'alert alert-danger';
+    alerta.textContent = 'Error de conexión.';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Guardar cambios';
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  if (!matricula) return;
+  actualizarBoton();
+  cargarPerfil();
+  cargarDass();
+  cargarPeps();
+  cargarFisicos();
+  cargarHistorial();
+});
+</script>
+
+<script src="../js/admin-layout.js"></script>
 </body>
-
 </html>

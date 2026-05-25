@@ -7,6 +7,27 @@ ini_set('log_errors', 1);
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
+// ── Rate limiting (5 intentos / 10 minutos por IP) ──────────────────────────
+$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$ahora = time();
+$ventana = 600; // 10 minutos
+$maxIntentos = 5;
+
+if (!isset($_SESSION['rl_alumnos'])) { $_SESSION['rl_alumnos'] = []; }
+// Limpiar IPs con ventana expirada
+foreach ($_SESSION['rl_alumnos'] as $k => $d) {
+    if ($ahora - $d['primero'] >= $ventana) { unset($_SESSION['rl_alumnos'][$k]); }
+}
+if (!isset($_SESSION['rl_alumnos'][$ip])) {
+    $_SESSION['rl_alumnos'][$ip] = ['count' => 0, 'primero' => $ahora];
+}
+if ($_SESSION['rl_alumnos'][$ip]['count'] >= $maxIntentos) {
+    $espera = $ventana - ($ahora - $_SESSION['rl_alumnos'][$ip]['primero']);
+    http_response_code(429);
+    echo json_encode(['error' => "Demasiados intentos fallidos. Espera " . ceil($espera / 60) . " min antes de intentar de nuevo."], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 try {
 $conn = getDBConnection();
@@ -79,7 +100,8 @@ $conn = getDBConnection();
 
     // Verificar la contraseña con password_verify
     if (password_verify($passwordIngresada, $alumno['password'])) {
-        // Contraseña correcta - Iniciar sesión
+        // Contraseña correcta — limpiar conteo de intentos
+        unset($_SESSION['rl_alumnos'][$ip]);
         session_regenerate_id(true);
         
         $_SESSION['alumno'] = [
@@ -109,9 +131,12 @@ $conn = getDBConnection();
         ], JSON_UNESCAPED_UNICODE);
         
     } else {
-        // Contraseña incorrecta
+        // Contraseña incorrecta — incrementar contador
+        $_SESSION['rl_alumnos'][$ip]['count']++;
+        $restantes = $maxIntentos - $_SESSION['rl_alumnos'][$ip]['count'];
+        $msgExtra  = $restantes > 0 ? " ($restantes intentos restantes)" : '';
         echo json_encode([
-            'error' => 'Contraseña incorrecta. Verifica tus datos.'
+            'error' => 'Contraseña incorrecta. Verifica tus datos.' . $msgExtra
         ], JSON_UNESCAPED_UNICODE);
     }
 

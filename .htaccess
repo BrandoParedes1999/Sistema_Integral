@@ -1,0 +1,25 @@
+# ── Security Headers ────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "same-origin"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# ── Hide server info ─────────────────────────────────────────────────────────
+ServerSignature Off
+
+# ── Block direct access to sensitive directories ─────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Block access to tests/ folder
+    RewriteRule ^tests/ - [F,L]
+    # Block access to vendor/ folder
+    RewriteRule ^vendor/ - [F,L]
+    # Block access to Config/ (duplicate capitalized directory)
+    RewriteRule ^Config/ - [F,L]
+</IfModule>
+
+# ── Disable directory listing ────────────────────────────────────────────────
+Options -Indexes

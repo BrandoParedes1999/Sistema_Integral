@@ -378,6 +378,162 @@
             cargarAlumnos();
         });
     </script>
+<!-- Modal Editar Alumno -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius:14px;border:none;box-shadow:0 10px 24px rgba(0,0,0,.12);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-pencil-square me-2 text-primary"></i>Editar datos del alumno
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4">
+                <div id="editarAlert" class="alert d-none"></div>
+                <div class="row g-3">
+                    <input type="hidden" id="editMatricula">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Matrícula</label>
+                        <input type="text" id="editMatriculaShow" class="form-control" disabled style="background:#f8f9fa;">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Nombre(s) <span class="text-danger">*</span></label>
+                        <input type="text" id="editNombres" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Apellido Paterno <span class="text-danger">*</span></label>
+                        <input type="text" id="editApepa" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Apellido Materno <span class="text-danger">*</span></label>
+                        <input type="text" id="editApema" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Correo electrónico</label>
+                        <input type="email" id="editCorreo" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Sexo</label>
+                        <select id="editSexo" class="form-select">
+                            <option value="">Seleccionar</option>
+                            <option value="MASCULINO">Masculino</option>
+                            <option value="FEMENINO">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Generación</label>
+                        <input type="text" id="editGeneracion" class="form-control" placeholder="Ej: 2022">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Tipo de sangre</label>
+                        <select id="editTipoSangre" class="form-select">
+                            <option value="">Seleccionar</option>
+                            <option>A+</option><option>A-</option>
+                            <option>B+</option><option>B-</option>
+                            <option>AB+</option><option>AB-</option>
+                            <option>O+</option><option>O-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">Tel. Emergencia</label>
+                        <input type="text" id="editEmergencia" class="form-control" placeholder="10 dígitos" maxlength="10">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="font-size:.85rem;">NSS <span class="text-muted fw-normal">(opcional)</span></label>
+                        <input type="text" id="editNss" class="form-control" placeholder="11 dígitos" maxlength="11">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-1">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnGuardarEditar" class="btn btn-primary" style="border-radius:8px;font-weight:600;">
+                    <i class="bi bi-check-lg me-1"></i> Guardar cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-editar {
+    background:#f59e0b;color:#fff;border:none;border-radius:7px;
+    padding:.3rem .65rem;font-size:.78rem;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:.3rem;transition:opacity .2s;
+}
+.btn-editar:hover { opacity:.85; }
+</style>
+
+<script>
+function abrirEditar(matricula) {
+    document.getElementById('editarAlert').className = 'alert d-none';
+    fetch(`obtener-alumno.php?matricula=${encodeURIComponent(matricula)}`)
+        .then(r => r.json())
+        .then(d => {
+            if (d.error) { alert(d.error); return; }
+            document.getElementById('editMatricula').value     = d.matricula_alum;
+            document.getElementById('editMatriculaShow').value = d.matricula_alum;
+            document.getElementById('editNombres').value       = d.nombres_alum     || '';
+            document.getElementById('editApepa').value         = d.ape_paterno_alum || '';
+            document.getElementById('editApema').value         = d.ape_materno_alum || '';
+            document.getElementById('editCorreo').value        = d.correo_alum      || '';
+            document.getElementById('editSexo').value          = d.sexo             || '';
+            document.getElementById('editGeneracion').value    = d.generacion       || '';
+            document.getElementById('editTipoSangre').value    = d.tipo_sangre      || '';
+            document.getElementById('editEmergencia').value    = d.emergencia       || '';
+            document.getElementById('editNss').value           = d.nss              || '';
+            new bootstrap.Modal(document.getElementById('modalEditar')).show();
+        })
+        .catch(() => alert('Error al cargar datos del alumno'));
+}
+
+document.getElementById('btnGuardarEditar').addEventListener('click', function () {
+    const btn = this;
+    const alerta = document.getElementById('editarAlert');
+    alerta.className = 'alert d-none';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+    fetch('actualizar-alumno.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            matricula:   document.getElementById('editMatricula').value,
+            nombres:     document.getElementById('editNombres').value,
+            ape_paterno: document.getElementById('editApepa').value,
+            ape_materno: document.getElementById('editApema').value,
+            correo:      document.getElementById('editCorreo').value,
+            sexo:        document.getElementById('editSexo').value,
+            generacion:  document.getElementById('editGeneracion').value,
+            tipo_sangre: document.getElementById('editTipoSangre').value,
+            emergencia:  document.getElementById('editEmergencia').value,
+            nss:         document.getElementById('editNss').value,
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alerta.className = 'alert alert-success';
+            alerta.textContent = data.message;
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('modalEditar')).hide();
+                cargarAlumnos();
+            }, 1200);
+        } else {
+            alerta.className = 'alert alert-danger';
+            alerta.textContent = data.error || 'Error al guardar.';
+        }
+    })
+    .catch(() => {
+        alerta.className = 'alert alert-danger';
+        alerta.textContent = 'Error de conexión. Intente de nuevo.';
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Guardar cambios';
+    });
+});
+</script>
+
     <script src="../js/admin-layout.js"></script>
 </body>
 </html>
