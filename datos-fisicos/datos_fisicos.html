@@ -19,6 +19,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* Sección completa en grid de mediciones */
+        .seccion-full { grid-column: 1 / -1; }
+        .grid-interna {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 1200px) { .grid-interna { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px)  { .grid-interna { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px)  { .grid-interna { grid-template-columns: 1fr; } }
+        .titulo-medicion i { margin-right: 6px; font-size: 1rem; }
         /* Panel de alertas clínicas */
         #panel-alertas { display:none; margin:1rem 0 .5rem; }
         .alerta-clinica {
@@ -181,80 +192,139 @@
                     </div>
 
                     <div class="grid-mediciones">
-                        <!-- Sección 1: Cintura/Cadera -->
-                        <div class="seccion-mediciones">
-                            <div class="titulo-medicion">CINTURA / CADERA</div>
 
-                            <div class="grupo-medicion">
-                                <label for="cintura1">Cintura (cm)</label>
-                                <input type="number" id="cintura1" name="cintura1" step="0.01" required>
+                        <!-- SECCIÓN 1: Antropometría y Composición Corporal -->
+                        <div class="seccion-mediciones seccion-full">
+                            <div class="titulo-medicion">
+                                <i class="bi bi-rulers"></i> ANTROPOMETRÍA Y COMPOSICIÓN CORPORAL
                             </div>
-
-                            <div class="grupo-medicion">
-                                <label for="cadera1">Cadera (cm)</label>
-                                <input type="number" id="cadera1" name="cadera1" step="0.01" required>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="icc1">ICC</label>
-                                <input type="text" id="icc1" name="icc1" readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificacioncadcin1">Clasificación Cad-Cintura</label>
-                                <input type="text" id="clasificacioncadcin1" name="clasificacioncadcin1" readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificacionicc1">Clasificación ICC</label>
-                                <input type="text" id="clasificacionicc1" name="clasificacionicc1" readonly>
+                            <div class="grid-interna">
+                                <div class="grupo-medicion">
+                                    <label for="peso1">Peso (kg)</label>
+                                    <input type="number" id="peso1" name="peso1" step="0.01" required>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="talla1">Talla (cm)</label>
+                                    <input type="number" id="talla1" name="talla1" required>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="imc1">IMC</label>
+                                    <input type="text" id="imc1" name="imc1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="clasificacionimc1">Clasificación IMC</label>
+                                    <input type="text" id="clasificacionimc1" name="clasificacionimc1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="cintura1">Cintura (cm)</label>
+                                    <input type="number" id="cintura1" name="cintura1" step="0.01" required>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="cadera1">Cadera (cm)</label>
+                                    <input type="number" id="cadera1" name="cadera1" step="0.01" required>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="icc1">ICC</label>
+                                    <input type="text" id="icc1" name="icc1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="clasificacioncadcin1">Clasificación Cad-Cintura</label>
+                                    <input type="text" id="clasificacioncadcin1" name="clasificacioncadcin1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="clasificacionicc1">Clasificación ICC</label>
+                                    <input type="text" id="clasificacionicc1" name="clasificacionicc1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="ice">ICE</label>
+                                    <input type="text" id="ice" name="ice" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="clasificacionice">Clasificación ICE</label>
+                                    <input type="text" id="clasificacionice" name="clasificacionice" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="pormasagrasa1">% Masa Grasa</label>
+                                    <input type="number" id="pormasagrasa1" name="pormasagrasa1" step="0.01" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="valoridealgrasa1">Valor Ideal % Grasa</label>
+                                    <input type="text" id="valoridealgrasa1" name="valoridealgrasa1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="clasificaciongrasa1">Clasificación % Grasa</label>
+                                    <input type="text" id="clasificaciongrasa1" name="clasificaciongrasa1" readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="masamagra1">Masa Magra (kg)</label>
+                                    <input type="number" id="masamagra1" name="masamagra1" step="0.01" required readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="aguatotal1">Agua Total (Litros)</label>
+                                    <input type="number" id="aguatotal1" name="aguatotal1" step="0.01" required readonly>
+                                </div>
+                                <div class="grupo-medicion">
+                                    <label for="porcentajeaguatotal1">% Agua Total</label>
+                                    <input type="text" id="porcentajeaguatotal1" name="porcentajeaguatotal1" readonly>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Sección 2: Peso/Talla -->
+                        <!-- SECCIÓN 2: Bioquímica -->
                         <div class="seccion-mediciones">
-                            <div class="titulo-medicion">PESO Y TALLA</div>
-
-                            <div class="grupo-medicion">
-                                <label for="peso1">Peso (kg)</label>
-                                <input type="number" id="peso1" name="peso1" step="0.01" required>
+                            <div class="titulo-medicion">
+                                <i class="bi bi-droplet-fill"></i> BIOQUÍMICA
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="talla1">Talla (cm)</label>
-                                <input type="number" id="talla1" name="talla1" required>
+                                <label for="glucosa1">Glucosa (mg/dL)</label>
+                                <input type="number" id="glucosa1" name="glucosa1" step="0.01" required>
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="imc1">IMC</label>
-                                <input type="text" id="imc1" name="imc1" readonly>
+                                <label for="clasificacionglucosa1">Clasificación Glucosa</label>
+                                <input type="text" id="clasificacionglucosa1" name="clasificacionglucosa1" readonly>
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="clasificacionimc1">Clasificación IMC</label>
-                                <input type="text" id="clasificacionimc1" name="clasificacionimc1" readonly>
+                                <label for="colesterol1">Colesterol (mg/dL)</label>
+                                <input type="number" id="colesterol1" name="colesterol1" step="0.01" required>
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="ice">ICE</label>
-                                <input type="text" id="ice" name="ice" readonly>
+                                <label for="clasificacioncolesterol1">Clasificación Colesterol</label>
+                                <input type="text" id="clasificacioncolesterol1" name="clasificacioncolesterol1" readonly>
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="clasificacionice">Clasificacion ICE</label>
-                                <input type="text" id="clasificacionice" name="clasificacionice" readonly>
+                                <label for="trigliceridos1">Triglicéridos (mg/dL)</label>
+                                <input type="number" id="trigliceridos1" name="trigliceridos1" step="0.01" required>
+                            </div>
+                            <div class="grupo-medicion">
+                                <label for="clasificaciontrigliceridos1">Clasificación Triglicéridos</label>
+                                <input type="text" id="clasificaciontrigliceridos1" name="clasificaciontrigliceridos1" readonly>
                             </div>
                         </div>
 
-                        <!-- Sección 3: Masa Grasa -->
+                        <!-- SECCIÓN 3: Tensión Arterial -->
                         <div class="seccion-mediciones">
-                            <div class="titulo-medicion">MASA GRASA</div>
-
+                            <div class="titulo-medicion">
+                                <i class="bi bi-heart-pulse-fill"></i> TENSIÓN ARTERIAL
+                            </div>
                             <div class="grupo-medicion">
-                                <label for="mb1">MB (Kcal)</label>
+                                <label for="tensionarterial1">Tensión Arterial (mmHg)</label>
+                                <input type="text" id="tensionarterial1" name="tensionarterial1" required placeholder="Ej: 120/80">
+                            </div>
+                            <div class="grupo-medicion">
+                                <label for="clasificacionta1">Clasificación T.A.</label>
+                                <input type="text" id="clasificacionta1" name="clasificacionta1" readonly>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 4: Dietética -->
+                        <div class="seccion-mediciones">
+                            <div class="titulo-medicion">
+                                <i class="bi bi-fire"></i> DIETÉTICA
+                            </div>
+                            <div class="grupo-medicion">
+                                <label for="mb1">Metabolismo Basal (Kcal)</label>
                                 <input type="number" id="mb1" name="mb1" step="0.01" required readonly>
                             </div>
-
                             <div class="grupo-medicion">
                                 <label for="actividad1">Nivel de Actividad</label>
                                 <select id="actividad1" name="actividad1" required>
@@ -266,99 +336,12 @@
                                     <option value="1.9">Actividad Muy Intensa</option>
                                 </select>
                             </div>
-
                             <div class="grupo-medicion">
-                                <label for="get1">GET</label>
+                                <label for="get1">GET — Gasto Energético Total (Kcal)</label>
                                 <input type="number" id="get1" name="get1" step="0.01" readonly>
                             </div>
-
-                            <div class="grupo-medicion">
-                                <label for="pormasagrasa1">% Masa Grasa</label>
-                                <input type="number" id="pormasagrasa1" name="pormasagrasa1" step="0.01" readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="valoridealgrasa1">Valor Ideal % Grasa</label>
-                                <input type="text" id="valoridealgrasa1" name="valoridealgrasa1" readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificaciongrasa1">Clasificación % Grasa</label>
-                                <input type="text" id="clasificaciongrasa1" name="clasificaciongrasa1" readonly>
-                            </div>
                         </div>
 
-                        <!-- Sección 4: Masa Magra y Agua -->
-                        <div class="seccion-mediciones">
-                            <div class="titulo-medicion">MASA MAGRA Y AGUA</div>
-
-                            <div class="grupo-medicion">
-                                <label for="masamagra1">Masa Magra (kg)</label>
-                                <input type="number" id="masamagra1" name="masamagra1" step="0.01" required readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="aguatotal1">Agua Total (Litros)</label>
-                                <input type="number" id="aguatotal1" name="aguatotal1" step="0.01" required readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="porcentajeaguatotal1">% Agua Total</label>
-                                <input type="text" id="porcentajeaguatotal1" name="porcentajeaguatotal1" readonly>
-                            </div>
-                        </div>
-
-                        <!-- Sección 5: Glucosa y Colesterol -->
-                        <div class="seccion-mediciones">
-                            <div class="titulo-medicion">GLUCOSA Y COLESTEROL</div>
-
-                            <div class="grupo-medicion">
-                                <label for="glucosa1">Glucosa (mg/dL)</label>
-                                <input type="number" id="glucosa1" name="glucosa1" step="0.01" required>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificacionglucosa1">Clasificación Glucosa</label>
-                                <input type="text" id="clasificacionglucosa1" name="clasificacionglucosa1" readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="colesterol1">Colesterol (mg/dL)</label>
-                                <input type="number" id="colesterol1" name="colesterol1" step="0.01" required>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificacioncolesterol1">Clasificación Colesterol</label>
-                                <input type="text" id="clasificacioncolesterol1" name="clasificacioncolesterol1"
-                                    readonly>
-                            </div>
-                        </div>
-
-                        <!-- Sección 6: Triglicéridos y Tensión -->
-                        <div class="seccion-mediciones">
-                            <div class="titulo-medicion">TRIGLICÉRIDOS Y TENSIÓN ARTERIAL</div>
-
-                            <div class="grupo-medicion">
-                                <label for="trigliceridos1">Triglicéridos (mg/dL)</label>
-                                <input type="number" id="trigliceridos1" name="trigliceridos1" step="0.01" required>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificaciontrigliceridos1">Clasificación Triglicéridos</label>
-                                <input type="text" id="clasificaciontrigliceridos1" name="clasificaciontrigliceridos1"
-                                    readonly>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="tensionarterial1">Tensión Arterial (mmHg)</label>
-                                <input type="text" id="tensionarterial1" name="tensionarterial1" required>
-                            </div>
-
-                            <div class="grupo-medicion">
-                                <label for="clasificacionta1">Clasificación T.A</label>
-                                <input type="text" id="clasificacionta1" name="clasificacionta1" readonly>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Panel de alertas clínicas -->

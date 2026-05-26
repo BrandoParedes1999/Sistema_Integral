@@ -40,7 +40,8 @@ $s->close();
 // ── Datos físicos ──────────────────────────────────────────────────────
 $fisicos = null;
 $s = $conn->prepare("SELECT peso, talla, imc, clasificacion_imc,
-                            glucosa, colesterol, trigliceridos, tension_arterial, fecha
+                            glucosa, colesterol, trigliceridos, tension_arterial,
+                            mb, actividad1, get1, fecha
                      FROM datos_fisicos_alumnos WHERE matricula_alum = ?
                      ORDER BY fecha DESC LIMIT 1");
 $s->bind_param("s", $mat); $s->execute();
@@ -80,6 +81,12 @@ function imcColor($cls) {
     if (strpos($cls,'sobrepeso') !== false) return '#f59e0b';
     if (strpos($cls,'insuf') !== false)     return '#3b82f6';
     return '#ef4444';
+}
+
+function actividadLabel($factor) {
+    $map = ['1.2'=>'Sedentario','1.375'=>'Actividad Ligera','1.55'=>'Actividad Moderada',
+            '1.725'=>'Actividad Intensa','1.9'=>'Actividad Muy Intensa'];
+    return $map[(string)$factor] ?? 'N/D';
 }
 ?>
 <!doctype html>
@@ -535,6 +542,156 @@ function imcColor($cls) {
     </div>
     <?php endif; ?>
 
+    <!-- ── Reporte de Salud ──────────────────────────────── -->
+    <?php if ($fisicos && $dass && $peps): ?>
+    <div class="sec-hd">Reporte de Salud Integral</div>
+    <div class="res-card" style="margin-bottom:1.75rem;">
+        <div class="res-body" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
+            <div class="res-icon blue" style="width:48px;height:48px;font-size:1.4rem;flex-shrink:0;">
+                <i class="bi bi-file-earmark-medical-fill"></i>
+            </div>
+            <div style="flex:1;min-width:180px;">
+                <div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem;">Tu reporte completo está disponible</div>
+                <div style="font-size:.8rem;color:var(--muted);">Incluye todos tus resultados, análisis y recomendaciones personalizadas.</div>
+            </div>
+            <div style="display:flex;gap:.65rem;flex-wrap:wrap;">
+                <a href="ver-reporte.php" target="_blank"
+                   style="background:var(--primary);color:#fff;padding:.55rem 1.1rem;border-radius:9px;font-weight:600;font-size:.82rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+                    <i class="bi bi-eye-fill"></i> Ver reporte
+                </a>
+                <a href="ver-reporte.php?modo=descargar"
+                   style="background:#1d4ed8;color:#fff;padding:.55rem 1.1rem;border-radius:9px;font-weight:600;font-size:.82rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
+                <button onclick="imprimirReporte()"
+                   style="background:#f1f5f9;color:var(--primary);border:1px solid var(--border);padding:.55rem 1.1rem;border-radius:9px;font-weight:600;font-size:.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;">
+                    <i class="bi bi-printer-fill"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- ── Plan Alimentario ──────────────────────────────── -->
+    <?php if ($fisicos && !empty($fisicos['get1']) && $fisicos['get1'] > 0):
+        $get     = (float)$fisicos['get1'];
+        $mb      = (float)($fisicos['mb'] ?? 0);
+        $actFac  = $fisicos['actividad1'] ?? '';
+        $actLbl  = actividadLabel($actFac);
+
+        // Macronutrientes recomendados
+        $protKcal  = round($get * 0.20);
+        $carbKcal  = round($get * 0.55);
+        $grasaKcal = round($get * 0.25);
+        $protG     = round($protKcal  / 4);
+        $carbG     = round($carbKcal  / 4);
+        $grasaG    = round($grasaKcal / 9);
+
+        // Distribución por tiempos
+        $tiempos = [
+            ['Desayuno',           '7 – 9 am',   0.25],
+            ['Colación matutina',  '10 – 11 am',  0.10],
+            ['Comida',             '1 – 3 pm',   0.35],
+            ['Colación vespertina','4 – 6 pm',   0.10],
+            ['Cena',               '7 – 9 pm',   0.20],
+        ];
+
+        // Recomendaciones según nivel de actividad
+        $recomendaciones = [
+            '1.2'   => ['Incrementa la actividad física gradualmente. Caminar 30 min/día es un buen inicio.', 'Elige alimentos de bajo índice glucémico para mantener energía estable.', 'Evita alimentos ultraprocesados y bebidas azucaradas.'],
+            '1.375' => ['Mantén una actividad regular de al menos 150 min/semana de intensidad moderada.', 'Incluye proteínas en cada comida para preservar masa muscular.', 'Prioriza grasas saludables: aguacate, aceite de oliva, nueces.'],
+            '1.55'  => ['Tu nivel de actividad es adecuado. Asegura una buena recuperación con sueño de calidad.', 'Consume carbohidratos complejos (arroz integral, avena, leguminosas) como fuente de energía.', 'Hidratación: mínimo 2 litros de agua al día.'],
+            '1.725' => ['Aumenta ligeramente la ingesta de proteínas para apoyar la recuperación muscular.', 'Consume una colación post-entrenamiento con proteínas y carbohidratos.', 'Monitorea tu hidratación; necesitas más agua con alta actividad.'],
+            '1.9'   => ['Con actividad muy intensa es fundamental respetar los horarios de comida para rendir al máximo.', 'Considera consultar con un nutriólogo para un plan más personalizado.', 'Incluye alimentos anti-inflamatorios: frutas, verduras de colores, omega-3.'],
+        ];
+        $recs = $recomendaciones[$actFac] ?? ['Mantén una alimentación variada y equilibrada.', 'Incluye frutas y verduras en cada comida.', 'Limita el consumo de azúcar y sodio.'];
+    ?>
+    <div class="sec-hd">Plan Alimentario Personalizado</div>
+    <div class="res-card" style="margin-bottom:1.75rem;">
+        <div class="res-body">
+            <div class="res-title">
+                <div class="res-icon amber"><i class="bi bi-egg-fried"></i></div>
+                Recomendaciones basadas en tu GET
+            </div>
+
+            <!-- GET + MB resumen -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.65rem;margin-bottom:1.25rem;">
+                <div class="fis-item">
+                    <div class="fis-item-label">Metabolismo Basal</div>
+                    <div class="fis-item-val"><?= number_format($mb,0) ?> kcal</div>
+                </div>
+                <div class="fis-item">
+                    <div class="fis-item-label">Nivel de Actividad</div>
+                    <div class="fis-item-val" style="font-size:.82rem;"><?= htmlspecialchars($actLbl) ?></div>
+                </div>
+                <div class="fis-item" style="background:#eff6ff;border:1px solid #bfdbfe;">
+                    <div class="fis-item-label" style="color:var(--primary);">GET Total</div>
+                    <div class="fis-item-val" style="color:var(--primary);font-size:1.05rem;"><?= number_format($get,0) ?> kcal/día</div>
+                </div>
+            </div>
+
+            <!-- Macronutrientes -->
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.65rem;">
+                <i class="bi bi-pie-chart-fill me-1"></i> Distribución de macronutrientes
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:1.25rem;">
+                <div style="background:#ecfdf5;border-radius:10px;padding:.8rem;text-align:center;">
+                    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#065f46;margin-bottom:.25rem;">Proteínas · 20%</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:#059669;"><?= $protG ?> g</div>
+                    <div style="font-size:.7rem;color:#6b7280;"><?= $protKcal ?> kcal</div>
+                </div>
+                <div style="background:#fffbeb;border-radius:10px;padding:.8rem;text-align:center;">
+                    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#92400e;margin-bottom:.25rem;">Carbohidratos · 55%</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:#d97706;"><?= $carbG ?> g</div>
+                    <div style="font-size:.7rem;color:#6b7280;"><?= $carbKcal ?> kcal</div>
+                </div>
+                <div style="background:#faf5ff;border-radius:10px;padding:.8rem;text-align:center;">
+                    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#6b21a8;margin-bottom:.25rem;">Grasas · 25%</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:#9333ea;"><?= $grasaG ?> g</div>
+                    <div style="font-size:.7rem;color:#6b7280;"><?= $grasaKcal ?> kcal</div>
+                </div>
+            </div>
+
+            <!-- Tiempos de comida -->
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.65rem;">
+                <i class="bi bi-clock-fill me-1"></i> Distribución calórica por tiempo de comida
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.25rem;">
+            <?php foreach ($tiempos as [$nombre,$hora,$pct]):
+                $kcalTiempo = round($get * $pct);
+                $barW = round($pct * 100);
+            ?>
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                    <div style="width:130px;flex-shrink:0;">
+                        <div style="font-size:.78rem;font-weight:600;"><?= $nombre ?></div>
+                        <div style="font-size:.67rem;color:var(--muted);"><?= $hora ?></div>
+                    </div>
+                    <div style="flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;">
+                        <div style="width:<?= $barW ?>%;height:100%;background:linear-gradient(90deg,var(--primary),#1a6bdd);border-radius:99px;"></div>
+                    </div>
+                    <div style="font-size:.78rem;font-weight:600;width:65px;text-align:right;"><?= $kcalTiempo ?> kcal</div>
+                    <div style="font-size:.72rem;color:var(--muted);width:35px;"><?= round($pct*100) ?>%</div>
+                </div>
+            <?php endforeach; ?>
+            </div>
+
+            <!-- Recomendaciones -->
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.65rem;">
+                <i class="bi bi-lightbulb-fill me-1"></i> Recomendaciones para tu nivel de actividad
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.45rem;">
+            <?php foreach ($recs as $i => $rec): ?>
+                <div style="display:flex;align-items:flex-start;gap:.6rem;background:#f8fafc;border-radius:8px;padding:.65rem .85rem;">
+                    <span style="background:var(--primary);color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;margin-top:.05rem;"><?= $i+1 ?></span>
+                    <span style="font-size:.82rem;line-height:1.5;"><?= htmlspecialchars($rec) ?></span>
+                </div>
+            <?php endforeach; ?>
+            </div>
+
+        </div>
+    </div>
+    <?php endif; ?>
+
 </div><!-- /page -->
 
 <!-- Modal Logout -->
@@ -628,6 +785,13 @@ function imcColor($cls) {
         </div>
     </div>
 </div>
+
+<script>
+function imprimirReporte() {
+    const w = window.open('ver-reporte.php', '_blank');
+    if (w) { w.onload = function() { w.print(); }; }
+}
+</script>
 
 <script>
 // Editar perfil

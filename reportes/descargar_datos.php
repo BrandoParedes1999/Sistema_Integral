@@ -8,19 +8,29 @@ $conn->set_charset('utf8mb4');
 
 $busqueda = trim($_GET['busqueda'] ?? '');
 $facultad = (int)($_GET['facultad'] ?? 0);
+$carrera  = (int)($_GET['carrera']  ?? 0);
 $sexo     = trim($_GET['sexo']     ?? '');
 
 $facRes = $conn->query("SELECT id_facultad, nombre_facultad FROM facultad ORDER BY nombre_facultad ASC");
 $facultades = [];
 while ($f = $facRes->fetch_assoc()) { $facultades[] = $f; }
 
+$carStmt = $conn->prepare("SELECT c.id_carrera, c.nombre_carrera, f.nombre_facultad
+                            FROM carrera c
+                            LEFT JOIN facultad f ON c.id_facultad = f.id_facultad
+                            ORDER BY f.nombre_facultad ASC, c.nombre_carrera ASC");
+$carStmt->execute();
+$carreras = $carStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$carStmt->close();
+
 $sql = "SELECT a.matricula_alum,
                CONCAT(a.nombres_alum,' ',a.ape_paterno_alum,' ',a.ape_materno_alum) AS nombre_completo,
-               a.sexo, f.nombre_facultad,
+               a.sexo, f.nombre_facultad, c.nombre_carrera,
                d.total_depresion, d.total_ansiedad, d.total_estres, d.total_general,
                edv.total AS peps_total, edv.estado_saludable
         FROM alumnos a
         LEFT JOIN facultad f ON a.id_facultad = f.id_facultad
+        LEFT JOIN carrera  c ON a.id_carrera  = c.id_carrera
         LEFT JOIN (SELECT matricula_alum, total_depresion, total_ansiedad, total_estres, total_general
                    FROM dass GROUP BY matricula_alum) d ON a.matricula_alum = d.matricula_alum
         LEFT JOIN (SELECT matricula_alum, total, estado_saludable
@@ -33,6 +43,7 @@ if ($busqueda !== '') {
     $params = array_merge($params, [$like,$like,$like,$like]); $types .= 'ssss';
 }
 if ($facultad > 0) { $sql .= " AND a.id_facultad = ?"; $params[] = $facultad; $types .= 'i'; }
+if ($carrera  > 0) { $sql .= " AND a.id_carrera  = ?"; $params[] = $carrera;  $types .= 'i'; }
 if ($sexo !== '')  { $sql .= " AND a.sexo = ?";        $params[] = $sexo;     $types .= 's'; }
 $sql .= " ORDER BY a.matricula_alum ASC LIMIT 200";
 $stmt = $conn->prepare($sql);
@@ -50,7 +61,7 @@ function sevLabel($v, $tipo) {
 function sevClass($lbl) {
     return match($lbl) { 'Normal'=>'sev-normal','Leve'=>'sev-leve','Moderado'=>'sev-mod','Severo'=>'sev-sev', default=>'sev-ext' };
 }
-$csvParams = http_build_query(array_filter(['busqueda'=>$busqueda,'facultad'=>$facultad?:null,'sexo'=>$sexo]));
+$csvParams = http_build_query(array_filter(['busqueda'=>$busqueda,'facultad'=>$facultad?:null,'carrera'=>$carrera?:null,'sexo'=>$sexo]));
 ?>
 <!doctype html>
 <html lang="es">
@@ -113,13 +124,30 @@ $csvParams = http_build_query(array_filter(['busqueda'=>$busqueda,'facultad'=>$f
           </option>
         <?php endforeach; ?>
       </select>
+      <select name="carrera" style="min-width:200px;">
+        <option value="">Todos los programas</option>
+        <?php
+        $lastFac = null;
+        foreach ($carreras as $car):
+            if ($car['nombre_facultad'] !== $lastFac) {
+                if ($lastFac !== null) echo '</optgroup>';
+                echo '<optgroup label="'.htmlspecialchars($car['nombre_facultad'] ?? '').'">';
+                $lastFac = $car['nombre_facultad'];
+            }
+        ?>
+          <option value="<?= $car['id_carrera'] ?>" <?= $carrera==(int)$car['id_carrera']?'selected':'' ?>>
+            <?= htmlspecialchars($car['nombre_carrera']) ?>
+          </option>
+        <?php endforeach;
+        if ($lastFac !== null) echo '</optgroup>'; ?>
+      </select>
       <select name="sexo">
         <option value="">Ambos sexos</option>
         <option value="Masculino" <?= $sexo==='Masculino'?'selected':'' ?>>Masculino</option>
         <option value="Femenino"  <?= $sexo==='Femenino' ?'selected':'' ?>>Femenino</option>
       </select>
       <button type="submit" class="btn-prim"><i class="bi bi-search"></i> Filtrar</button>
-      <?php if ($busqueda||$facultad||$sexo): ?>
+      <?php if ($busqueda||$facultad||$carrera||$sexo): ?>
         <a href="descargar_datos.php" style="font-size:.82rem;color:#6b7280;align-self:center;">Limpiar filtros</a>
       <?php endif; ?>
     </form>
@@ -138,7 +166,7 @@ $csvParams = http_build_query(array_filter(['busqueda'=>$busqueda,'facultad'=>$f
       <table class="tbl">
         <thead>
           <tr>
-            <th>Matrícula</th><th>Nombre</th><th>Sexo</th><th>Facultad</th>
+            <th>Matrícula</th><th>Nombre</th><th>Sexo</th><th>Facultad</th><th>Programa</th>
             <th>Depresión</th><th>Ansiedad</th><th>Estrés</th><th>Total DASS</th>
             <th>PEPS-1</th><th>Estado</th>
           </tr>
@@ -157,7 +185,8 @@ $csvParams = http_build_query(array_filter(['busqueda'=>$busqueda,'facultad'=>$f
             <td><a href="../gestion-alumnos/expediente.html?matricula_alum=<?= htmlspecialchars($row['matricula_alum']) ?>" style="color:#003da5;font-weight:600;"><?= htmlspecialchars($row['matricula_alum']) ?></a></td>
             <td><?= htmlspecialchars($row['nombre_completo']) ?></td>
             <td><?= htmlspecialchars($row['sexo'] ?? '—') ?></td>
-            <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= htmlspecialchars($row['nombre_facultad']??'') ?>"><?= htmlspecialchars($row['nombre_facultad'] ?? '—') ?></td>
+            <td style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= htmlspecialchars($row['nombre_facultad']??'') ?>"><?= htmlspecialchars($row['nombre_facultad'] ?? '—') ?></td>
+            <td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= htmlspecialchars($row['nombre_carrera']??'') ?>"><?= htmlspecialchars($row['nombre_carrera'] ?? '—') ?></td>
             <td><?= $row['total_depresion'] !== null ? $row['total_depresion'] : '—' ?> <span class="sev-badge <?= sevClass($lDep) ?>"><?= $lDep ?></span></td>
             <td><?= $row['total_ansiedad']  !== null ? $row['total_ansiedad']  : '—' ?> <span class="sev-badge <?= sevClass($lAns) ?>"><?= $lAns ?></span></td>
             <td><?= $row['total_estres']    !== null ? $row['total_estres']    : '—' ?> <span class="sev-badge <?= sevClass($lEst) ?>"><?= $lEst ?></span></td>
