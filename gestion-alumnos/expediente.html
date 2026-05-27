@@ -778,7 +778,7 @@ function renderFisicosTab(d, fecha) {
 
   const sections = [
     {
-      title:'Peso y Talla', icon:'bi-person-fill-up', items:[
+      title:'Antropometría', icon:'bi-person-fill-up', items:[
         { label:'Peso',            val: d.peso,    unit:'kg',    cls: null },
         { label:'Talla',           val: d.talla,   unit:'cm',    cls: null },
         { label:'IMC',             val: d.imc,     unit:'',      cls: d.clasificacion_imc },
@@ -803,7 +803,7 @@ function renderFisicosTab(d, fecha) {
       ]
     },
     {
-      title:'Laboratorio', icon:'bi-droplet-fill', items:[
+      title:'Bioquímica', icon:'bi-droplet-fill', items:[
         { label:'Glucosa',         val: d.glucosa,      unit:'mg/dL', cls: d.clasificacion_glucosa },
         { label:'Colesterol',      val: d.colesterol,   unit:'mg/dL', cls: d.clasificacion_colesterol },
         { label:'Triglicéridos',   val: d.trigliceridos,unit:'mg/dL', cls: d.clasificacion_trigliceridos },

@@ -56,6 +56,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt2 = $conn->prepare($sql2);
 
             foreach ($_POST['enfermedad'] as $index => $enfermedad) {
+                // Si seleccionó "Otra", usar el texto personalizado que escribió
+                if ($enfermedad === 'Otra') {
+                    $customNombre = trim($_POST['enfermedad_otra'][$index] ?? '');
+                    if ($customNombre !== '') {
+                        $enfermedad = $customNombre;
+                    }
+                }
                 $tratamiento = $_POST['tratamiento'][$index] ?? '';
                 $stmt2->bind_param("ssss", $enfermedad, $tratamiento, $fecha_historial, $matricula);
                 $stmt2->execute();

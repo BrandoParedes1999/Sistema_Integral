@@ -385,7 +385,7 @@
                                     <div class="enfermedad-card enfermedadItem1">
                                         <div class="campo-grupo mb-3">
                                             <label>Enfermedad</label>
-                                            <select name="enfermedad[]" class="select-patologia">
+                                            <select name="enfermedad[]" class="select-patologia enfermedad-select">
                                                 <option value="" selected disabled>Seleccione</option>
                                                 <option value="Sobrepeso-Obesidad">Sobrepeso-Obesidad</option>
                                                 <option value="Diabetes Mellitus">Diabetes Mellitus</option>
@@ -402,6 +402,11 @@
                                                 <option value="Cáncer">Cáncer</option>
                                                 <option value="Otra">Otra</option>
                                             </select>
+                                            <input type="text"
+                                                   name="enfermedad_otra[]"
+                                                   class="select-patologia otra-enfermedad-input"
+                                                   placeholder="¿Cuál enfermedad padeces?"
+                                                   style="display:none;margin-top:6px;">
                                         </div>
 
                                         <div class="campo-grupo">
@@ -523,7 +528,12 @@
 
             agregarEnfermedadBtn1.addEventListener("click", function () {
                 let enfermedadItem1 = document.querySelector(".enfermedadItem1").cloneNode(true);
-                enfermedadItem1.querySelectorAll('select, textarea').forEach(el => el.value = '');
+                enfermedadItem1.querySelectorAll('select, textarea, input[type="text"]').forEach(el => {
+                    el.value = '';
+                });
+                // Ocultar input "Otra" en el nuevo bloque
+                const otraInput = enfermedadItem1.querySelector('.otra-enfermedad-input');
+                if (otraInput) otraInput.style.display = 'none';
 
                 let eliminarBtn1 = document.createElement("button");
                 eliminarBtn1.textContent = "Eliminar";
@@ -536,6 +546,23 @@
 
                 enfermedadItem1.appendChild(eliminarBtn1);
                 enfermedadesList1.appendChild(enfermedadItem1);
+            });
+
+            // Delegación de eventos para mostrar/ocultar el campo "Otra" en todos los cards
+            enfermedadesList1.addEventListener("change", function (e) {
+                if (e.target.classList.contains("enfermedad-select")) {
+                    const sel   = e.target;
+                    const input = sel.closest(".campo-grupo")?.querySelector(".otra-enfermedad-input");
+                    if (!input) return;
+                    if (sel.value === "Otra") {
+                        input.style.display = "block";
+                        input.setAttribute("required", "true");
+                    } else {
+                        input.style.display = "none";
+                        input.removeAttribute("required");
+                        input.value = "";
+                    }
+                }
             });
 
             // Inicializar selects de parientes deshabilitados
