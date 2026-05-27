@@ -6,6 +6,10 @@ if (!isset($_SESSION['usuario'])) {
     header('Location: ../login.php');
     exit();
 }
+if (($_SESSION['rol'] ?? '') !== 'Administrador') {
+    header('Location: capturista.php');
+    exit();
+}
 
 require_once '../config/config.php';
 $database = new Database();
@@ -187,6 +191,9 @@ $chartPendientes = json_encode([
     <a href="../reportes/resultadoalumnos.html" class="sb-link">
       <i class="bi bi-graph-up-arrow"></i> Resultados
     </a>
+    <a href="../reportes/descargar_datos.php" class="sb-link">
+      <i class="bi bi-download"></i> Descargar Datos
+    </a>
     <a href="../credenciales/credencialesalumnos.html" class="sb-link">
       <i class="bi bi-person-badge-fill"></i> Credenciales
     </a>
@@ -200,7 +207,15 @@ $chartPendientes = json_encode([
     <a href="panel_control.php" class="sb-link">
       <i class="bi bi-shield-lock-fill"></i> Control del Sistema
     </a>
+    <a href="cuentas.php" class="sb-link">
+      <i class="bi bi-person-plus-fill"></i> Cuentas
+    </a>
     <?php endif; ?>
+
+    <div class="sb-section">Cuenta</div>
+    <a href="../auth/cerrar_sesion.php" class="sb-link" style="color:#ef4444;">
+      <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+    </a>
   </div>
 
   <div class="sb-footer">
@@ -694,6 +709,7 @@ $chartPendientes = json_encode([
 </div><!-- #main-wrapper -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/session-guard.js"></script>
 <script>
 // ── BAR CHART ──
 new Chart(document.getElementById('barChart'), {

@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/menu.css">
   <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <style>
     :root {
@@ -393,6 +394,22 @@
       <div id="fisicosContent">
         <div class="empty-state"><div class="spinner-border text-primary mb-3"></div><p>Cargando datos físicos…</p></div>
       </div>
+      <!-- Evolución histórica -->
+      <div id="evolucionSection" style="display:none;margin-top:1.5rem;">
+        <div class="sec-hd" style="margin-bottom:1rem;">Evolución Histórica</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;" id="chartTabs">
+          <button class="chart-tab-btn active" data-chart="chartPeso">Peso / IMC</button>
+          <button class="chart-tab-btn" data-chart="chartGlucosa">Glucosa</button>
+          <button class="chart-tab-btn" data-chart="chartColesterol">Colesterol / Triglicéridos</button>
+          <button class="chart-tab-btn" data-chart="chartPresion">Presión Arterial</button>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:1.25rem;">
+          <canvas id="chartPeso"      style="max-height:220px;"></canvas>
+          <canvas id="chartGlucosa"   style="max-height:220px;display:none;"></canvas>
+          <canvas id="chartColesterol"style="max-height:220px;display:none;"></canvas>
+          <canvas id="chartPresion"   style="max-height:220px;display:none;"></canvas>
+        </div>
+      </div>
     </div>
 
     <!-- ════ TAB: DASS-21 ════ -->
@@ -570,6 +587,15 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+.chart-tab-btn {
+  background:#f1f5f9; border:none; border-radius:8px; padding:.35rem .85rem;
+  font-size:.78rem; font-weight:600; color:#6b7280; cursor:pointer; transition:all .15s;
+}
+.chart-tab-btn.active { background:#003da5; color:#fff; }
+.chart-tab-btn:hover:not(.active) { background:#e2e8f0; }
+</style>
 
 <script>
 /* ═══════════════════════════════════════════════════════
@@ -1293,6 +1319,68 @@ document.getElementById('btnSaveEdit').addEventListener('click', async function 
 });
 
 /* ═══════════════════════════════════════════════════════
+   EVOLUCIÓN HISTÓRICA (gráficas)
+═══════════════════════════════════════════════════════ */
+let _evCharts = {};
+
+async function cargarEvolucion() {
+  try {
+    const res  = await fetch(`evolucion-fisicos.php?matricula_alum=${matricula}`);
+    const data = await res.json();
+    if (!data || data.error || data.length < 2) return;
+
+    document.getElementById('evolucionSection').style.display = 'block';
+
+    const labels = data.map(d => {
+      const f = new Date(d.fecha);
+      return f.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'2-digit' });
+    });
+
+    function mkDataset(label, key, color) {
+      return {
+        label, borderColor: color, backgroundColor: color + '22',
+        data: data.map(d => d[key]), tension: .4,
+        pointRadius: 4, pointHoverRadius: 6, fill: true
+      };
+    }
+
+    const chartCfg = (datasets) => ({
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        plugins: { legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+
+    _evCharts['chartPeso']       = new Chart(document.getElementById('chartPeso'),
+      chartCfg([mkDataset('Peso (kg)', 'peso', '#003da5'), mkDataset('IMC', 'imc', '#10b981')]));
+    _evCharts['chartGlucosa']    = new Chart(document.getElementById('chartGlucosa'),
+      chartCfg([mkDataset('Glucosa (mg/dL)', 'glucosa', '#f59e0b')]));
+    _evCharts['chartColesterol'] = new Chart(document.getElementById('chartColesterol'),
+      chartCfg([mkDataset('Colesterol (mg/dL)', 'colesterol', '#ef4444'), mkDataset('Triglicéridos (mg/dL)', 'trigliceridos', '#a855f7')]));
+    _evCharts['chartPresion']    = new Chart(document.getElementById('chartPresion'),
+      chartCfg([mkDataset('Sistólica (mmHg)', 'sistolica', '#ef4444'), mkDataset('Diastólica (mmHg)', 'diastolica', '#f59e0b')]));
+
+    // Chart tab switching
+    document.querySelectorAll('.chart-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chart-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.chart;
+        ['chartPeso','chartGlucosa','chartColesterol','chartPresion'].forEach(id => {
+          document.getElementById(id).style.display = id === target ? 'block' : 'none';
+        });
+      });
+    });
+  } catch(e) { console.error('Error evolución:', e); }
+}
+
+/* ═══════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1303,6 +1391,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarPeps();
   cargarFisicos();
   cargarHistorial();
+  cargarEvolucion();
 });
 </script>
 

@@ -278,22 +278,44 @@ $conn->close();
             /* Para que no estorbe */
         }
 
-        .btn-print {
+        .btn-group-fixed {
             position: fixed;
             top: 20px;
             right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .btn-print, .btn-pdf {
             padding: 10px 20px;
-            background-color: var(--unacar-blue);
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            z-index: 1000;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-print {
+            background-color: var(--unacar-blue);
+            color: white;
         }
 
         .btn-print:hover {
             background-color: var(--unacar-gold);
+        }
+
+        .btn-pdf {
+            background-color: var(--unacar-gold);
+            color: var(--unacar-blue);
+        }
+
+        .btn-pdf:hover {
+            background-color: #a88900;
+            color: white;
         }
 
         @media print {
@@ -313,7 +335,7 @@ $conn->close();
                 margin: 0 auto;
             }
 
-            .btn-print {
+            .btn-group-fixed {
                 display: none;
             }
         }
@@ -321,7 +343,10 @@ $conn->close();
 </head>
 
 <body>
-    <button class="btn-print" onclick="window.print()">🖨️ Imprimir Credencial</button>
+    <div class="btn-group-fixed">
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir Credencial</button>
+        <a class="btn-pdf" href="descargar-credencial-pdf.php?matricula=<?php echo urlencode($alumno['matricula_alum']); ?>">⬇️ Descargar PDF</a>
+    </div>
 
     <div class="credencial-container">
         <div class="background-curve-layer"></div>
