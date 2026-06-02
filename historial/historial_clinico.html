@@ -14,51 +14,64 @@
     <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* Estilos para checkboxes de patologías familiares */
-        .patologia-familiar {
-            background: var(--blanco);
+        /* Tabla de patologías familiares */
+        .tabla-patologias {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
             border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.25s ease;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 13.5px;
         }
-        .patologia-familiar:hover {
-            background: var(--gris-claro);
-            border-color: #cbd5e1;
+        .tabla-patologias thead tr {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
         }
-        .patologia-familiar-nombre {
-            font-weight: 700;
-            color: var(--azul-rey);
-            font-size: 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .tabla-patologias thead th {
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12.5px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
         }
-        .parientes-checks {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px 18px;
+        .tabla-patologias thead th:first-child {
+            text-align: left;
+            width: 38%;
         }
-        .pariente-check-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--gris-oscuro);
+        .tabla-patologias tbody tr {
+            transition: background 0.15s;
+        }
+        .tabla-patologias tbody tr:nth-child(even) {
+            background: #f8faff;
+        }
+        .tabla-patologias tbody tr:hover {
+            background: #e8f0fe;
+        }
+        .tabla-patologias tbody td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+        .tabla-patologias tbody td:first-child {
+            font-weight: 600;
+            color: #374151;
+        }
+        .tabla-patologias tbody td:not(:first-child) {
+            text-align: center;
+        }
+        /* Checkbox estilizado */
+        .check-familiar {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e40af;
             cursor: pointer;
-            font-weight: 500;
         }
-        .pariente-check-label input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--azul-rey);
-            cursor: pointer;
-        }
+        /* Observaciones */
         .observaciones-section {
             margin-top: 20px;
-            padding: 20px;
+            padding: 18px;
             background: #f8faff;
             border-radius: 10px;
             border: 1px solid #dbeafe;
@@ -76,7 +89,7 @@
             border-radius: 8px;
             padding: 12px;
             resize: vertical;
-            min-height: 110px;
+            min-height: 100px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -191,166 +204,126 @@
                         <!-- Patologías Familiares -->
                         <div class="seccion-patologias">
                             <div class="titulo-patologia">PATOLOGÍAS FAMILIARES</div>
-                            <p class="text-muted" style="font-size:13px; margin-bottom:16px;">
-                                Seleccione los familiares que padecen cada enfermedad.
+                            <p class="text-muted mb-3" style="font-size:12.5px;">
+                                Marque el o los familiares que padecen cada enfermedad. Si ninguno la padece, deje en blanco.
                             </p>
 
-                            <!-- Sobrepeso-Obesidad -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Sobrepeso-Obesidad</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Diabetes Mellitus -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Diabetes Mellitus</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Hipertensión Arterial -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Hipertensión Arterial</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Triglicéridos Alto -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Triglicéridos Alto</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Colesterol Alto -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Colesterol Alto</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Hepatitis -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Hepatitis</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Hígado Graso -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Hígado Graso</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Cardiopatías -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Cardiopatías</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Nefropatías -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Nefropatías</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Estreñimiento -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Estreñimiento</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Gastritis -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Gastritis</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Colitis -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Colitis</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Cáncer -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Cáncer</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                            </div>
-
-                            <!-- Otra Enfermedad -->
-                            <div class="patologia-familiar">
-                                <div class="patologia-familiar-nombre">Otra Enfermedad</div>
-                                <div class="parientes-checks">
-                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Padre"> Padre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Madre"> Madre</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
-                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
-                                </div>
-                                <div class="mt-2">
-                                    <input type="text" class="form-control form-control-sm" name="otra_cual1"
-                                        id="otra_cual1" placeholder="Indique cuál enfermedad" />
-                                </div>
+                            <div class="table-responsive">
+                                <table class="tabla-patologias">
+                                    <thead>
+                                        <tr>
+                                            <th>Enfermedad</th>
+                                            <th>Padre</th>
+                                            <th>Madre</th>
+                                            <th>Ab. Paternos</th>
+                                            <th>Ab. Maternos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Sobrepeso-Obesidad</td>
+                                            <td><input class="check-familiar" type="checkbox" name="uno1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="uno1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="uno1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="uno1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diabetes Mellitus</td>
+                                            <td><input class="check-familiar" type="checkbox" name="dos1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="dos1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="dos1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="dos1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hipertensión Arterial</td>
+                                            <td><input class="check-familiar" type="checkbox" name="tres1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="tres1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="tres1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="tres1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Triglicéridos Alto</td>
+                                            <td><input class="check-familiar" type="checkbox" name="cuatro1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cuatro1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cuatro1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cuatro1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Colesterol Alto</td>
+                                            <td><input class="check-familiar" type="checkbox" name="cinco1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cinco1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cinco1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="cinco1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hepatitis</td>
+                                            <td><input class="check-familiar" type="checkbox" name="seis1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="seis1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="seis1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="seis1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hígado Graso</td>
+                                            <td><input class="check-familiar" type="checkbox" name="siete1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="siete1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="siete1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="siete1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cardiopatías</td>
+                                            <td><input class="check-familiar" type="checkbox" name="ocho1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="ocho1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="ocho1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="ocho1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nefropatías</td>
+                                            <td><input class="check-familiar" type="checkbox" name="nueve1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="nueve1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="nueve1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="nueve1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Estreñimiento</td>
+                                            <td><input class="check-familiar" type="checkbox" name="diez1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="diez1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="diez1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="diez1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Gastritis</td>
+                                            <td><input class="check-familiar" type="checkbox" name="once1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="once1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="once1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="once1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Colitis</td>
+                                            <td><input class="check-familiar" type="checkbox" name="doce1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="doce1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="doce1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="doce1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cáncer</td>
+                                            <td><input class="check-familiar" type="checkbox" name="trece1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="trece1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="trece1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="trece1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Otra Enfermedad
+                                                <input type="text" class="form-control form-control-sm mt-1"
+                                                    name="otra_cual1" id="otra_cual1" placeholder="¿Cuál?" />
+                                            </td>
+                                            <td><input class="check-familiar" type="checkbox" name="catorce1[]" value="Padre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="catorce1[]" value="Madre"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="catorce1[]" value="Abuelos Paternos"></td>
+                                            <td><input class="check-familiar" type="checkbox" name="catorce1[]" value="Abuelos Maternos"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
