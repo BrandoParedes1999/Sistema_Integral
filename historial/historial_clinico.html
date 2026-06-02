@@ -3,11 +3,8 @@
 
 <head>
     <title>Historial Clínico</title>
-    <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <!-- Bootstrap CSS v5.2.1 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <link rel="stylesheet" href="../css/historial_clinico.css">
@@ -16,25 +13,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estilos para checkboxes de patologías familiares */
+        .patologia-familiar {
+            background: var(--blanco);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.25s ease;
+        }
+        .patologia-familiar:hover {
+            background: var(--gris-claro);
+            border-color: #cbd5e1;
+        }
+        .patologia-familiar-nombre {
+            font-weight: 700;
+            color: var(--azul-rey);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .parientes-checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+        }
+        .pariente-check-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--gris-oscuro);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .pariente-check-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--azul-rey);
+            cursor: pointer;
+        }
+        .observaciones-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8faff;
+            border-radius: 10px;
+            border: 1px solid #dbeafe;
+        }
+        .observaciones-label {
+            font-weight: 700;
+            color: var(--azul-rey);
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .observaciones-textarea {
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 12px;
+            resize: vertical;
+            min-height: 110px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: var(--gris-oscuro);
+        }
+        .observaciones-textarea:focus {
+            border-color: var(--azul-rey);
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15);
+            outline: none;
+        }
+    </style>
 </head>
 
 <body>
 
     <div class="container mt-3 display: flex">
-        <button class="salir" title="salir" onclick="window.location.href='../admin/menu.php'" onchange="mostrarFormulario()">
+        <button class="salir" title="salir" onclick="window.location.href='../admin/menu.php'">
             <div class="salir-box">
                 <span class="salir-elem">
                     <svg viewBox="0 0 46 40" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z">
-                        </path>
+                        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
                     </svg>
                 </span>
                 <span class="button-elem">
                     <svg viewBox="0 0 46 40">
-                        <path
-                            d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z">
-                        </path>
+                        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
                     </svg>
                 </span>
             </div>
@@ -42,22 +110,11 @@
     </div>
 
     <div class="container mt-3">
-        <div class="text-center mb-2">
+        <div class="text-center mb-4">
             <span class="titulo">HISTORIAL CLÍNICO</span>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="mb-2">¿A quién va dirigido?</label>
-                <select id="ambos" class="form-select" onchange="mostrarFormulario()">
-                    <option selected disabled>Escoge una opción</option>
-                    <option value="maestros" hidden>Maestros</option>
-                    <option value="alumnos">Alumnos</option>
-                </select>
-            </div>
-        </div>
-
-        <form action="guardar_historial_alumnos.php" id="historialalumno" style="display: none;" method="post">
+        <form action="guardar_historial_alumnos.php" id="historialalumno" method="post">
             <div class="card fondogenerales">
                 <div class="card-body">
                     <div class="seccion-header">
@@ -76,32 +133,26 @@
                                 <input type="number" class="form-control" name="matricula" id="matricula"
                                     placeholder="Ej: 12345" required style="border: 2px solid #260db6;" />
                             </div>
-
                         </div>
                     </div>
 
                     <!-- Datos Principales -->
                     <div class="datos-principales">
                         <div class="fila-campos">
-
-
                             <div class="campo-grupo">
                                 <label for="fecha1">Fecha</label>
                                 <input type="date" class="form-control" name="fecha1" id="fecha1" required />
                             </div>
-
                             <div class="campo-grupo">
                                 <label for="nombre1">Nombre(s)</label>
                                 <input type="text" class="form-control" name="nombre1" id="nombre1"
                                     placeholder="Se llenará automáticamente" readonly />
                             </div>
-
                             <div class="campo-grupo">
                                 <label for="apellidos1">Apellidos</label>
                                 <input type="text" class="form-control" name="apellidos1" id="apellidos1"
                                     placeholder="Se llenará automáticamente" readonly />
                             </div>
-
                             <div class="campo-grupo">
                                 <label for="sexo1">Sexo</label>
                                 <select class="form-select" name="sexo1" id="sexo1">
@@ -113,28 +164,22 @@
 
                     <!-- Datos Secundarios -->
                     <div class="fila-campos-secundarios">
-
-
                         <div class="campo-grupo">
                             <label for="edad1">Edad</label>
-                            <input type="text" class="form-control" name="edad1" id="edad1" placeholder="Años"
-                                readonly />
+                            <input type="text" class="form-control" name="edad1" id="edad1" placeholder="Años" readonly />
                         </div>
-
                         <div class="campo-grupo">
                             <label for="facultad1">Facultad</label>
                             <select class="form-select" name="facultad1" id="facultad1">
                                 <option value="" selected disabled>Seleccionar...</option>
                             </select>
                         </div>
-
                         <div class="campo-grupo">
                             <label for="carrera1">Carrera</label>
                             <select class="form-select" name="carrera1" id="carrera1">
                                 <option value="" selected disabled>Seleccionar...</option>
                             </select>
                         </div>
-
                         <div class="campo-grupo" style="grid-column: span 2;">
                             <label for="correo1">Correo Electrónico</label>
                             <input type="email" class="form-control" name="correo1" id="correo1"
@@ -146,224 +191,166 @@
                         <!-- Patologías Familiares -->
                         <div class="seccion-patologias">
                             <div class="titulo-patologia">PATOLOGÍAS FAMILIARES</div>
+                            <p class="text-muted" style="font-size:13px; margin-bottom:16px;">
+                                Seleccione los familiares que padecen cada enfermedad.
+                            </p>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Sobrepeso-Obesidad</span>
-                                <select name="sobrepeso1" id="sobrepeso1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="uno1" id="uno1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Sobrepeso-Obesidad -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Sobrepeso-Obesidad</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="uno1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Diabetes Mellitus</span>
-                                <select name="diabetes1" id="diabetes1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="dos1" id="dos1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Diabetes Mellitus -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Diabetes Mellitus</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="dos1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Hipertensión Arterial</span>
-                                <select name="hiper1" id="hiper1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="tres1" id="tres1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Hipertensión Arterial -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Hipertensión Arterial</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="tres1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Triglicéridos Alto</span>
-                                <select name="trigli1" id="trigli1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="cuatro1" id="cuatro1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Triglicéridos Alto -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Triglicéridos Alto</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cuatro1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Colesterol Alto</span>
-                                <select name="colesterol1" id="colesterol1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="cinco1" id="cinco1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Colesterol Alto -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Colesterol Alto</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="cinco1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Hepatitis</span>
-                                <select name="hepatitis1" id="hepatitis1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="seis1" id="seis1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Hepatitis -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Hepatitis</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="seis1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Hígado Graso</span>
-                                <select name="higado1" id="higado1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="siete1" id="siete1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Hígado Graso -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Hígado Graso</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="siete1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Cardiopatías</span>
-                                <select name="cardiopatias1" id="cardiopatias1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="ocho1" id="ocho1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Cardiopatías -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Cardiopatías</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="ocho1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Nefropatías</span>
-                                <select name="nefropatias1" id="nefropatias1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="nueve1" id="nueve1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Nefropatías -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Nefropatías</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="nueve1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Estreñimiento</span>
-                                <select name="estrenimiento1" id="estrenimiento1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="diez1" id="diez1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Estreñimiento -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Estreñimiento</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="diez1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Gastritis</span>
-                                <select name="gastritis1" id="gastritis1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="once1" id="once1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Gastritis -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Gastritis</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="once1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Colitis</span>
-                                <select name="colitis1" id="colitis1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="doce1" id="doce1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Colitis -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Colitis</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="doce1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Cáncer</span>
-                                <select name="cancer1" id="cancer1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <select name="trece1" id="trece1" class="select-patologia selectParientes" required>
-                                    <option value="" selected disabled>Pariente</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="Abuelos Paternos">Abuelos Paternos</option>
-                                    <option value="Abuelos Maternos">Abuelos Maternos</option>
-                                </select>
+                            <!-- Cáncer -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Cáncer</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="trece1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
                             </div>
 
-                            <div class="patologia-item">
-                                <span class="patologia-label">Otra Enfermedad</span>
-                                <select name="otra1" id="otra1" class="select-patologia" required>
-                                    <option value="" selected disabled>Si/No</option>
-                                    <option value="Si">Sí</option>
-                                    <option value="No">No</option>
-                                </select>
-                                <input type="text" class="select-patologia selectParientes" name="otra_cual1"
-                                    id="otra_cual1" placeholder="Indique cuál" />
+                            <!-- Otra Enfermedad -->
+                            <div class="patologia-familiar">
+                                <div class="patologia-familiar-nombre">Otra Enfermedad</div>
+                                <div class="parientes-checks">
+                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Padre"> Padre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Madre"> Madre</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Abuelos Paternos"> Abuelos Paternos</label>
+                                    <label class="pariente-check-label"><input type="checkbox" name="catorce1[]" value="Abuelos Maternos"> Abuelos Maternos</label>
+                                </div>
+                                <div class="mt-2">
+                                    <input type="text" class="form-control form-control-sm" name="otra_cual1"
+                                        id="otra_cual1" placeholder="Indique cuál enfermedad" />
+                                </div>
                             </div>
                         </div>
 
@@ -403,7 +390,6 @@
                                                 <option value="Otra">Otra</option>
                                             </select>
                                         </div>
-
                                         <div class="campo-grupo">
                                             <label>Tratamiento</label>
                                             <textarea class="textarea-tratamiento" name="tratamiento[]"
@@ -415,12 +401,20 @@
                                 <div class="text-center mt-3">
                                     <button type="button" class="btn-agregar" id="agregarEnfermedad1">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                            <path
-                                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                                            <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
                                         </svg>
                                         Agregar Enfermedad
                                     </button>
                                 </div>
+                            </div>
+
+                            <!-- Observaciones / Comentarios -->
+                            <div class="observaciones-section">
+                                <label class="observaciones-label" for="observaciones1">
+                                    Observaciones / Comentarios
+                                </label>
+                                <textarea class="observaciones-textarea" name="observaciones1" id="observaciones1"
+                                    placeholder="Escriba aquí cualquier comentario u observación relevante sobre la salud del alumno..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -438,11 +432,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function mostrarFormulario() {
-            var tipoUsuario = document.getElementById("ambos").value;
-            document.getElementById("historialalumno").style.display = tipoUsuario === "alumnos" ? "block" : "none";
-        }
-
         function guardarFormulario() {
             const form = document.getElementById("historialalumno");
             if (form.checkValidity()) {
@@ -474,6 +463,7 @@
                         document.getElementById("sexo1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
                         document.getElementById("facultad1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
                         document.getElementById("carrera1").innerHTML = '<option value="" selected disabled>Seleccionar...</option>';
+                        document.getElementById("enfermedadesContainer1").style.display = "none";
                     } else {
                         alert("Error al guardar los datos: " + data.error);
                     }
@@ -489,7 +479,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            // Evitar envío con Enter
             document.getElementById("historialalumno").addEventListener("submit", function (event) {
                 event.preventDefault();
             });
@@ -506,12 +495,13 @@
 
                         formulario.reset();
                         inputAConservar.value = valorGuardado;
+                        document.getElementById("enfermedadesContainer1").style.display = "none";
                         buscarAlumno(matricula);
                     }
                 }
             });
 
-            // Manejo de patologías personales
+            // Mostrar/ocultar enfermedades personales
             const selectPropia = document.getElementById("propia1");
             const enfermedadesContainer1 = document.getElementById("enfermedadesContainer1");
             const enfermedadesList1 = document.getElementById("enfermedadesList1");
@@ -537,61 +527,16 @@
                 enfermedadItem1.appendChild(eliminarBtn1);
                 enfermedadesList1.appendChild(enfermedadItem1);
             });
-
-            // Inicializar selects de parientes deshabilitados
-            document.querySelectorAll(".selectParientes").forEach(function (select) {
-                select.setAttribute("disabled", "true");
-                select.value = "";
-            });
-
-            // Habilitar/deshabilitar selects de parientes según respuesta Si/No
-            document.querySelectorAll(".select-patologia:not(.selectParientes)").forEach(function (select) {
-                select.addEventListener("change", function () {
-                    let parientesSelect = this.closest(".patologia-item")?.querySelector(".selectParientes");
-                    if (!parientesSelect) return;
-
-                    if (this.value === "Si") {
-                        parientesSelect.removeAttribute("disabled");
-                        parientesSelect.setAttribute("required", "true");
-                    } else if (this.value === "No") {
-                        parientesSelect.setAttribute("disabled", "true");
-                        parientesSelect.removeAttribute("required");
-                        parientesSelect.value = "";
-                    }
-                });
-            });
-
-            // Manejo del campo "Otra Enfermedad"
-            const otraSelect = document.getElementById("otra1");
-            const otraInput = document.getElementById("otra_cual1");
-
-            if (otraSelect && otraInput) {
-                otraInput.setAttribute("disabled", "true");
-
-                otraSelect.addEventListener("change", function () {
-                    if (this.value === "Si") {
-                        otraInput.removeAttribute("disabled");
-                        otraInput.setAttribute("required", "true");
-                    } else {
-                        otraInput.setAttribute("disabled", "true");
-                        otraInput.removeAttribute("required");
-                        otraInput.value = "";
-                    }
-                });
-            }
         });
 
         function buscarAlumno(matricula) {
             fetch(`../gestion-alumnos/buscar_alumno.php?matricula=${matricula}`)
-
-
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         Swal.fire({
                             title: 'Sin Alumno',
-                            text: 'Se encontró un error: ' + data.error,
-                            text: 'Verfica que el alumno esté registrado',
+                            text: 'Verifica que el alumno esté registrado',
                             icon: 'warning'
                         });
                     } else {
@@ -599,25 +544,22 @@
                         document.getElementById("apellidos1").value = `${data.ape_paterno_alum} ${data.ape_materno_alum}`;
                         document.getElementById("edad1").value = data.edad_alum;
                         document.getElementById("correo1").value = data.correo_alum;
-
                         document.getElementById("sexo1").innerHTML = `<option selected>${data.sexo}</option>`;
                         document.getElementById("facultad1").innerHTML = `<option selected>${data.nombre_facultad}</option>`;
                         document.getElementById("carrera1").innerHTML = `<option selected>${data.nombre_carrera}</option>`;
-
                         document.getElementById("fecha1").value = new Date().toISOString().split("T")[0];
                     }
                 })
                 .catch(error => {
                     console.error("Error en la solicitud:", error);
                     Swal.fire({
-                            title: 'SIN ALUMNO',
-                            text: 'Verifica que el Alumno esté Registrado',
-                            icon: 'warning'
-                        });
+                        title: 'SIN ALUMNO',
+                        text: 'Verifica que el Alumno esté Registrado',
+                        icon: 'warning'
+                    });
                 });
         }
     </script>
-
 
     <script src="../js/admin-layout.js"></script>
 </body>
