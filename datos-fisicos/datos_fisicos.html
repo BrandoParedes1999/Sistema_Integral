@@ -395,10 +395,10 @@
                             </div>
                         </div>
 
-                        <!-- SECCIÓN 3: Tensión Arterial -->
+                        <!-- SECCIÓN 3: Clínica -->
                         <div class="seccion-mediciones">
                             <div class="titulo-medicion">
-                                <i class="bi bi-heart-pulse-fill"></i> TENSIÓN ARTERIAL
+                                <i class="bi bi-heart-pulse-fill"></i> CLÍNICA
                             </div>
                             <div class="grupo-medicion">
                                 <label for="tensionarterial1">Tensión Arterial (mmHg)</label>
@@ -407,6 +407,14 @@
                             <div class="grupo-medicion">
                                 <label for="clasificacionta1">Clasificación T.A.</label>
                                 <input type="text" id="clasificacionta1" name="clasificacionta1" readonly>
+                            </div>
+                            <div class="grupo-medicion seccion-full">
+                                <label for="notas_clinicas1">Notas / Observaciones Clínicas</label>
+                                <textarea id="notas_clinicas1" name="notas_clinicas1" rows="3"
+                                    placeholder="Escriba aquí cualquier nota u observación clínica..."
+                                    style="width:100%;border:1px solid #ced4da;border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;font-family:inherit;transition:border-color .3s;"
+                                    onfocus="this.style.borderColor='#1e40af';this.style.boxShadow='0 0 0 0.2rem rgba(30,64,175,.15)'"
+                                    onblur="this.style.borderColor='#ced4da';this.style.boxShadow='none'"></textarea>
                             </div>
                         </div>
 

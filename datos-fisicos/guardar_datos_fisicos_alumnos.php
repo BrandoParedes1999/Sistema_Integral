@@ -123,10 +123,10 @@ $conn = getDBConnection();
 
     // SOLO GUARDAR EN BD SI NO ES MODO PDF
     if (!$solo_generar_pdf) {
-        $sql_guardar = "INSERT INTO datos_fisicos_alumnos 
+        $sql_guardar = "INSERT INTO datos_fisicos_alumnos
                 (matricula_alum, fecha, cintura, cadera, clasificacion_cintura_cadera, icc,  clasificacion_de_icc, peso, talla, imc, clasificacion_imc, ice, clasificacionice, mb, actividad1, get1, porcentaje_masa_grasa, valor_ideal_porcentaje_grasa,
-                clasificacion_porcentaje_grasa, masa_magra, agua_total, porcentaje_agua_total, glucosa, clasificacion_glucosa, trigliceridos, clasificacion_trigliceridos, colesterol, clasificacion_colesterol, tension_arterial, clasificacion_tension_arterial) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                clasificacion_porcentaje_grasa, masa_magra, agua_total, porcentaje_agua_total, glucosa, clasificacion_glucosa, trigliceridos, clasificacion_trigliceridos, colesterol, clasificacion_colesterol, tension_arterial, clasificacion_tension_arterial, notas_clinicas)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($sql_guardar);
         if (!$stmt) {
@@ -135,8 +135,7 @@ $conn = getDBConnection();
 
         $fecha_actual = date("Y-m-d");
         $stmt->bind_param(
-            "isddsdsdddsdsdsddssddddsdsdsss",
-
+            "isddsdsdddsdsdsddssddddsdsdssss",
             $_POST["matricula"],
             $fecha_actual,
             $_POST["cintura1"],
@@ -166,7 +165,8 @@ $conn = getDBConnection();
             $_POST["colesterol1"],
             $_POST["clasificacioncolesterol1"],
             $_POST["tensionarterial1"],
-            $_POST["clasificacionta1"]
+            $_POST["clasificacionta1"],
+            $_POST["notas_clinicas1"] ?? ''
         );
 
         if (!$stmt->execute()) {
