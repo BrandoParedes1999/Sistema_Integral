@@ -286,6 +286,7 @@ body{
 <form id="hf" action="PEPS-1.php" method="post" style="display:none"></form>
 
 <script>
+const MATRICULA='<?php echo addslashes(\$matricula); ?>';
 const EM={1:'🌅',2:'👨‍⚕️',3:'💖',4:'💪',5:'🥦',6:'😌',7:'🩸',8:'🌟',9:'🌱',10:'💬',
 11:'⚡',12:'😊',13:'🏃',14:'🍽️',15:'📖',16:'🧠',17:'🎯',18:'🙌',19:'🏷️',20:'🔍',
 21:'🔭',22:'🏋️',23:'🧭',24:'🤗',25:'👫',26:'🌾',27:'🧘',28:'💊',29:'🏆',30:'❤️',
@@ -352,7 +353,7 @@ function submitForm(){
     if(Object.keys(ans).length<48){alert('Faltan preguntas.');return;}
     const f=document.getElementById('hf');f.innerHTML='';
     for(let i=1;i<=48;i++){const ip=document.createElement('input');ip.type='hidden';ip.name='p'+i;ip.value=ans[i]||'';f.appendChild(ip);}
-    localStorage.removeItem('peps1_draft');f.submit();
+    localStorage.removeItem('peps1_'+MATRICULA);f.submit();
 }
 function confetti(){
     const c=document.getElementById('cfv'),x=c.getContext('2d');
@@ -367,8 +368,8 @@ function confetti(){
     p.y+=p.sp;p.x+=Math.sin(p.d)*1.5;p.d+=.05;if(p.y>c.height)p.y=-10;});fr=requestAnimationFrame(draw);}
     draw();setTimeout(()=>{cancelAnimationFrame(fr);x.clearRect(0,0,c.width,c.height);},3500);
 }
-function save(){localStorage.setItem('peps1_draft',JSON.stringify({ans,cur,streak}));}
-(function load(){try{const d=JSON.parse(localStorage.getItem('peps1_draft')||'null');
+function save(){localStorage.setItem('peps1_'+MATRICULA,JSON.stringify({ans,cur,streak}));}
+(function load(){try{const d=JSON.parse(localStorage.getItem('peps1_'+MATRICULA)||'null');
     if(d){Object.assign(ans,d.ans||{});cur=d.cur||1;streak=d.streak||0;}}catch(e){}})();
 setInterval(save,4000);
 document.addEventListener('keydown',e=>{
