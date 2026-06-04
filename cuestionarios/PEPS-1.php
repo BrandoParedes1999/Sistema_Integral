@@ -250,6 +250,7 @@ body{
 .btn-send{background:white;color:#6366f1;font-family:'Poppins',sans-serif;
     font-weight:800;font-size:1.05rem;padding:16px 40px;border-radius:50px;
     border:none;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.2);}
+
 </style>
 </head>
 <body>
