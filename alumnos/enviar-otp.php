@@ -109,7 +109,7 @@ try {
     $mail->SMTPAuth   = true;
     $mail->Username   = MAIL_USER;
     $mail->Password   = MAIL_PASS;
-    $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port       = MAIL_PORT;
     $mail->CharSet    = 'UTF-8';
     $mail->SMTPOptions = [
