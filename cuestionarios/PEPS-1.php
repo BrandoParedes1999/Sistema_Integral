@@ -142,137 +142,244 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $conn->close();
 
-// --- FUNCIÓN AGREGADA AQUÍ ---
-function renderOpcionesPEPS($idPregunta) {
-    echo '
-    <div class="options-group">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="'.$idPregunta.'" id="'.$idPregunta.'_1" value="1" required>
-            <label class="form-check-label" for="'.$idPregunta.'_1">Nunca</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="'.$idPregunta.'" id="'.$idPregunta.'_2" value="2">
-            <label class="form-check-label" for="'.$idPregunta.'_2">A veces</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="'.$idPregunta.'" id="'.$idPregunta.'_3" value="3">
-            <label class="form-check-label" for="'.$idPregunta.'_3">Frecuentemente</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="'.$idPregunta.'" id="'.$idPregunta.'_4" value="4">
-            <label class="form-check-label" for="'.$idPregunta.'_4">Rutinariamente</label>
-        </div>
-    </div>';
-}
-// -----------------------------
 ?>
-
 <!doctype html>
 <html lang="es">
 <head>
-    <title>Cuestionario PEPS-1</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="../css/PEPS-1.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<title>Cuestionario de Bienestar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../alumnos/imagenes/unisalud-sf.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+    --bg:#0f172a;--card:#1e293b;--border:#334155;
+    --accent:#6366f1;--accent2:#8b5cf6;
+    --yellow:#fbbf24;--text:#f1f5f9;--muted:#94a3b8;
+}
+html,body{height:100%;overflow:hidden;}
+body{
+    font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);
+    display:flex;flex-direction:column;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+/* Stories bar */
+.stories-bar{display:flex;gap:3px;padding:14px 14px 0;flex-shrink:0;}
+.story-seg{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.15);}
+.story-seg.done{background:var(--accent);}
+.story-seg.cur{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+/* Header */
+.top-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 14px;flex-shrink:0;}
+.q-counter{font-size:13px;font-weight:700;color:var(--muted);}
+.q-counter span{color:var(--text);}
+.streak{display:flex;align-items:center;gap:5px;background:rgba(251,191,36,.12);
+    border:1px solid rgba(251,191,36,.25);padding:4px 12px;border-radius:20px;
+    font-size:13px;font-weight:700;color:var(--yellow);}
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:flex-start;padding:0 18px 8px;overflow:hidden;}
+/* Emoji */
+.emoji-wrap{margin-bottom:8px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.q-emoji{font-size:clamp(54px,13vw,74px);line-height:1;display:block;text-align:center;}
+/* Texto */
+.q-text{font-size:clamp(1rem,4.2vw,1.3rem);font-weight:700;line-height:1.45;
+    text-align:center;margin-bottom:20px;max-width:520px;
+    animation:slideUp .35s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* Opciones */
+.opts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:440px;
+    animation:slideUp .4s ease .05s both;}
+.opt{
+    display:flex;align-items:center;gap:14px;
+    background:var(--card);border:2px solid var(--border);
+    border-radius:16px;padding:14px 18px;
+    cursor:pointer;transition:all .18s;
+    -webkit-tap-highlight-color:transparent;
+    text-align:left;width:100%;font-family:'Poppins',sans-serif;color:var(--text);
+}
+.opt:active{transform:scale(.97);}
+.opt:hover,.opt:focus{border-color:var(--accent);background:#1e2a4a;}
+.opt.sel{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:var(--accent);box-shadow:0 6px 20px rgba(99,102,241,.35);
+    transform:scale(1.02);
+}
+.opt-left{display:flex;align-items:center;gap:10px;flex:1;}
+.opt-emoji{font-size:22px;flex-shrink:0;}
+.opt-label{font-size:.95rem;font-weight:600;}
+.opt-key{background:rgba(255,255,255,.08);color:var(--muted);font-size:11px;font-weight:700;
+    width:24px;height:24px;border-radius:6px;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;}
+.opt.sel .opt-key{background:rgba(255,255,255,.2);color:white;}
+/* Nav */
+.nav-row{display:flex;align-items:center;justify-content:center;gap:14px;
+    padding:10px 18px 16px;flex-shrink:0;}
+.btn-back{background:var(--card);border:2px solid var(--border);color:var(--muted);
+    font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;
+    padding:10px 20px;border-radius:50px;cursor:pointer;transition:all .2s;}
+.btn-back:hover{border-color:var(--accent);color:var(--text);}
+.btn-back:disabled{opacity:.3;cursor:default;}
+.tip-key{font-size:11px;color:var(--muted);opacity:.55;}
+/* Milestone overlay */
+.milestone{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;background:rgba(15,23,42,.93);
+    backdrop-filter:blur(10px);text-align:center;padding:32px;
+    animation:fadeM .3s ease;}
+@keyframes fadeM{from{opacity:0}to{opacity:1}}
+.milestone.hidden{display:none;}
+.m-emoji{font-size:80px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+.m-title{font-size:1.8rem;font-weight:800;margin:18px 0 8px;}
+.m-sub{font-size:1rem;color:var(--muted);margin-bottom:30px;line-height:1.5;}
+.btn-cont{background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:white;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;
+    padding:14px 36px;border-radius:50px;border:none;cursor:pointer;
+    box-shadow:0 6px 20px rgba(99,102,241,.4);}
+/* Confetti */
+#cfv{position:fixed;inset:0;pointer-events:none;z-index:99;}
+/* Pantalla final */
+.s-final{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    text-align:center;padding:32px;animation:fadeM .4s ease;}
+.s-final.hidden{display:none;}
+.f-emoji{font-size:90px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);}
+.f-title{font-size:2rem;font-weight:800;margin:20px 0 10px;}
+.f-sub{font-size:1rem;opacity:.88;margin-bottom:32px;line-height:1.6;}
+.btn-send{background:white;color:#6366f1;font-family:'Poppins',sans-serif;
+    font-weight:800;font-size:1.05rem;padding:16px 40px;border-radius:50px;
+    border:none;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.2);}
+
+</style>
 </head>
-
 <body>
-    <div class="header">
-        <h1>Sistema Integral de Salud UNACAR</h1>
-        <p>Perfil de Estilo de Vida (PEPS-1)</p>
-    </div>
 
-    <div class="form-container">
-        
-        <?php if (!empty($error_message)): ?>
-            <div class="alert alert-danger"><?php echo $error_message; ?></div>
-        <?php endif; ?>
+<div class="stories-bar" id="sb"></div>
+<div class="top-row">
+    <div class="q-counter" id="qc">Pregunta <span>1</span> de 48</div>
+    <div class="streak" id="stk">🔥 0</div>
+</div>
+<div class="main" id="main"></div>
+<div class="nav-row">
+    <button class="btn-back" id="btn-back" onclick="goBack()" disabled>← Atrás</button>
+    <div class="tip-key">Presiona 1 2 3 4 en teclado</div>
+</div>
 
-        <div class="instructions-box">
-            <h5 class="text-primary mb-3">Instrucciones:</h5>
-            <ul class="mb-0" style="padding-left: 1.2rem;">
-                <li>Este cuestionario pregunta sobre tus hábitos personales actuales.</li>
-                <li>No hay respuestas correctas o incorrectas.</li>
-                <li>Escoge la respuesta que refleje mejor tu forma de vivir.</li>
-                <li><strong>1=Nunca, 2=A veces, 3=Frecuentemente, 4=Rutinariamente</strong></li>
-            </ul>
-        </div>
+<!-- Hito -->
+<div class="milestone hidden" id="mstone">
+    <div class="m-emoji" id="m-e"></div>
+    <div class="m-title" id="m-t"></div>
+    <div class="m-sub" id="m-s"></div>
+    <button class="btn-cont" onclick="closeMilestone()">¡Seguir! 🚀</button>
+</div>
 
-        <form action="PEPS-1.php" method="post">
-            <div class="form-section">
-                <h4 class="section-title">Preguntas</h4>
-                
-                <div class="questions-grid">
-                    <?php
-                    $preguntas = [
-                        1 => "Tomas algún alimento al levantarte por las mañanas",
-                        2 => "Relatas al médico cualquier síntoma extraño relacionado con tu salud",
-                        3 => "Te quieres a ti misma(o)",
-                        4 => "Realizas ejercicios para relajar tus músculos al menos 3 veces por día o por semana",
-                        5 => "Seleccionas comidas que no contienen ingredientes artificiales o químicos",
-                        6 => "Tomas tiempo cada dia para el relajamiento",
-                        7 => "Conoces el nivel de colesterol en tu sangre",
-                        8 => "Eres entusiasta y optimista con referencia a tu vida",
-                        9 => "Crees que estás creciendo y cambiando personalmente en direcciones positivas",
-                        10 => "Discutes con personas cercanas tus preocupaciones y problemas personales",
-                        11 => "Eres consciente de las fuentes que producen tensión en tu vida",
-                        12 => "Te sientes feliz y contento(a)",
-                        13 => "Realizas ejercicio vigoroso por 20 o 30 minutos al menos tres veces a la semana",
-                        14 => "Comes tres comidas al día",
-                        15 => "Lees revistas o folletos sobre como cuidar tu salud",
-                        16 => "Eres consciente de tus capacidades y debilidades personales",
-                        17 => "Trabajas en apoyo de metas a largo plazo en tu vida",
-                        18 => "Elogias fácilmente a otras personas por sus éxitos",
-                        19 => "Lees las etiquetas de las comidas para identificar nutrientes",
-                        20 => "Buscas otra opinión médica cuando no estas de acuerdo con la recomendación",
-                        21 => "Miras hacia el futuro",
-                        22 => "Participas en programas de ejercicio físico bajo supervisión",
-                        23 => "Eres consciente de lo que te importa en la vida",
-                        24 => "Te gusta expresar y que te expresen cariño personas cercanas a ti",
-                        25 => "Mantienes relaciones interpersonales que te dan satisfacción",
-                        26 => "Incluyes en tu dieta alimentos que contienen fibra",
-                        27 => "Pasas de 15 a 20 minutos diariamente en relajamiento o meditación",
-                        28 => "Discutes con profesionales calificados tus inquietudes de salud",
-                        29 => "Respetas tus propios éxitos",
-                        30 => "Checas tu pulso durante el ejercicio físico",
-                        31 => "Pasas tiempo con amigos cercanos",
-                        32 => "Haces medir tu presión arterial y sabes el resultado",
-                        33 => "Asistes a programas educativos sobre el mejoramiento del medio ambiente",
-                        34 => "Ves cada día como interesante y desafiante",
-                        35 => "Planeas comidas que incluyan los cuatro grupos básicos de nutrientes",
-                        36 => "Relajas conscientemente tus músculos antes de dormir",
-                        37 => "Encuentras agradable y satisfecho el ambiente de tu vida",
-                        38 => "Realizas actividades físicas de recreo (caminar, nadar, etc.)",
-                        39 => "Expresas fácilmente interés, amor y calor humano hacia otros",
-                        40 => "Te concentras en pensamientos agradables a la hora de dormir",
-                        41 => "Pides información a los profesionales para cuidar de tu salud",
-                        42 => "Encuentras maneras positivas para expresar tus sentimientos",
-                        43 => "Observas al menos cada mes tu cuerpo para ver cambios físicos",
-                        44 => "Eres realista en las metas que te propones",
-                        45 => "Usas métodos específicos para controlar la tensión",
-                        46 => "Asistes a programas educativos sobre el cuidado de la salud personal",
-                        47 => "Te gusta mostrar y que te muestren afecto (abrazos, caricias)",
-                        48 => "Crees que tu vida tiene un propósito"
-                    ];
+<canvas id="cfv"></canvas>
 
-                    foreach ($preguntas as $num => $texto) {
-                        echo '<div class="question-card">';
-                        echo '<label class="question-label">' . $num . '. ' . $texto . '</label>';
-                        renderOpcionesPEPS('p' . $num);
-                        echo '</div>';
-                    }
-                    ?>
-                </div> </div>
+<!-- Final -->
+<div class="s-final hidden" id="sfinal">
+    <div class="f-emoji">🎉</div>
+    <div class="f-title">¡Lo lograste!</div>
+    <div class="f-sub">Respondiste las 48 preguntas.<br>Tus resultados están listos.</div>
+    <button class="btn-send" onclick="submitForm()">Ver mis resultados ✅</button>
+</div>
 
-            <div class="submit-container">
-                <button class="btn-submit" type="submit">Enviar Resultados</button>
-            </div>
-        </form>
-    </div>
+<form id="hf" action="PEPS-1.php" method="post" style="display:none"></form>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const MATRICULA='<?php echo addslashes($matricula); ?>';
+const EM={1:'🌅',2:'👨‍⚕️',3:'💖',4:'💪',5:'🥦',6:'😌',7:'🩸',8:'🌟',9:'🌱',10:'💬',
+11:'⚡',12:'😊',13:'🏃',14:'🍽️',15:'📖',16:'🧠',17:'🎯',18:'🙌',19:'🏷️',20:'🔍',
+21:'🔭',22:'🏋️',23:'🧭',24:'🤗',25:'👫',26:'🌾',27:'🧘',28:'💊',29:'🏆',30:'❤️',
+31:'👥',32:'🩺',33:'🌍',34:'🎉',35:'🥗',36:'😴',37:'🌈',38:'🚴',39:'❤️‍🔥',40:'💭',
+41:'📚',42:'🎭',43:'🔎',44:'✅',45:'🛡️',46:'🎓',47:'🫂',48:'✨'};
+const OE=['😶','🤔','😊','🌟'];
+const OL=['Nunca','A veces','Frecuentemente','Rutinariamente'];
+const PQ={1:"¿Tomas algún alimento al levantarte por las mañanas?",2:"¿Relatas al médico cualquier síntoma extraño de tu salud?",3:"¿Te quieres a ti misma(o)?",4:"¿Realizas ejercicios para relajar tus músculos al menos 3 veces por semana?",5:"¿Seleccionas comidas sin ingredientes artificiales o químicos?",6:"¿Tomas tiempo cada día para relajarte?",7:"¿Conoces el nivel de colesterol en tu sangre?",8:"¿Eres entusiasta y optimista con tu vida?",9:"¿Crees que estás creciendo y cambiando en dirección positiva?",10:"¿Discutes con personas cercanas tus preocupaciones personales?",11:"¿Eres consciente de las fuentes que te generan tensión?",12:"¿Te sientes feliz y contento(a)?",13:"¿Realizas ejercicio vigoroso por 20–30 min al menos 3 veces por semana?",14:"¿Comes tres comidas al día?",15:"¿Lees sobre cómo cuidar tu salud?",16:"¿Eres consciente de tus capacidades y debilidades?",17:"¿Trabajas hacia metas a largo plazo en tu vida?",18:"¿Elogias fácilmente a otros por sus éxitos?",19:"¿Lees las etiquetas de los alimentos para identificar nutrientes?",20:"¿Buscas otra opinión médica cuando no estás de acuerdo?",21:"¿Miras hacia el futuro con esperanza?",22:"¿Participas en programas de ejercicio bajo supervisión?",23:"¿Eres consciente de lo que te importa en la vida?",24:"¿Te gusta expresar y recibir cariño de personas cercanas?",25:"¿Mantienes relaciones que te dan satisfacción?",26:"¿Incluyes alimentos con fibra en tu dieta?",27:"¿Pasas 15–20 min diariamente en relajamiento o meditación?",28:"¿Discutes con profesionales tus inquietudes de salud?",29:"¿Respetas y reconoces tus propios éxitos?",30:"¿Checas tu pulso durante el ejercicio físico?",31:"¿Pasas tiempo de calidad con amigos cercanos?",32:"¿Te mides la presión arterial y conoces el resultado?",33:"¿Asistes a programas educativos sobre el medio ambiente?",34:"¿Ves cada día como interesante y desafiante?",35:"¿Planeas comidas con los cuatro grupos básicos de nutrientes?",36:"¿Relajas conscientemente tus músculos antes de dormir?",37:"¿Encuentras el ambiente de tu vida agradable y satisfactorio?",38:"¿Realizas actividades físicas de recreo (caminar, nadar, bailar...)?",39:"¿Expresas fácilmente interés, amor y calidez hacia otros?",40:"¿Te concentras en pensamientos agradables a la hora de dormir?",41:"¿Pides información a profesionales para cuidar tu salud?",42:"¿Encuentras maneras positivas de expresar tus sentimientos?",43:"¿Observas tu cuerpo al menos cada mes para notar cambios?",44:"¿Eres realista con las metas que te propones?",45:"¿Usas métodos específicos para controlar la tensión?",46:"¿Asistes a programas educativos sobre cuidado de la salud?",47:"¿Te gusta mostrar y recibir afecto físico (abrazos, caricias)?",48:"¿Crees que tu vida tiene un propósito?"};
+const MS={12:{e:'🔥',t:'¡Vas increíble!',s:'Ya llevas 12 respuestas. ¡Sigue así!'},
+24:{e:'⚡',t:'¡Mitad del camino!',s:'24 de 48. ¡Eres imparable!'},
+36:{e:'💎',t:'¡Casi lo tienes!',s:'Solo 12 más. ¡No pares ahora!'}};
+
+const ans={};let cur=1,streak=0,pending=null;
+
+function buildBar(){
+    const b=document.getElementById('sb');b.innerHTML='';
+    for(let i=1;i<=48;i++){
+        const s=document.createElement('div');
+        s.className='story-seg'+(i<cur?' done':i===cur?' cur':'');
+        b.appendChild(s);
+    }
+}
+function render(){
+    const sel=ans[cur]??null;
+    document.getElementById('qc').innerHTML=`Pregunta <span>${cur}</span> de 48`;
+    document.getElementById('btn-back').disabled=cur<=1;
+    document.getElementById('stk').textContent='🔥 '+streak;
+    document.getElementById('main').innerHTML=`
+        <div class="emoji-wrap"><span class="q-emoji">${EM[cur]}</span></div>
+        <div class="q-text">${PQ[cur]}</div>
+        <div class="opts">
+            ${OL.map((l,i)=>`<button class="opt${sel===i+1?' sel':''}" onclick="pick(${i+1})">
+                <div class="opt-left"><span class="opt-emoji">${OE[i]}</span><span class="opt-label">${l}</span></div>
+                <span class="opt-key">${i+1}</span></button>`).join('')}
+        </div>`;
+    buildBar();
+}
+function pick(v){
+    const first=ans[cur]===undefined;
+    ans[cur]=v;
+    if(first)streak++;
+    render();
+    setTimeout(()=>{
+        if(MS[cur]&&first){pending=cur;showMilestone(cur);}
+        else advance();
+    },380);
+}
+function advance(){if(cur<48){cur++;render();}else showFinal();save();}
+function goBack(){if(cur>1){cur--;render();}}
+function showMilestone(n){
+    const m=MS[n];
+    document.getElementById('m-e').textContent=m.e;
+    document.getElementById('m-t').textContent=m.t;
+    document.getElementById('m-s').textContent=m.s;
+    document.getElementById('mstone').classList.remove('hidden');
+    confetti();
+}
+function closeMilestone(){
+    document.getElementById('mstone').classList.add('hidden');
+    if(pending!==null){pending=null;advance();}
+}
+function showFinal(){confetti();setTimeout(()=>document.getElementById('sfinal').classList.remove('hidden'),300);}
+function submitForm(){
+    if(Object.keys(ans).length<48){alert('Faltan preguntas.');return;}
+    const f=document.getElementById('hf');f.innerHTML='';
+    for(let i=1;i<=48;i++){const ip=document.createElement('input');ip.type='hidden';ip.name='p'+i;ip.value=ans[i]||'';f.appendChild(ip);}
+    localStorage.removeItem('peps1_'+MATRICULA);f.submit();
+}
+function confetti(){
+    const c=document.getElementById('cfv'),x=c.getContext('2d');
+    c.width=window.innerWidth;c.height=window.innerHeight;
+    const ps=Array.from({length:100},()=>({
+        x:Math.random()*c.width,y:Math.random()*c.height-c.height,
+        r:Math.random()*7+3,d:Math.random()*90,
+        col:`hsl(${Math.random()*360},80%,60%)`,sp:Math.random()*3+1.5
+    }));
+    let fr;function draw(){x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle=p.col;x.fill();
+    p.y+=p.sp;p.x+=Math.sin(p.d)*1.5;p.d+=.05;if(p.y>c.height)p.y=-10;});fr=requestAnimationFrame(draw);}
+    draw();setTimeout(()=>{cancelAnimationFrame(fr);x.clearRect(0,0,c.width,c.height);},3500);
+}
+function save(){localStorage.setItem('peps1_'+MATRICULA,JSON.stringify({ans,cur,streak}));}
+(function load(){try{const d=JSON.parse(localStorage.getItem('peps1_'+MATRICULA)||'null');
+    if(d){Object.assign(ans,d.ans||{});cur=d.cur||1;streak=d.streak||0;}}catch(e){}})();
+setInterval(save,4000);
+document.addEventListener('keydown',e=>{
+    if(!document.getElementById('mstone').classList.contains('hidden')){
+        if(e.key==='Enter'||e.key===' ')closeMilestone();return;}
+    const v=parseInt(e.key);if(v>=1&&v<=4){pick(v);return;}
+    if(e.key==='ArrowLeft')goBack();
+});
+render();
+</script>
 </body>
 </html>

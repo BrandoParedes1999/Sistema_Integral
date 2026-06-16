@@ -43,6 +43,73 @@
         .alerta-clinica i { font-size:1.1rem; margin-top:.05rem; flex-shrink:0; }
         .alerta-clinica strong { display:block; margin-bottom:.1rem; }
 
+        /* Cards de tipo de usuario */
+        .tipo-card {
+            border-radius: 14px;
+            padding: 22px 14px 16px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            background: #fff;
+            transition: all 0.22s ease;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .tipo-card.activo {
+            cursor: pointer;
+            border-color: #1e40af;
+            box-shadow: 0 4px 18px rgba(30,64,175,0.13);
+        }
+        .tipo-card.activo:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(30,64,175,0.2);
+        }
+        .tipo-card.activo.seleccionado {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            border-color: #1e40af;
+            color: #fff;
+        }
+        .tipo-card.activo.seleccionado .tipo-card-nombre {
+            color: #fff;
+        }
+        .tipo-card.activo.seleccionado .tipo-card-icono {
+            color: #fff;
+        }
+        .tipo-card.activo.seleccionado .tipo-card-badge {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+        .tipo-card.proximamente {
+            cursor: not-allowed;
+            opacity: 0.55;
+            background: #f8fafc;
+        }
+        .tipo-card-icono {
+            font-size: 2.4rem;
+            color: #1e40af;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+        .tipo-card-nombre {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .tipo-card-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .tipo-card.proximamente .tipo-card-badge {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
         /* Estilos adicionales para el modal */
         .modal-header.bg-warning {
             background-color: #ffc107 !important;
@@ -89,22 +156,49 @@
             <span class="titulo">REGISTRO DE DATOS FÍSICOS</span>
         </div>
 
-        <div class="row mb-3 align-items-end">
-            <div class="col-md-4">
-                <label class="mb-2">¿A quién va dirigido?</label>
-                <select id="ambos" class="form-select" onchange="mostrarFormulario()">
-                    <option selected disabled>Escoge una opción</option>
-                    <option value="alumnos">Alumnos</option>
-                </select>
+        <!-- Cards de selección de tipo de usuario -->
+        <div class="row g-3 mb-4 justify-content-center" id="cards-tipo">
+            <!-- Alumnos — activo -->
+            <div class="col-6 col-md-3">
+                <div class="tipo-card activo" onclick="seleccionarTipo('alumnos')" id="card-alumnos">
+                    <div class="tipo-card-icono"><i class="bi bi-mortarboard-fill"></i></div>
+                    <div class="tipo-card-nombre">Alumnos</div>
+                    <div class="tipo-card-badge">Disponible</div>
+                </div>
             </div>
-            <div class="col-md-8 d-flex justify-content-end">
-                <a href="exportar-excel.php" target="_blank"
-                   style="display:inline-flex;align-items:center;gap:.4rem;background:#16a34a;color:#fff;
-                          padding:.45rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;
-                          text-decoration:none;">
-                    <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar Excel
-                </a>
+            <!-- Docentes — próximamente -->
+            <div class="col-6 col-md-3">
+                <div class="tipo-card proximamente">
+                    <div class="tipo-card-icono"><i class="bi bi-person-workspace"></i></div>
+                    <div class="tipo-card-nombre">Docentes</div>
+                    <div class="tipo-card-badge">Próximamente</div>
+                </div>
             </div>
+            <!-- Administrativos — próximamente -->
+            <div class="col-6 col-md-3">
+                <div class="tipo-card proximamente">
+                    <div class="tipo-card-icono"><i class="bi bi-briefcase-fill"></i></div>
+                    <div class="tipo-card-nombre">Administrativos</div>
+                    <div class="tipo-card-badge">Próximamente</div>
+                </div>
+            </div>
+            <!-- Personal Operativo — próximamente -->
+            <div class="col-6 col-md-3">
+                <div class="tipo-card proximamente">
+                    <div class="tipo-card-icono"><i class="bi bi-tools"></i></div>
+                    <div class="tipo-card-nombre">Personal Operativo</div>
+                    <div class="tipo-card-badge">Próximamente</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="exportar-excel.php" target="_blank"
+               style="display:inline-flex;align-items:center;gap:.4rem;background:#16a34a;color:#fff;
+                      padding:.45rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;
+                      text-decoration:none;">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar Excel
+            </a>
         </div>
 
         <form action="guardar_datos_fisicos_alumnos.php" id="formalumnos" style="display: none;" method="post">
@@ -301,10 +395,10 @@
                             </div>
                         </div>
 
-                        <!-- SECCIÓN 3: Tensión Arterial -->
+                        <!-- SECCIÓN 3: Clínica -->
                         <div class="seccion-mediciones">
                             <div class="titulo-medicion">
-                                <i class="bi bi-heart-pulse-fill"></i> TENSIÓN ARTERIAL
+                                <i class="bi bi-heart-pulse-fill"></i> CLÍNICA
                             </div>
                             <div class="grupo-medicion">
                                 <label for="tensionarterial1">Tensión Arterial (mmHg)</label>
@@ -313,6 +407,14 @@
                             <div class="grupo-medicion">
                                 <label for="clasificacionta1">Clasificación T.A.</label>
                                 <input type="text" id="clasificacionta1" name="clasificacionta1" readonly>
+                            </div>
+                            <div class="grupo-medicion seccion-full">
+                                <label for="notas_clinicas1">Notas / Observaciones Clínicas</label>
+                                <textarea id="notas_clinicas1" name="notas_clinicas1" rows="3"
+                                    placeholder="Escriba aquí cualquier nota u observación clínica..."
+                                    style="width:100%;border:1px solid #ced4da;border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;font-family:inherit;transition:border-color .3s;"
+                                    onfocus="this.style.borderColor='#1e40af';this.style.boxShadow='0 0 0 0.2rem rgba(30,64,175,.15)'"
+                                    onblur="this.style.borderColor='#ced4da';this.style.boxShadow='none'"></textarea>
                             </div>
                         </div>
 
@@ -368,28 +470,15 @@
         crossorigin="anonymous"></script>
 
     <script>
-        function mostrarFormulario() {
-            var tipoUsuario = document.getElementById("ambos").value;
-
-            // Obtenemos los elementos
-            var formMaestros = document.getElementById("formmaestros");
-            var formAlumnos = document.getElementById("formalumnos");
-
-            // Ocultamos los formularios, SÓLO SI EXISTEN
-            if (formMaestros) {
-                formMaestros.style.display = "none";
-            }
-            if (formAlumnos) {
-                formAlumnos.style.display = "none";
-            }
-
-
-            // Mostramos el formulario correspondiente
-            if (tipoUsuario === "maestros" && formMaestros) {
-                formMaestros.style.display = "block";
-            } else if (tipoUsuario === "alumnos" && formAlumnos) {
-                formAlumnos.style.display = "block";
-            }
+        function seleccionarTipo(tipo) {
+            if (tipo !== 'alumnos') return; // solo alumnos está habilitado
+            // Marcar card seleccionada
+            document.querySelectorAll('.tipo-card.activo').forEach(c => c.classList.remove('seleccionado'));
+            const card = document.getElementById('card-' + tipo);
+            if (card) card.classList.add('seleccionado');
+            // Mostrar formulario
+            const formAlumnos = document.getElementById("formalumnos");
+            if (formAlumnos) formAlumnos.style.display = "block";
         }
     </script>
 

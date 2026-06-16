@@ -17,40 +17,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $matricula = trim($_POST["matricula"] ?? '');
     $fecha_historial = date("Y-m-d");
 
-    function obtenerValor($campo) {
-        return isset($_POST[$campo]) && $_POST[$campo] !== "" ? $_POST[$campo] : "ninguno";
+    // Los checkboxes llegan como arrays; unir con coma o "ninguno" si vacío
+    function obtenerFamiliares($campo) {
+        if (!empty($_POST[$campo]) && is_array($_POST[$campo])) {
+            return implode(', ', $_POST[$campo]);
+        }
+        return 'ninguno';
     }
 
-    // Datos para historial_alumnos
-    $sobrepeso = obtenerValor("uno1");
-    $diabetes = obtenerValor("dos1");
-    $hipertension = obtenerValor("tres1");
-    $trigliceridos = obtenerValor("cuatro1");
-    $colesterol = obtenerValor("cinco1");
-    $hepatitis = obtenerValor("seis1");
-    $higado_graso = obtenerValor("siete1");
-    $cardiopatias = obtenerValor("ocho1");
-    $nefropatias = obtenerValor("nueve1");
-    $estreñimiento = obtenerValor("diez1");
-    $gastritis = obtenerValor("once1");
-    $colitis = obtenerValor("doce1");
-    $cancer = obtenerValor("trece1");
-    $otros = obtenerValor("otra1");
+    $sobrepeso      = obtenerFamiliares("uno1");
+    $diabetes       = obtenerFamiliares("dos1");
+    $hipertension   = obtenerFamiliares("tres1");
+    $trigliceridos  = obtenerFamiliares("cuatro1");
+    $colesterol     = obtenerFamiliares("cinco1");
+    $hepatitis      = obtenerFamiliares("seis1");
+    $higado_graso   = obtenerFamiliares("siete1");
+    $cardiopatias   = obtenerFamiliares("ocho1");
+    $nefropatias    = obtenerFamiliares("nueve1");
+    $estreñimiento  = obtenerFamiliares("diez1");
+    $gastritis      = obtenerFamiliares("once1");
+    $colitis        = obtenerFamiliares("doce1");
+    $cancer         = obtenerFamiliares("trece1");
+    $otros          = obtenerFamiliares("catorce1");
+    $observaciones  = trim($_POST["observaciones1"] ?? '');
 
-    // **Iniciar transacción**
     $conn->begin_transaction();
 
     try {
-        // **Insertar en historial_alumnos**
-        $sql1 = "INSERT INTO historial_alumnos (matricula_alum, fecha_historial, sobrepeso, diabetes, hipertension, trigliceridos, colesterol, hepatitis, higado_graso, cardiopatias, nefropatias, estreñimiento, gastritis, colitis, cancer, otros) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+        $sql1 = "INSERT INTO historial_alumnos
+                 (matricula_alum, fecha_historial, sobrepeso, diabetes, hipertension, trigliceridos, colesterol, hepatitis, higado_graso, cardiopatias, nefropatias, estreñimiento, gastritis, colitis, cancer, otros, observaciones)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         $stmt1 = $conn->prepare($sql1);
-        $stmt1->bind_param("ssssssssssssssss", $matricula, $fecha_historial, $sobrepeso, $diabetes, $hipertension, $trigliceridos, $colesterol, $hepatitis, $higado_graso, $cardiopatias, $nefropatias, $estreñimiento, $gastritis, $colitis, $cancer, $otros);
+        $stmt1->bind_param("sssssssssssssssss",
+            $matricula, $fecha_historial,
+            $sobrepeso, $diabetes, $hipertension, $trigliceridos, $colesterol,
+            $hepatitis, $higado_graso, $cardiopatias, $nefropatias, $estreñimiento,
+            $gastritis, $colitis, $cancer, $otros, $observaciones
+        );
         $stmt1->execute();
         $stmt1->close();
 
-        // **Insertar en patologias_alumnos**
         if (!empty($_POST['enfermedad']) && is_array($_POST['enfermedad'])) {
             $sql2 = "INSERT INTO patologias_alumnos (enfermedad, tratamiento, fecha, matricula_alum) VALUES (?, ?, ?, ?)";
             $stmt2 = $conn->prepare($sql2);
@@ -63,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt2->close();
         }
 
-        // **Confirmar transacción**
         $conn->commit();
         echo json_encode(["success" => "Historial y patologías guardados correctamente"]);
     } catch (Exception $e) {
