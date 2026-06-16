@@ -56,14 +56,13 @@ $pdf->SetTextColor(255, 255, 255);
 $pdf->SetXY(3, 15);
 $pdf->Cell(16, 10, $ini, 0, 0, 'C');
 
-// ── UniSalud vertical text (left strip) ──────────────────────────────────
-$pdf->SetFont('Arial', 'B', 5.5);
+// ── UniSalud text (left strip, horizontal) ───────────────────────────────
+$pdf->SetFont('Arial', 'B', 4.5);
 $pdf->SetTextColor(196, 160, 6);
-$pdf->StartTransform();
-$pdf->Rotate(90, 4, 46);
-$pdf->SetXY(-42, 0);
-$pdf->Cell(40, 4, 'UNISALUD · UNACAR', 0, 0, 'C');
-$pdf->StopTransform();
+$pdf->SetXY(1, $H - 8);
+$pdf->Cell(20, 4, 'UNISALUD', 0, 1, 'C');
+$pdf->SetX(1);
+$pdf->Cell(20, 4, 'UNACAR', 0, 0, 'C');
 
 // ── Right content area ───────────────────────────────────────────────────
 $xL = 26; $yTop = 5;
