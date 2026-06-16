@@ -4,9 +4,20 @@ require_once '../config/config.php';
 require_once '../config/mail-config.php';
 
 if (MAIL_MODE === 'prod') {
-    require_once '../vendor/PHPMailer/src/Exception.php';
-    require_once '../vendor/PHPMailer/src/PHPMailer.php';
-    require_once '../vendor/PHPMailer/src/SMTP.php';
+    // Intentar ruta manual primero, luego Composer
+    if (file_exists('../vendor/PHPMailer/src/PHPMailer.php')) {
+        require_once '../vendor/PHPMailer/src/Exception.php';
+        require_once '../vendor/PHPMailer/src/PHPMailer.php';
+        require_once '../vendor/PHPMailer/src/SMTP.php';
+    } elseif (file_exists('../vendor/phpmailer/phpmailer/src/PHPMailer.php')) {
+        require_once '../vendor/phpmailer/phpmailer/src/Exception.php';
+        require_once '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+        require_once '../vendor/phpmailer/phpmailer/src/SMTP.php';
+    } else {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => 'PHPMailer no encontrado en el servidor']);
+        exit;
+    }
 }
 
 header('Content-Type: application/json; charset=utf-8');
@@ -98,7 +109,7 @@ try {
     $mail->SMTPAuth   = true;
     $mail->Username   = MAIL_USER;
     $mail->Password   = MAIL_PASS;
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = MAIL_PORT;
     $mail->CharSet    = 'UTF-8';
     $mail->SMTPOptions = [
