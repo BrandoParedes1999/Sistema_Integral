@@ -75,7 +75,7 @@ $conn = getDBConnection();
         throw new Exception("Error al preparar la consulta: " . $conn->error);
     }
 
-    $stmt->bind_param("i", $matricula);  
+    $stmt->bind_param("s", $matricula);
     $stmt->execute();
     $result = $stmt->get_result();
 
