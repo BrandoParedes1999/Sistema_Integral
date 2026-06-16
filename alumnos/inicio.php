@@ -51,6 +51,12 @@ $s->close();
 
 $conn->close();
 
+// ── Verificar si el PDF del reporte ya fue generado por el admin ──────────
+$mat_sanitizada  = preg_replace('/[^a-zA-Z0-9_\-]/', '', $mat);
+$carpetaReporte  = dirname(__DIR__) . '/datos-fisicos/reportes_salud/' . $mat_sanitizada . '/';
+$archivosReporte = (is_dir($carpetaReporte)) ? glob($carpetaReporte . '*.pdf') : [];
+$tieneReporte    = !empty($archivosReporte);
+
 // ── Helpers de severidad ───────────────────────────────────────────────
 function sevLabel($v, $tipo) {
     if ($tipo === 'dep') {
@@ -543,7 +549,7 @@ function actividadLabel($factor) {
     <?php endif; ?>
 
     <!-- ── Reporte de Salud ──────────────────────────────── -->
-    <?php if ($fisicos && $dass && $peps): ?>
+    <?php if ($tieneReporte): ?>
     <div class="sec-hd">Reporte de Salud Integral</div>
     <div class="res-card" style="margin-bottom:1.75rem;">
         <div class="res-body" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
