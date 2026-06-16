@@ -144,6 +144,7 @@ try {
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (\Exception $e) {
-    error_log('OTP mail error: ' . ($mail->ErrorInfo ?? $e->getMessage()));
-    echo json_encode(['error' => 'No se pudo enviar el correo. Intenta de nuevo.']);
+    $detalle = isset($mail) ? $mail->ErrorInfo : $e->getMessage();
+    error_log('OTP mail error: ' . $detalle);
+    echo json_encode(['error' => 'Error SMTP: ' . $detalle]);
 }
