@@ -345,7 +345,6 @@ $conn->close();
 <body>
     <div class="btn-group-fixed">
         <button class="btn-print" onclick="window.print()">🖨️ Imprimir Credencial</button>
-        <a class="btn-pdf" href="descargar-credencial-pdf.php?matricula=<?php echo urlencode($alumno['matricula_alum']); ?>">⬇️ Descargar PDF</a>
     </div>
 
     <div class="credencial-container">
@@ -353,7 +352,7 @@ $conn->close();
 
         <div class="content-layer">
             <div class="header">
-                <div><img src="/imagenes/logo.png" alt="Logo UNACAR"></div>
+                <div><img src="../imagenes/logo.png" alt="Logo UNACAR"></div>
             </div>
 
             <div class="main-body">

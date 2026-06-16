@@ -352,7 +352,7 @@ $host = $_SERVER['HTTP_HOST'];
 
                 <div class="content-layer">
                     <div class="header">
-                        <div><img src="/imagenes/logo.png" alt="Logo UNACAR"></div>
+                        <div><img src="../imagenes/logo.png" alt="Logo UNACAR"></div>
                     </div>
 
                     <div class="main-body">
