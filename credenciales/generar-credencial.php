@@ -38,10 +38,11 @@ if ($resultado->num_rows === 0) {
 $alumno = $resultado->fetch_assoc();
 $fecha_expiracion = date('d/m/Y', strtotime('+4 years'));
 
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-$host = $_SERVER['HTTP_HOST'];
+$protocol  = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$host      = $_SERVER['HTTP_HOST'];
+$basePath  = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
 
-$url_destino = "$protocol://$host/alumnos/informacion.html?m=" . $alumno['matricula_alum'];
+$url_destino = "$protocol://$host$basePath/alumnos/informacion.html?m=" . $alumno['matricula_alum'];
 
 $qr_src = "https://quickchart.io/qr?text=" . urlencode($url_destino) . "&size=150&margin=1";
 
