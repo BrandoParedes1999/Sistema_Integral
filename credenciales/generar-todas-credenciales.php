@@ -344,7 +344,7 @@ $host = $_SERVER['HTTP_HOST'];
 
         <?php while ($alumno = $resultado->fetch_assoc()):
             // Generar URL para cada alumno dentro del loop
-            $url_destino = "$protocol://$host/gestion-alumnos/perfil_alumno.php?m=" . $alumno['matricula_alum'];
+            $url_destino = "$protocol://$host/alumnos/informacion.html?m=" . $alumno['matricula_alum'];
             $qr_src = "https://quickchart.io/qr?text=" . urlencode($url_destino) . "&size=150&margin=1";
             ?>
             <div class="credencial-container">

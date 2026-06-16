@@ -41,7 +41,7 @@ $fecha_expiracion = date('d/m/Y', strtotime('+4 years'));
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
 
-$url_destino = "$protocol://$host/gestion-alumnos/perfil_alumno.php?m=" . $alumno['matricula_alum'];
+$url_destino = "$protocol://$host/alumnos/informacion.html?m=" . $alumno['matricula_alum'];
 
 $qr_src = "https://quickchart.io/qr?text=" . urlencode($url_destino) . "&size=150&margin=1";
 
