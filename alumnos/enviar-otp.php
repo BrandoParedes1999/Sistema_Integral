@@ -2,6 +2,13 @@
 session_start();
 require_once '../config/config.php';
 require_once '../config/mail-config.php';
+
+if (MAIL_MODE === 'prod') {
+    require_once '../vendor/PHPMailer/src/Exception.php';
+    require_once '../vendor/PHPMailer/src/PHPMailer.php';
+    require_once '../vendor/PHPMailer/src/SMTP.php';
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
 // ── Rate limiting: 3 envíos por IP cada 10 minutos ───────────────────────
@@ -84,14 +91,8 @@ if (MAIL_MODE === 'dev') {
 }
 
 // ── Modo producción: enviar email con PHPMailer ────────────────────────────
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-require_once '../vendor/PHPMailer/src/Exception.php';
-require_once '../vendor/PHPMailer/src/PHPMailer.php';
-require_once '../vendor/PHPMailer/src/SMTP.php';
-
 try {
-    $mail = new PHPMailer(true);
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
     $mail->isSMTP();
     $mail->Host       = MAIL_HOST;
     $mail->SMTPAuth   = true;
@@ -131,7 +132,7 @@ try {
         'mensaje' => 'Código enviado a tu correo institucional',
     ], JSON_UNESCAPED_UNICODE);
 
-} catch (Exception $e) {
-    error_log('OTP mail error: ' . $mail->ErrorInfo);
+} catch (\Exception $e) {
+    error_log('OTP mail error: ' . ($mail->ErrorInfo ?? $e->getMessage()));
     echo json_encode(['error' => 'No se pudo enviar el correo. Intenta de nuevo.']);
 }
