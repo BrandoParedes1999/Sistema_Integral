@@ -218,8 +218,11 @@ $conn = getDBConnection();
 
     error_log("Generando PDF para enviar a: $correo_destino");
 
-    // Llamar al generador con todos los parámetros necesarios
-    $url_generar = $protocol . "://" . $host . "/guardar_datos_fisicos_alumnos.php";
+    // Construir URL correcta con subdirectorio del proyecto
+    $protocol  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host      = $_SERVER['HTTP_HOST'];
+    $basePath  = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
+    $url_generar = $protocol . '://' . $host . $basePath . '/datos-fisicos/guardar_datos_fisicos_alumnos.php';
     
     // Preparar datos para enviar - INCLUYENDO el correo
     $post_data = http_build_query([
@@ -264,6 +267,9 @@ $conn = getDBConnection();
     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch2, CURLOPT_TIMEOUT, 120);
     curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch2, CURLOPT_COOKIE, session_name() . '=' . session_id());
+    curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, false);
     
     error_log("Enviando petición a: $url_generar");
     error_log("Con correo: $correo_destino");
