@@ -1,7 +1,4 @@
 <?php
-session_start();
-if (!isset($_SESSION['usuario'])) { header('Location: ../login.php'); exit(); }
-
 require_once '../config/config.php';
 require_once '../vendor/fpdf/fpdf.php';
 
