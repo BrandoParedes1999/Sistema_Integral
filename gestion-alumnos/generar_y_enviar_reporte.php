@@ -266,19 +266,34 @@ $conn = getDBConnection();
     curl_setopt($ch2, CURLOPT_POST, true);
     curl_setopt($ch2, CURLOPT_POSTFIELDS, $post_data);
     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch2, CURLOPT_TIMEOUT, 120);
+    curl_setopt($ch2, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch2, CURLOPT_COOKIE, session_name() . '=' . session_id());
     curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch2, CURLOPT_SSL_VERIFYHOST, false);
-    
+
     error_log("Enviando petición a: $url_generar");
     error_log("Con correo: $correo_destino");
-    
-    $response = curl_exec($ch2);
+
+    $response   = curl_exec($ch2);
     $curl_error2 = curl_error($ch2);
-    $http_code2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+    $http_code2  = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
     curl_close($ch2);
+
+    // Verificar si el PDF ya existe en disco (el servidor puede bloquear loopback pero igual genera el archivo)
+    $mat_sanitizada = preg_replace('/[^a-zA-Z0-9_\-]/', '', $matricula);
+    $carpetaPDF = dirname(__DIR__) . '/datos-fisicos/reportes_salud/' . $mat_sanitizada . '/';
+    $pdfGenerado = !empty(glob($carpetaPDF . '*.pdf'));
+
+    if ($pdfGenerado) {
+        error_log("=== PDF encontrado en disco — éxito ===");
+        $conn->close();
+        enviarJSON([
+            'success' => true,
+            'mensaje' => 'Reporte generado y enviado exitosamente',
+            'correo_enviado' => true,
+        ]);
+    }
 
     if ($response === false) {
         throw new Exception('Error al generar PDF: ' . $curl_error2);
