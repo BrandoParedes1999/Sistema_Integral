@@ -8,6 +8,7 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 require_once '../config/config.php';
+require_once '../config/mail-config.php';
 // Configuración de errores y output buffering
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -1611,13 +1612,12 @@ $conn = getDBConnection();
         };
 
         $mail->isSMTP();
-        $mail->Host = 'mail.sistema-integral-de-salud-unacar.com.mx';
+        $mail->Host = MAIL_HOST;
         $mail->SMTPAuth = true;
-        $mail->Username = 'noreply@sistema-integral-de-salud-unacar.com.mx';
-        $mail->Password = 'sklike5522';
-        $mail->Port = 25;
-        $mail->SMTPSecure = '';
-        $mail->SMTPAutoTLS = false;
+        $mail->Username = MAIL_USER;
+        $mail->Password = MAIL_PASS;
+        $mail->Port = MAIL_PORT;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->CharSet = 'UTF-8';
         $mail->Encoding = 'base64';
         $mail->Timeout = 60;
@@ -1632,7 +1632,7 @@ $conn = getDBConnection();
 
         error_log("Configuración SMTP completada");
 
-        $mail->setFrom('noreply@sistema-integral-de-salud-unacar.com.mx', 'Sistema Integral de Salud UNACAR');
+        $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
         $mail->addAddress($destinatario_email);
 
         error_log("Remitente y destinatario configurados");

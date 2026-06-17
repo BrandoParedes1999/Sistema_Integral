@@ -5,7 +5,7 @@ define('MAIL_MODE', 'prod');   // 'dev' = muestra código en pantalla | 'prod' =
 
 define('MAIL_HOST',     'mail.unisalud.com.mx');
 define('MAIL_PORT',     465);
-define('MAIL_USER',     '_mainaccount@unisalud.com.mx');
-define('MAIL_PASS',     'TU_CONTRASEÑA_CPANEL');   // <-- pon aquí tu contraseña de cPanel
-define('MAIL_FROM',     '_mainaccount@unisalud.com.mx');
+define('MAIL_USER',     'noreply@unisalud.com.mx');
+define('MAIL_PASS',     'pa$$w0rd210426#');
+define('MAIL_FROM',     'noreply@unisalud.com.mx');
 define('MAIL_FROM_NAME','UniSalud UNACAR');
