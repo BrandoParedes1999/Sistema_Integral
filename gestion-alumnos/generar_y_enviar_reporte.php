@@ -229,6 +229,7 @@ $conn = getDBConnection();
         'matricula' => $matricula,
         'correo1' => $correo_destino,
         'solo_generar_pdf' => 'true',
+        'internal_token' => 'unisalud_internal_2024_xK9p',
         // Agregar campos dummy para evitar errores de validación
         'peso1' => '0',
         'talla1' => '0',

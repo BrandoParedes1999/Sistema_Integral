@@ -1,6 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuario'])) {
+define('INTERNAL_TOKEN', 'unisalud_internal_2024_xK9p');
+
+$token_ok = isset($_POST['internal_token']) && $_POST['internal_token'] === INTERNAL_TOKEN;
+
+if (!isset($_SESSION['usuario']) && !$token_ok) {
     header('Content-Type: application/json; charset=UTF-8');
     http_response_code(401);
     echo json_encode(['error' => 'No autorizado']);
