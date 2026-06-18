@@ -21,8 +21,8 @@ $actual      = trim($_POST['password_actual']   ?? '');
 $nueva       = trim($_POST['password_nueva']    ?? '');
 $confirmacion = trim($_POST['password_confirmar'] ?? '');
 
-if (empty($actual) || empty($nueva) || empty($confirmacion)) {
-    echo json_encode(['error' => 'Todos los campos son obligatorios']);
+if (empty($nueva) || empty($confirmacion)) {
+    echo json_encode(['error' => 'Ingresa la nueva contraseña y su confirmación']);
     exit();
 }
 if (strlen($nueva) < 8) {
@@ -43,11 +43,22 @@ $stmt->execute();
 $row = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-if (!$row || !password_verify($actual, $row['password'])) {
-    $conn->close();
-    echo json_encode(['error' => 'La contraseña actual es incorrecta']);
-    exit();
+$tienePassword = !empty($row['password']);
+
+if ($tienePassword) {
+    // User already has a password — require current password verification
+    if (empty($actual)) {
+        $conn->close();
+        echo json_encode(['error' => 'Ingresa tu contraseña actual']);
+        exit();
+    }
+    if (!password_verify($actual, $row['password'])) {
+        $conn->close();
+        echo json_encode(['error' => 'La contraseña actual es incorrecta']);
+        exit();
+    }
 }
+// If $tienePassword is false, skip verification — allow first-time password setup
 
 $hash = password_hash($nueva, PASSWORD_BCRYPT);
 $stmt = $conn->prepare("UPDATE alumnos SET password = ? WHERE matricula_alum = ?");
