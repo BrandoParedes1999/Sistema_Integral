@@ -51,6 +51,16 @@ $s->close();
 
 $conn->close();
 
+// ── Verificar si el alumno ya tiene contraseña establecida ────────────
+$connPw = getDBConnection();
+$stmtPw = $connPw->prepare("SELECT password FROM alumnos WHERE matricula_alum = ?");
+$stmtPw->bind_param('s', $mat);
+$stmtPw->execute();
+$rowPw = $stmtPw->get_result()->fetch_assoc();
+$stmtPw->close();
+$connPw->close();
+$tienePassword = !empty($rowPw['password']);
+
 // ── Verificar si el PDF del reporte ya fue generado por el admin ──────────
 $mat_sanitizada  = preg_replace('/[^a-zA-Z0-9_\-]/', '', $mat);
 $carpetaReporte  = dirname(__DIR__) . '/datos-fisicos/reportes_salud/' . $mat_sanitizada . '/';
@@ -281,6 +291,9 @@ function actividadLabel($factor) {
         </a>
         <a class="topbar-link" href="../cuestionarios/menuAlum.php">
             <i class="bi bi-clipboard-check"></i> Cuestionarios
+        </a>
+        <a class="topbar-link" href="planificador/planificador_menu.php">
+            <i class="bi bi-calendar2-heart"></i> Planificador
         </a>
     </nav>
     <button class="btn-logout" data-bs-toggle="modal" data-bs-target="#modalLogout">
@@ -769,7 +782,13 @@ function actividadLabel($factor) {
             </div>
             <div class="modal-body px-4 py-3">
                 <div id="pwAlert" class="alert d-none"></div>
-                <div class="mb-3">
+                <?php if (!$tienePassword): ?>
+                <div class="alert alert-info d-flex align-items-center gap-2 py-2" style="font-size:.83rem;">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Aún no tienes contraseña. Crea una para poder iniciar sesión sin código de verificación.
+                </div>
+                <?php endif; ?>
+                <div class="mb-3<?= $tienePassword ? '' : ' d-none' ?>" id="pwActualWrap">
                     <label class="form-label fw-semibold" style="font-size:.85rem;">Contraseña actual</label>
                     <input type="password" id="pwActual" class="form-control" placeholder="••••••••">
                 </div>
@@ -861,9 +880,9 @@ document.getElementById('btnGuardarPassword').addEventListener('click', function
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            actual:    document.getElementById('pwActual').value,
-            nueva:     nueva,
-            confirmar: confirmar
+            password_actual:    document.getElementById('pwActual').value,
+            password_nueva:     nueva,
+            password_confirmar: confirmar
         })
     })
     .then(r => r.json())
