@@ -10,7 +10,7 @@ if (isset($_GET['matricula_alum'])) {
 
     $query = "SELECT * FROM historial_alumnos WHERE matricula_alum = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $matricula);
+    $stmt->bind_param("s", $matricula);
     $stmt->execute();
     $result = $stmt->get_result();
     

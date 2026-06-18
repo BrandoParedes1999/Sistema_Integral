@@ -38,10 +38,11 @@ if ($resultado->num_rows === 0) {
 $alumno = $resultado->fetch_assoc();
 $fecha_expiracion = date('d/m/Y', strtotime('+4 years'));
 
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-$host = $_SERVER['HTTP_HOST'];
+$protocol  = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$host      = $_SERVER['HTTP_HOST'];
+$basePath  = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
 
-$url_destino = "$protocol://$host/perfil_alumno.php?m=" . $alumno['matricula_alum'];
+$url_destino = "$protocol://$host$basePath/alumnos/informacion.html?m=" . $alumno['matricula_alum'];
 
 $qr_src = "https://quickchart.io/qr?text=" . urlencode($url_destino) . "&size=150&margin=1";
 
@@ -345,7 +346,6 @@ $conn->close();
 <body>
     <div class="btn-group-fixed">
         <button class="btn-print" onclick="window.print()">🖨️ Imprimir Credencial</button>
-        <a class="btn-pdf" href="descargar-credencial-pdf.php?matricula=<?php echo urlencode($alumno['matricula_alum']); ?>">⬇️ Descargar PDF</a>
     </div>
 
     <div class="credencial-container">
@@ -353,7 +353,7 @@ $conn->close();
 
         <div class="content-layer">
             <div class="header">
-                <div><img src="/imagenes/logo.png" alt="Logo UNACAR"></div>
+                <div><img src="../imagenes/logo.png" alt="Logo UNACAR"></div>
             </div>
 
             <div class="main-body">

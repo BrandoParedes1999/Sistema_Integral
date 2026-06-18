@@ -7,6 +7,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="imagenes/unisalud-sf.png">
     <link rel="stylesheet" href="login.css">
+    <style>
+        .otp-input {
+            letter-spacing: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .correo-hint {
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+            margin: 8px 0 16px;
+        }
+        .dev-banner {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #856404;
+        }
+        .dev-banner strong { font-size: 1.5rem; letter-spacing: 6px; display: block; margin-top: 4px; }
+        .btn-back {
+            background: none;
+            border: none;
+            color: #003da5;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 0;
+            margin-top: 8px;
+            text-decoration: underline;
+        }
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+        .step-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        .step-dot.active { background: #003da5; }
+    </style>
 </head>
 <body>
 
@@ -14,172 +62,207 @@
         <div class="brand-content">
             <img src="imagenes/unisalud-sf.png" alt="UniSalud" class="brand-logo">
             <h2>Bienvenido al Portal de Estudiantes</h2>
-            <p>Gestiona tu información de Salud, resultados de cuestionarios realizados, además de información de emergencia.</p>
+            <p>Gestiona tu información de salud, resultados de cuestionarios y datos de emergencia.</p>
         </div>
     </div>
 
     <div class="login-section">
         <div class="login-header">
             <h1>Iniciar Sesión</h1>
-            <p>Ingresa tus credenciales institucionales para continuar.</p>
         </div>
 
-        <div id="alerta" class="alert" style="display: none;"></div>
+        <div id="alerta" class="alert" style="display:none;"></div>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="matricula">Matrícula</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        id="matricula" 
-                        name="matricula" 
-                        placeholder="Ej. 123456"
-                        required
-                        autocomplete="username"
-                    >
-                </div>
+        <!-- ── PASO 1: Matrícula ── -->
+        <div id="paso1">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <span>Paso 1 de 2 — Ingresa tu matrícula</span>
             </div>
 
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Ingresa tu contraseña"
-                        required
-                        autocomplete="current-password"
-                    >
-                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar contraseña">
-                        <span id="eye-icon">👁️</span>
-                    </button>
+            <form id="formMatricula">
+                <div class="form-group">
+                    <label for="matricula">Matrícula</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="matricula" name="matricula"
+                               placeholder="Ej. 123456" required autocomplete="username">
+                    </div>
                 </div>
-                <div class="password-hint">
-                    Formato: Salud + fecha de nacimiento (AAAA-MM-DD) (Ejem:Salud0000-01-01)
-                </div>
-            </div>
-
-            <button type="submit" class="btn-login" id="submitBtn">
-                Acceder al Portal
-            </button>
-        </form>
-
-        <div class="help-text" style="margin-bottom:.5rem;">
-            <a href="recuperar-password.php" style="color:#003da5;font-weight:500;">¿Olvidaste tu contraseña?</a>
+                <button type="submit" class="btn-login" id="btnEnviar">
+                    Enviar código de acceso
+                </button>
+            </form>
         </div>
-        <div class="help-text">
-            ¿No tienes una cuenta activa? <a href="../cuestionarios/registro.html">Solicitar registro</a>
+
+        <!-- ── PASO 2: Código OTP ── -->
+        <div id="paso2" style="display:none;">
+            <div class="step-indicator">
+                <div class="step-dot"></div>
+                <div class="step-dot active"></div>
+                <span>Paso 2 de 2 — Ingresa el código</span>
+            </div>
+
+            <div id="devBanner" class="dev-banner" style="display:none;">
+                ⚠️ Modo desarrollo — código generado:
+                <strong id="devCodigo"></strong>
+            </div>
+
+            <p class="correo-hint" id="correoHint"></p>
+
+            <form id="formOtp">
+                <div class="form-group">
+                    <label for="codigo">Código de verificación</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="codigo" name="codigo"
+                               class="otp-input" placeholder="000000"
+                               maxlength="6" required autocomplete="one-time-code">
+                    </div>
+                </div>
+                <button type="submit" class="btn-login" id="btnVerificar">
+                    Acceder al Portal
+                </button>
+            </form>
+
+            <div style="text-align:center; margin-top:12px;">
+                <button class="btn-back" onclick="volverPaso1()">← Cambiar matrícula</button>
+                &nbsp;·&nbsp;
+                <button class="btn-back" id="btnReenviar" onclick="reenviarCodigo()">Reenviar código</button>
+            </div>
+        </div>
+
+        <div class="help-text" style="margin-top:20px;">
+            ¿No tienes cuenta activa? <a href="../cuestionarios/registro.html">Solicitar registro</a>
         </div>
     </div>
 
     <script>
-        function togglePassword() {
-            var passwordInput = document.getElementById('password');
-            var icon = document.getElementById('eye-icon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                icon.textContent = '👁️';
-            }
-        }
+        let matriculaActual = '';
+
+        // Convertir matrícula a mayúsculas
+        document.getElementById('matricula').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Solo números en el código OTP
+        document.getElementById('codigo').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
 
         function mostrarAlerta(mensaje, tipo) {
-            var alerta = document.getElementById('alerta');
+            const alerta = document.getElementById('alerta');
             alerta.className = 'alert alert-' + tipo;
             alerta.textContent = mensaje;
             alerta.style.display = 'block';
-            
-            if (tipo === 'error') {
-                var btn = document.querySelector('.btn-login');
-                btn.classList.add('shake');
-                setTimeout(function() {
-                    btn.classList.remove('shake');
-                }, 300);
-            }
-
-            setTimeout(function() {
-                alerta.style.display = 'none';
-            }, 5000);
+            setTimeout(() => alerta.style.display = 'none', 6000);
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            var btn = document.getElementById('submitBtn');
-            var originalBtnText = btn.innerText;
-            
-            btn.disabled = true;
-            btn.innerText = "Verificando...";
-            
-            var matricula = document.getElementById('matricula').value.trim();
-            var password = document.getElementById('password').value.trim();
-            
-            if (!matricula || !password) {
-                mostrarAlerta('Por favor completa todos los campos', 'error');
-                btn.disabled = false;
-                btn.innerText = originalBtnText;
-                return;
-            }
+        function setLoading(btnId, loading, textoOriginal) {
+            const btn = document.getElementById(btnId);
+            btn.disabled = loading;
+            btn.innerText = loading ? 'Cargando...' : textoOriginal;
+        }
 
-            var formData = new FormData();
-            formData.append('matricula', matricula);
-            formData.append('password', password);
+        // ── PASO 1: Enviar matrícula ──────────────────────────────────────
+        document.getElementById('formMatricula').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const matricula = document.getElementById('matricula').value.trim();
+            if (!matricula) { mostrarAlerta('Ingresa tu matrícula', 'error'); return; }
+
+            setLoading('btnEnviar', true, 'Enviar código de acceso');
 
             try {
-                console.log('Intentando conectar a: alumnos-login.php');
+                const fd = new FormData();
+                fd.append('matricula', matricula);
+                const res  = await fetch('enviar-otp.php', { method: 'POST', body: fd });
+                const data = await res.json();
 
-                var response = await fetch('alumnos-login.php', {
-                    method: 'POST',
-                    body: formData
-                });
+                if (data.error) {
+                    mostrarAlerta(data.error, 'error');
+                } else {
+                    matriculaActual = matricula;
+                    // Mostrar paso 2
+                    document.getElementById('paso1').style.display = 'none';
+                    document.getElementById('paso2').style.display = 'block';
+                    document.getElementById('alerta').style.display = 'none';
 
-                console.log('Status de respuesta:', response.status);
-                console.log('Headers:', response.headers);
-                
-                // Intentar obtener el texto primero para ver qué está devolviendo
-                var textoRespuesta = await response.text();
-                console.log('Respuesta como texto:', textoRespuesta);
-                
-                // Intentar parsear como JSON
-                var data;
-                try {
-                    data = JSON.parse(textoRespuesta);
-                } catch (parseError) {
-                    console.error('Error al parsear JSON:', parseError);
-                    mostrarAlerta('Error del servidor. Respuesta no válida. Revisa la consola (F12)', 'error');
-                    btn.disabled = false;
-                    btn.innerText = originalBtnText;
-                    return;
+                    // Hint del correo
+                    document.getElementById('correoHint').textContent =
+                        'Código enviado a ' + data.correo + ' (válido 10 min)';
+
+                    // Banner modo dev
+                    if (data.dev_codigo) {
+                        document.getElementById('devCodigo').textContent = data.dev_codigo;
+                        document.getElementById('devBanner').style.display = 'block';
+                    }
+
+                    document.getElementById('codigo').focus();
                 }
+            } catch (err) {
+                mostrarAlerta('Error de conexión. Intenta de nuevo.', 'error');
+            }
 
-                console.log('Datos parseados:', data);
+            setLoading('btnEnviar', false, 'Enviar código de acceso');
+        });
+
+        // ── PASO 2: Verificar OTP ─────────────────────────────────────────
+        document.getElementById('formOtp').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('codigo').value.trim();
+            if (codigo.length !== 6) { mostrarAlerta('El código debe tener 6 dígitos', 'error'); return; }
+
+            setLoading('btnVerificar', true, 'Acceder al Portal');
+
+            try {
+                const fd = new FormData();
+                fd.append('matricula', matriculaActual);
+                fd.append('codigo', codigo);
+                const res  = await fetch('verificar-otp.php', { method: 'POST', body: fd });
+                const data = await res.json();
 
                 if (data.success) {
                     mostrarAlerta('Acceso correcto. Redirigiendo...', 'success');
-                    setTimeout(function() {
-                        window.location.href = "inicio.php";
-                    }, 1000);
-                } else if (data.error) {
+                    setTimeout(() => window.location.href = 'inicio.php', 1000);
+                } else {
                     mostrarAlerta(data.error, 'error');
-                    btn.disabled = false;
-                    btn.innerText = originalBtnText;
+                    setLoading('btnVerificar', false, 'Acceder al Portal');
                 }
-            } catch (error) {
-                console.error('Error completo:', error);
-                mostrarAlerta('Error de conexión con el servidor. Detalles en consola (F12)', 'error');
-                btn.disabled = false;
-                btn.innerText = originalBtnText;
+            } catch (err) {
+                mostrarAlerta('Error de conexión. Intenta de nuevo.', 'error');
+                setLoading('btnVerificar', false, 'Acceder al Portal');
             }
         });
 
-        document.getElementById('matricula').addEventListener('input', function(e) {
-            e.target.value = e.target.value.toUpperCase();
-        });
+        function volverPaso1() {
+            document.getElementById('paso2').style.display = 'none';
+            document.getElementById('paso1').style.display = 'block';
+            document.getElementById('codigo').value = '';
+            document.getElementById('devBanner').style.display = 'none';
+            document.getElementById('alerta').style.display = 'none';
+        }
+
+        function reenviarCodigo() {
+            document.getElementById('codigo').value = '';
+            document.getElementById('devBanner').style.display = 'none';
+            document.getElementById('formMatricula').dispatchEvent(new Event('submit'));
+            // Simular envío con matrícula actual
+            const fd = new FormData();
+            fd.append('matricula', matriculaActual);
+            document.getElementById('btnReenviar').disabled = true;
+            fetch('enviar-otp.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) { mostrarAlerta(data.error, 'error'); }
+                    else {
+                        mostrarAlerta('Nuevo código enviado', 'success');
+                        if (data.dev_codigo) {
+                            document.getElementById('devCodigo').textContent = data.dev_codigo;
+                            document.getElementById('devBanner').style.display = 'block';
+                        }
+                    }
+                    document.getElementById('btnReenviar').disabled = false;
+                });
+        }
     </script>
 </body>
 </html>

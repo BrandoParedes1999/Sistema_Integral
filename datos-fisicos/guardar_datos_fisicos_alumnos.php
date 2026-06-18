@@ -1,6 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuario'])) {
+define('INTERNAL_TOKEN', 'unisalud_internal_2024_xK9p');
+
+$token_ok = isset($_POST['internal_token']) && $_POST['internal_token'] === INTERNAL_TOKEN;
+
+if (!isset($_SESSION['usuario']) && !$token_ok) {
     header('Content-Type: application/json; charset=UTF-8');
     http_response_code(401);
     echo json_encode(['error' => 'No autorizado']);
@@ -8,6 +12,7 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 require_once '../config/config.php';
+require_once '../config/mail-config.php';
 // Configuración de errores y output buffering
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -192,35 +197,59 @@ $conn = getDBConnection();
         }
     }
 
-    // PASO 3: Obtener datos consolidados
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-    $host = $_SERVER['HTTP_HOST'];
-    $url_api = $protocol . "://" . $host . "/resultadospdf.php?matricula_alum=" . urlencode($matricula);
+    // PASO 3: Obtener datos consolidados directamente desde la BD (sin curl)
+    error_log("Consultando datos consolidados para matrícula: $matricula");
 
-    error_log("Consultando API: " . $url_api);
+    $sql_consolidado = "SELECT
+        a.nombres_alum, a.ape_paterno_alum, a.ape_materno_alum, a.matricula_alum, a.edad_alum, a.correo_alum,
+        f.nombre_facultad, c.nombre_carrera,
+        df.fecha, df.imc, df.peso, df.talla, df.clasificacion_imc, df.icc, df.clasificacion_de_icc,
+        df.masa_magra, df.ice, df.porcentaje_masa_grasa, df.clasificacion_porcentaje_grasa,
+        df.get1, df.porcentaje_agua_total, df.agua_total,
+        df.glucosa, df.clasificacion_glucosa,
+        df.colesterol, df.clasificacion_colesterol,
+        df.trigliceridos, df.clasificacion_trigliceridos,
+        df.tension_arterial, df.clasificacion_tension_arterial,
+        ev.total AS total_estilo_vida, ev.estado_saludable AS estado_estilo_vida,
+        nut.total_nutricion, nut.saludable AS saludable_nutricion,
+        eje.total_ejercicio, eje.saludable_ejercicio,
+        sal.total_salud, sal.saludable_salud,
+        sop.total_soporte, sop.saludable_soporte,
+        mes.total_manejoestres, mes.saludable_manejo,
+        aut.total_autoactualizacion, aut.saludable_autoactualizacion,
+        dass.total_depresion, dass.total_ansiedad, dass.total_estres, dass.total_general,
+        da.severidad AS severidad_ansiedad,
+        dd.severidad AS severidad_depresion,
+        de.severidad AS severidad_estres
+    FROM (SELECT * FROM datos_fisicos_alumnos WHERE matricula_alum = ? ORDER BY fecha DESC LIMIT 1) df
+    LEFT JOIN alumnos a ON df.matricula_alum = a.matricula_alum
+    LEFT JOIN carrera c ON a.id_carrera = c.id_carrera
+    LEFT JOIN facultad f ON a.id_facultad = f.id_facultad
+    LEFT JOIN (SELECT * FROM estilo_de_vida WHERE matricula_alum = ? ORDER BY id_cuestionario DESC LIMIT 1) ev
+        ON df.matricula_alum = ev.matricula_alum
+    LEFT JOIN nutricion nut ON ev.id_cuestionario = nut.id_cuestionario
+    LEFT JOIN ejercicio eje ON ev.id_cuestionario = eje.id_cuestionario
+    LEFT JOIN salud sal ON ev.id_cuestionario = sal.id_cuestionario
+    LEFT JOIN soporte_interpersonal sop ON ev.id_cuestionario = sop.id_cuestionario
+    LEFT JOIN manejo_de_estres mes ON ev.id_cuestionario = mes.id_cuestionario
+    LEFT JOIN autoactualizacion aut ON ev.id_cuestionario = aut.id_cuestionario
+    LEFT JOIN (SELECT * FROM dass WHERE matricula_alum = ? ORDER BY id_cuestionario DESC LIMIT 1) dass
+        ON df.matricula_alum = dass.matricula_alum
+    LEFT JOIN dass_ansiedad da ON dass.id_cuestionario = da.id_cuestionario
+    LEFT JOIN dass_depresion dd ON dass.id_cuestionario = dd.id_cuestionario
+    LEFT JOIN dass_estres de ON dass.id_cuestionario = de.id_cuestionario";
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url_api);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    $json_data = curl_exec($ch);
-    $curl_error = curl_error($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($json_data === false) {
-        throw new Exception('Error al contactar servicio de reportes: ' . $curl_error);
+    $stmt_cons = $conn->prepare($sql_consolidado);
+    if (!$stmt_cons) {
+        throw new Exception('Error preparando consulta consolidada: ' . $conn->error);
     }
+    $stmt_cons->bind_param('sss', $matricula, $matricula, $matricula);
+    $stmt_cons->execute();
+    $datos_pdf = $stmt_cons->get_result()->fetch_assoc();
+    $stmt_cons->close();
 
-    if ($http_code !== 200) {
-        throw new Exception('Servicio de reportes respondió con código: ' . $http_code);
-    }
-
-    $datos_pdf = json_decode($json_data, true);
-
-    if (!$datos_pdf || isset($datos_pdf['error'])) {
-        throw new Exception('No se encontraron datos consolidados: ' . ($datos_pdf['error'] ?? 'Respuesta vacía'));
+    if (!$datos_pdf) {
+        throw new Exception('No se encontraron datos físicos para la matrícula. Verifica que el alumno tenga datos físicos registrados.');
     }
 
     // ✅ VALIDACIÓN: Solo cuando NO es modo PDF
@@ -1587,13 +1616,12 @@ $conn = getDBConnection();
         };
 
         $mail->isSMTP();
-        $mail->Host = 'mail.sistema-integral-de-salud-unacar.com.mx';
+        $mail->Host = MAIL_HOST;
         $mail->SMTPAuth = true;
-        $mail->Username = 'noreply@sistema-integral-de-salud-unacar.com.mx';
-        $mail->Password = 'sklike5522';
-        $mail->Port = 25;
-        $mail->SMTPSecure = '';
-        $mail->SMTPAutoTLS = false;
+        $mail->Username = MAIL_USER;
+        $mail->Password = MAIL_PASS;
+        $mail->Port = MAIL_PORT;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->CharSet = 'UTF-8';
         $mail->Encoding = 'base64';
         $mail->Timeout = 60;
@@ -1608,7 +1636,7 @@ $conn = getDBConnection();
 
         error_log("Configuración SMTP completada");
 
-        $mail->setFrom('noreply@sistema-integral-de-salud-unacar.com.mx', 'Sistema Integral de Salud UNACAR');
+        $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
         $mail->addAddress($destinatario_email);
 
         error_log("Remitente y destinatario configurados");

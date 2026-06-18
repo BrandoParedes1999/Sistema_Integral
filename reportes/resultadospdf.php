@@ -32,6 +32,8 @@ $conn = getDBConnection();
     }
 
     // --- CONSULTA ---
+    // Usa subconsultas para tomar SIEMPRE el cuestionario más reciente de cada tabla,
+    // evitando duplicados cuando el alumno tiene múltiples registros.
     $sql = "SELECT
         a.nombres_alum, a.ape_paterno_alum, a.ape_materno_alum, a.matricula_alum, a.edad_alum, a.correo_alum,
         f.nombre_facultad,
@@ -51,36 +53,35 @@ $conn = getDBConnection();
         da.severidad AS severidad_ansiedad,
         dd.severidad AS severidad_depresion,
         de.severidad AS severidad_estres
-    FROM datos_fisicos_alumnos df
+    FROM (SELECT * FROM datos_fisicos_alumnos WHERE matricula_alum = ? ORDER BY fecha DESC LIMIT 1) df
     LEFT JOIN alumnos a ON df.matricula_alum = a.matricula_alum
     LEFT JOIN carrera c ON a.id_carrera = c.id_carrera
     LEFT JOIN facultad f ON a.id_facultad = f.id_facultad
-    LEFT JOIN estilo_de_vida ev ON df.matricula_alum = ev.matricula_alum
+    LEFT JOIN (SELECT * FROM estilo_de_vida WHERE matricula_alum = ? ORDER BY id_cuestionario DESC LIMIT 1) ev
+        ON df.matricula_alum = ev.matricula_alum
     LEFT JOIN nutricion nut ON ev.id_cuestionario = nut.id_cuestionario
     LEFT JOIN ejercicio eje ON ev.id_cuestionario = eje.id_cuestionario
     LEFT JOIN salud sal ON ev.id_cuestionario = sal.id_cuestionario
     LEFT JOIN soporte_interpersonal sop ON ev.id_cuestionario = sop.id_cuestionario
     LEFT JOIN manejo_de_estres mes ON ev.id_cuestionario = mes.id_cuestionario
     LEFT JOIN autoactualizacion aut ON ev.id_cuestionario = aut.id_cuestionario
-    LEFT JOIN dass ON df.matricula_alum = dass.matricula_alum
+    LEFT JOIN (SELECT * FROM dass WHERE matricula_alum = ? ORDER BY id_cuestionario DESC LIMIT 1) dass
+        ON df.matricula_alum = dass.matricula_alum
     LEFT JOIN dass_ansiedad da ON dass.id_cuestionario = da.id_cuestionario
     LEFT JOIN dass_depresion dd ON dass.id_cuestionario = dd.id_cuestionario
-    LEFT JOIN dass_estres de ON dass.id_cuestionario = de.id_cuestionario
-    WHERE df.matricula_alum = ?
-    ORDER BY df.fecha DESC
-    LIMIT 1;";
+    LEFT JOIN dass_estres de ON dass.id_cuestionario = de.id_cuestionario;";
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("Error al preparar la consulta: " . $conn->error);
     }
 
-    $stmt->bind_param("i", $matricula);  
+    $stmt->bind_param("sss", $matricula, $matricula, $matricula);
     $stmt->execute();
     $result = $stmt->get_result();
+    $datos  = $result->fetch_assoc();
 
-    if ($result->num_rows > 0) {
-        $datos = $result->fetch_assoc();
+    if ($datos) {
         echo json_encode($datos, JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(404);

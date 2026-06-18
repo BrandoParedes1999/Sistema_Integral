@@ -89,5 +89,34 @@
             </div>
         </form>
     </div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const matricula = params.get('m');
+
+    if (!matricula) {
+        document.querySelector('.header p').textContent = 'No se proporcionó matrícula.';
+    } else {
+        fetch('get-info-alumno.php?m=' + encodeURIComponent(matricula))
+            .then(r => r.json())
+            .then(d => {
+                if (d.error) {
+                    document.querySelector('.header p').textContent = d.error;
+                    return;
+                }
+                document.getElementById('nombre').value           = d.nombres_alum || '';
+                document.getElementById('apellido-paterno').value = d.ape_paterno_alum || '';
+                document.getElementById('apellido-materno').value = d.ape_materno_alum || '';
+                document.getElementById('tipo-sangre').value      = d.tipo_sangre || '';
+                document.getElementById('fecha-nacimiento').value = d.fe_nacimiento_alum || '';
+                document.getElementById('matricula').value        = d.matricula_alum || '';
+                document.getElementById('alergias').value         = d.enfermedades || '';
+                document.getElementById('seguro-social').value    = d.nss || '';
+                document.getElementById('telefono1').value        = d.emergencia || '';
+            })
+            .catch(() => {
+                document.querySelector('.header p').textContent = 'Error al cargar los datos.';
+            });
+    }
+</script>
 </body>
 </html>
