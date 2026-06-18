@@ -282,6 +282,9 @@ function actividadLabel($factor) {
         <a class="topbar-link" href="../cuestionarios/menuAlum.php">
             <i class="bi bi-clipboard-check"></i> Cuestionarios
         </a>
+        <a class="topbar-link" href="planificador/planificador_menu.php">
+            <i class="bi bi-calendar2-heart"></i> Planificador
+        </a>
     </nav>
     <button class="btn-logout" data-bs-toggle="modal" data-bs-target="#modalLogout">
         <i class="bi bi-box-arrow-right"></i> Salir
