@@ -55,6 +55,51 @@ while ($fila = $resTiempos->fetch_assoc()) {
 $idDiaInicial     = $dias[0]['id_dia'] ?? 1;
 $idTiempoInicial  = $tiempos[0]['id_tiempo'] ?? 1;
 $nombreDiaInicial = $dias[0]['nombre_dia'] ?? 'Lunes';
+
+// ── Datos para formulario de hidratación ──────────────────────────────────
+$hidro = [
+    'peso'        => 60,
+    'edad'        => 22,
+    'sexo'        => 'mujer',
+    'actividad'   => 'moderada',
+];
+
+// Edad y sexo desde la sesión
+if (!empty($alumno['edad'])) {
+    $hidro['edad'] = intval($alumno['edad']);
+}
+
+$sexoRaw = strtolower(trim($alumno['sexo'] ?? ''));
+if (in_array($sexoRaw, ['masculino', 'm', 'hombre'])) {
+    $hidro['sexo'] = 'hombre';
+} elseif (in_array($sexoRaw, ['femenino', 'f', 'mujer'])) {
+    $hidro['sexo'] = 'mujer';
+} else {
+    $hidro['sexo'] = 'no_especificar';
+}
+
+// Peso y actividad desde datos físicos (registro más reciente)
+$stmtFisicos = $conexion->prepare(
+    "SELECT peso, actividad1 FROM datos_fisicos_alumnos
+     WHERE matricula_alum = ? ORDER BY fecha DESC LIMIT 1"
+);
+$stmtFisicos->bind_param("s", $matricula);
+$stmtFisicos->execute();
+$datosFisicos = $stmtFisicos->get_result()->fetch_assoc();
+
+if ($datosFisicos) {
+    if (!empty($datosFisicos['peso'])) {
+        $hidro['peso'] = floatval($datosFisicos['peso']);
+    }
+    $factor = (string)($datosFisicos['actividad1'] ?? '');
+    if (in_array($factor, ['1.2', '1.375'])) {
+        $hidro['actividad'] = 'baja';
+    } elseif ($factor === '1.55') {
+        $hidro['actividad'] = 'moderada';
+    } elseif (in_array($factor, ['1.725', '1.9'])) {
+        $hidro['actividad'] = 'alta';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -341,29 +386,29 @@ $nombreDiaInicial = $dias[0]['nombre_dia'] ?? 'Lunes';
                 <div class="hidro-form-grid">
                     <label class="hidro-field">
                         <span>Peso</span>
-                        <div><input id="pesoAgua" type="number" min="20" max="250" value="60"><small>kg</small></div>
+                        <div><input id="pesoAgua" type="number" min="20" max="250" value="<?php echo h($hidro['peso']); ?>"><small>kg</small></div>
                     </label>
 
                     <label class="hidro-field">
                         <span>Sexo</span>
                         <select id="sexoAgua">
-                            <option value="mujer">Mujer</option>
-                            <option value="hombre">Hombre</option>
-                            <option value="no_especificar">No especificar</option>
+                            <option value="mujer"           <?php echo $hidro['sexo'] === 'mujer'           ? 'selected' : ''; ?>>Mujer</option>
+                            <option value="hombre"          <?php echo $hidro['sexo'] === 'hombre'          ? 'selected' : ''; ?>>Hombre</option>
+                            <option value="no_especificar"  <?php echo $hidro['sexo'] === 'no_especificar'  ? 'selected' : ''; ?>>No especificar</option>
                         </select>
                     </label>
 
                     <label class="hidro-field">
                         <span>Edad</span>
-                        <div><input id="edadAgua" type="number" min="10" max="100" value="22"><small>años</small></div>
+                        <div><input id="edadAgua" type="number" min="10" max="100" value="<?php echo h($hidro['edad']); ?>"><small>años</small></div>
                     </label>
 
                     <label class="hidro-field">
                         <span>Actividad</span>
                         <select id="actividadAgua">
-                            <option value="baja">Baja</option>
-                            <option value="moderada" selected>Moderada</option>
-                            <option value="alta">Alta</option>
+                            <option value="baja"      <?php echo $hidro['actividad'] === 'baja'      ? 'selected' : ''; ?>>Baja</option>
+                            <option value="moderada"  <?php echo $hidro['actividad'] === 'moderada'  ? 'selected' : ''; ?>>Moderada</option>
+                            <option value="alta"      <?php echo $hidro['actividad'] === 'alta'      ? 'selected' : ''; ?>>Alta</option>
                         </select>
                     </label>
 
